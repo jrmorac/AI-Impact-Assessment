@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Performance Testing Strategy - DOM Project</title>
+  <style>
+    :root {
+      --primary: #174A7C;
+      --secondary: #2F80ED;
+      --accent: #16A085;
+      --warning: #F39C12;
+      --danger: #C0392B;
+      --light: #F5F8FB;
+      --lighter: #FAFCFE;
+      --border: #D8E2EC;
+      --text: #1F2933;
+      --muted: #5F6C7B;
+      --card: #FFFFFF;
+      --shadow: 0 8px 24px rgba(23, 74, 124, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #F8FBFF 0%, #FFFFFF 35%);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 28px 64px;
+    }
+
+    header.hero {
+      background: linear-gradient(135deg, var(--primary), #0E2F4F);
+      color: white;
+      border-radius: 18px;
+      padding: 34px 40px;
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      font-weight: 700;
+      color: #B9D7F8;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.18;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin-top: 14px;
+      max-width: 920px;
+      color: #E7F1FC;
+      font-size: 16px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    nav.toc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 26px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    nav.toc h2 { margin-top: 0; }
+    nav.toc ul { columns: 2; padding-left: 20px; margin-bottom: 0; }
+    nav.toc a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    nav.toc a:hover { text-decoration: underline; }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 30px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 16px rgba(23,74,124,0.06);
+    }
+
+    h2 {
+      color: var(--primary);
+      font-size: 25px;
+      margin: 0 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #E8F1FB;
+    }
+
+    h3 {
+      color: #123B63;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      font-size: 19px;
+    }
+
+    h4 {
+      color: var(--text);
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    p { margin: 8px 0 14px; }
+    ul, ol { margin-top: 8px; }
+    li { margin: 6px 0; }
+
+    .callout {
+      border-left: 5px solid var(--secondary);
+      background: #F0F7FF;
+      padding: 16px 18px;
+      border-radius: 10px;
+      margin: 18px 0;
+    }
+
+    .callout.warning { border-left-color: var(--warning); background: #FFF7E8; }
+    .callout.success { border-left-color: var(--accent); background: #ECFDF7; }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      background: var(--lighter);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .card h3, .card h4 { margin-top: 0; }
+
+    .metric {
+      font-size: 28px;
+      color: var(--primary);
+      font-weight: 800;
+      margin: 6px 0 2px;
+    }
+
+    .muted { color: var(--muted); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 22px;
+      font-size: 14px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+      text-align: left;
+      padding: 12px 14px;
+      font-weight: 700;
+      vertical-align: top;
+    }
+
+    td {
+      border-top: 1px solid var(--border);
+      padding: 12px 14px;
+      vertical-align: top;
+      background: white;
+    }
+
+    tr:nth-child(even) td { background: #F9FBFD; }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #EAF3FF;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .diagram-wrap {
+      overflow-x: auto;
+      margin: 18px 0 6px;
+      padding-bottom: 6px;
+    }
+
+    .flow {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      min-width: 980px;
+    }
+
+    .flow-step {
+      flex: 1;
+      position: relative;
+      background: linear-gradient(180deg, #FFFFFF, #F4F9FF);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 14px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(23,74,124,0.06);
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary);
+      font-weight: 900;
+      font-size: 22px;
+      z-index: 2;
+    }
+
+    .flow-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .flow-title { font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .flow-desc { color: var(--muted); font-size: 13px; }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .pipeline-stage {
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      position: relative;
+    }
+
+    .pipeline-stage h4 { color: var(--primary); margin-top: 0; }
+    .pipeline-stage .badge { color: white; background: var(--secondary); padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+
+    .priority-list {
+      counter-reset: item;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .priority-list li {
+      counter-increment: item;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: #F8FBFF;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 10px 0;
+    }
+
+    .priority-list li::before {
+      content: counter(item);
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 32px;
+      font-size: 13px;
+    }
+
+    @media print {
+      body { background: white; }
+      .page { max-width: none; padding: 0; }
+      section, nav.toc, header.hero { box-shadow: none; page-break-inside: avoid; }
+      nav.toc a { color: var(--primary); }
+    }
+
+    @media (max-width: 800px) {
+      .grid.two, .grid.three, .pipeline { grid-template-columns: 1fr; }
+      nav.toc ul { columns: 1; }
+      header.hero { padding: 26px; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="eyebrow">DOM Project</div>
+      <h1>Performance Testing Strategy</h1>
+      <p class="subtitle">Operational Portal / Databricks Pipelines — Structured Data</p>
+      <div class="meta-row">
+        <span class="pill">Scope: Structured CSV Data</span>
+        <span class="pill">Primary Target: 500 GB / 10M Rows / &lt; 4 Hours</span>
+        <span class="pill">Execution: API-triggered Databricks Pipelines</span>
+      </div>
+    </header>
+
+    <nav class="toc">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#scope">Scope</a></li>
+        <li><a href="#assumptions">Key Assumptions</a></li>
+        <li><a href="#criteria">Performance Acceptance Criteria</a></li>
+        <li><a href="#approach">Test Approach</a></li>
+        <li><a href="#architecture">Execution Flow</a></li>
+        <li><a href="#scenarios">Test Scenarios</a></li>
+        <li><a href="#coverage">Positive and Negative Test Coverage</a></li>
+        <li><a href="#metrics">Metrics</a></li>
+        <li><a href="#tooling">Tooling Strategy</a></li>
+        <li><a href="#execution-plan">Execution Plan</a></li>
+        <li><a href="#risks">Risks and Mitigation</a></li>
+        <li><a href="#questions">Open Questions</a></li>
+        <li><a href="#deliverables">Deliverables</a></li>
+        <li><a href="#priority">Recommended Execution Priority</a></li>
+      </ul>
+    </nav>
+
+    <section id="introduction">
+      <h2>Introduction</h2>
+      <p>This document defines the performance testing strategy for the DOM structured data ingestion and transformation workflow. The objective is to validate that the platform can process large healthcare datasets efficiently, reliably, and within agreed performance expectations.</p>
+      <p>The primary focus of this strategy is the backend data processing capability, including API-triggered pipeline execution, Azure Storage input datasets, manifest-based ingestion, Databricks processing, validation logic, quarantine handling, and target data availability in Unity Catalog or downstream tables.</p>
+      <p>This strategy is not intended to measure general user interface responsiveness. UI interactions may be used only as a supporting mechanism when required. Formal performance validation should be executed through backend APIs and monitored through Databricks, Spark UI, Azure monitoring, application logs, and test execution tools such as JMeter.</p>
+      <div class="callout success"><strong>Current scope:</strong> structured data, primarily CSV-based ingestion. Unstructured data performance testing may be addressed in a separate strategy or future extension once processing rules and acceptance criteria are confirmed.</div>
+    </section>
+
+    <section id="objectives">
+      <h2>1. Objectives</h2>
+      <div class="grid three">
+        <div class="card"><h3>Baseline SLA</h3><div class="metric">500 GB</div><p class="muted">10 million rows processed in less than 4 hours.</p></div>
+        <div class="card"><h3>2x Scalability</h3><div class="metric">1 TB</div><p class="muted">20 million rows within the agreed degradation threshold.</p></div>
+        <div class="card"><h3>Concurrency</h3><div class="metric">2 / 4 / 8+</div><p class="muted">Validate simultaneous pipeline execution limits.</p></div>
+      </div>
+
+      <h3>1.1 SLA Validation</h3>
+      <p>Validate that ingestion and transformation meet the expected business performance requirements. The current baseline target is 10 million rows and 500 GB total dataset size processed in less than 4 hours. The 2x scenario targets 20 million rows and 1 TB total dataset size within the agreed degradation threshold.</p>
+      <div class="callout warning"><strong>Pending confirmation:</strong> the current interpretation is that the 2x scenario should not exceed approximately 20% additional processing time compared to the baseline target.</div>
+
+      <h3>1.2 Scalability Assessment</h3>
+      <ul>
+        <li>Identify maximum validated dataset size.</li>
+        <li>Measure performance degradation as volume increases.</li>
+        <li>Determine whether processing time scales predictably.</li>
+        <li>Identify the volume threshold where SLA compliance is no longer achieved.</li>
+        <li>Identify technical limits before job failure, cluster instability, or excessive cost.</li>
+      </ul>
+
+      <h3>1.3 Concurrency Assessment</h3>
+      <ul>
+        <li>Determine whether executions run in parallel, sequentially, or through a hybrid model.</li>
+        <li>Measure the maximum sustainable concurrent pipeline executions.</li>
+        <li>Assess the impact of concurrency on processing time, Databricks jobs, cluster resources, storage I/O, scheduler behavior, and target table writes.</li>
+      </ul>
+
+      <h3>1.4 Stability, Reliability, Cost Efficiency, Recovery</h3>
+      <p>Validate that large datasets can be processed without critical failures, excessive Spark spill, storage throttling, timeout failures, corrupted target data, or incorrect status updates. The test effort must also measure DBU consumption, estimate cost per run, and validate cleanup and recovery after heavy or failed executions.</p>
+    </section>
+
+    <section id="scope">
+      <h2>2. Scope</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>2.1 In Scope</h3>
+          <ul>
+            <li>Structured CSV ingestion.</li>
+            <li>Manifest-based data ingestion.</li>
+            <li>API-triggered pipeline execution.</li>
+            <li>Databricks job/pipeline execution.</li>
+            <li>Data validation and quality checks.</li>
+            <li>Quarantine handling for invalid records.</li>
+            <li>Load, stress, and concurrency testing.</li>
+            <li>Spark, Databricks, Azure, and application-level monitoring.</li>
+            <li>Cleanup and recovery validation.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>2.2 Out of Scope</h3>
+          <ul>
+            <li>Full browser/UI performance testing.</li>
+            <li>Self Service Portal upload performance testing.</li>
+            <li>Selenium or Playwright-based browser performance automation.</li>
+            <li>Unstructured data performance testing.</li>
+            <li>Production execution without explicit approval.</li>
+            <li>Security, penetration, access control, or compliance testing.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="assumptions">
+      <h2>3. Key Assumptions</h2>
+      <ol>
+        <li>Test datasets will be available in Azure Storage before pipeline execution.</li>
+        <li>Performance testing will trigger ingestion through backend APIs or pipeline endpoints.</li>
+        <li>The Operational Portal or backend services expose endpoints to create/configure pipelines, pass manifest or folder locations, trigger Databricks execution, and retrieve execution status.</li>
+        <li>The baseline requirement applies to a full dataset/folder, not necessarily a single file.</li>
+        <li>Test datasets may include one large file, many small files, or mixed file distributions.</li>
+        <li>Databricks is expected to support parallel execution, but the actual concurrency model must be confirmed.</li>
+        <li>The performance environment must be stable and sufficiently representative to produce meaningful results.</li>
+        <li>Test data cleanup is required after execution to control storage costs.</li>
+        <li>DBU consumption and execution metrics must be captured wherever technically possible.</li>
+      </ol>
+    </section>
+
+    <section id="criteria">
+      <h2>4. Performance Acceptance Criteria</h2>
+      <h3>4.1 Baseline Acceptance Criteria</h3>
+      <table>
+        <thead><tr><th>Area</th><th>Criteria</th></tr></thead>
+        <tbody>
+          <tr><td>Dataset type</td><td>Structured CSV data</td></tr>
+          <tr><td>Dataset size</td><td>500 GB total dataset/folder size</td></tr>
+          <tr><td>Row count</td><td>10 million rows</td></tr>
+          <tr><td>Execution type</td><td>Single pipeline execution</td></tr>
+          <tr><td>Expected result</td><td>Pipeline completes successfully</td></tr>
+          <tr><td>Target time</td><td>Less than 4 hours</td></tr>
+          <tr><td>Data validation</td><td>Quality checks complete successfully</td></tr>
+          <tr><td>Target load</td><td>Valid data is loaded to Unity Catalog or target tables</td></tr>
+          <tr><td>Invalid data</td><td>Invalid records are routed to quarantine or reported correctly</td></tr>
+          <tr><td>Status reporting</td><td>Final pipeline status is updated correctly</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.2 Scalability Acceptance Criteria</h3>
+      <table>
+        <thead><tr><th>Area</th><th>Criteria</th></tr></thead>
+        <tbody>
+          <tr><td>Dataset type</td><td>Structured CSV data</td></tr>
+          <tr><td>Dataset size</td><td>1 TB total dataset/folder size</td></tr>
+          <tr><td>Row count</td><td>20 million rows</td></tr>
+          <tr><td>Execution type</td><td>Single pipeline execution</td></tr>
+          <tr><td>Expected result</td><td>Pipeline completes successfully</td></tr>
+          <tr><td>Target time</td><td>To be formally confirmed</td></tr>
+          <tr><td>Current interpretation</td><td>No more than approximately 20% over the baseline processing target</td></tr>
+          <tr><td>Status</td><td>Requires client and stakeholder validation</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.3 Concurrency Acceptance Criteria</h3>
+      <table>
+        <thead><tr><th>Area</th><th>Criteria</th></tr></thead>
+        <tbody>
+          <tr><td>Dataset size</td><td>500 GB per pipeline execution</td></tr>
+          <tr><td>Concurrent executions</td><td>2, 4, 8, or as agreed</td></tr>
+          <tr><td>Expected behavior</td><td>Pipelines execute in parallel, queue, or follow the defined architecture behavior</td></tr>
+          <tr><td>Stability expectation</td><td>No scheduler failure, cluster crash, data corruption, or incomplete status update</td></tr>
+          <tr><td>Target time</td><td>To be confirmed based on agreed concurrency SLA</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="approach">
+      <h2>5. Test Approach</h2>
+      <h3>5.1 Dataset-Based Testing</h3>
+      <p>Performance scenarios should be defined by total dataset or folder size rather than individual file size only. This aligns with the expected pipeline behavior, where the process receives a manifest or folder location and processes all included files.</p>
+      <div class="grid three">
+        <div class="card"><h4>Baseline Dataset</h4><p>Folder totaling 500 GB and approximately 10 million rows.</p></div>
+        <div class="card"><h4>2x Dataset</h4><p>Folder totaling 1 TB and approximately 20 million rows.</p></div>
+        <div class="card"><h4>Edge Datasets</h4><p>One 50 GB CSV, 50,000 small CSV files, and mixed-size datasets.</p></div>
+      </div>
+
+      <h3>5.2 API-Based Execution</h3>
+      <p>Formal performance testing should use API-based execution whenever possible. JMeter should be used to trigger pipeline creation/configuration, pass manifest or dataset locations, trigger Databricks execution, simulate concurrent execution, and capture API-level response times and failures.</p>
+
+      <h3>5.3 Backend Monitoring</h3>
+      <p>API response time alone is not sufficient. Backend execution metrics must be captured from Databricks, Spark, Azure, and application logs, including job duration, stage duration, retries, CPU/memory utilization, shuffle, spill to disk, storage throughput, write duration, cluster startup time, DBU consumption, and estimated cost.</p>
+    </section>
+
+    <section id="architecture">
+      <h2>6. Execution Flow</h2>
+      <div class="diagram-wrap">
+        <div class="flow">
+          <div class="flow-step"><div class="flow-icon">1</div><div class="flow-title">Prepare Dataset</div><div class="flow-desc">CSV files staged in Azure Storage</div></div>
+          <div class="flow-step"><div class="flow-icon">2</div><div class="flow-title">Manifest / Folder</div><div class="flow-desc">Dataset location passed to backend</div></div>
+          <div class="flow-step"><div class="flow-icon">3</div><div class="flow-title">API Trigger</div><div class="flow-desc">JMeter or backend call starts execution</div></div>
+          <div class="flow-step"><div class="flow-icon">4</div><div class="flow-title">Databricks Job</div><div class="flow-desc">Pipeline reads and processes files</div></div>
+          <div class="flow-step"><div class="flow-icon">5</div><div class="flow-title">Quality Checks</div><div class="flow-desc">Validation and quarantine handling</div></div>
+          <div class="flow-step"><div class="flow-icon">6</div><div class="flow-title">Target Load</div><div class="flow-desc">Valid data available in target tables</div></div>
+          <div class="flow-step"><div class="flow-icon">7</div><div class="flow-title">Metrics</div><div class="flow-desc">Spark, Databricks, Azure, and test results</div></div>
+        </div>
+      </div>
+
+      <div class="pipeline">
+        <div class="pipeline-stage"><span class="badge">Input</span><h4>Azure Storage</h4><p>Structured CSV datasets prepared by size, row count, file count, and error profile.</p></div>
+        <div class="pipeline-stage"><span class="badge">Trigger</span><h4>Operational API</h4><p>Pipeline creation, manifest/folder reference, execution trigger, and status polling.</p></div>
+        <div class="pipeline-stage"><span class="badge">Process</span><h4>Databricks / Spark</h4><p>Data read, validation, quarantine, transformation, and target write processing.</p></div>
+        <div class="pipeline-stage"><span class="badge">Observe</span><h4>Monitoring</h4><p>Execution duration, throughput, resource usage, cost, failures, and recovery signals.</p></div>
+      </div>
+    </section>
+
+    <section id="scenarios">
+      <h2>7. Test Scenarios</h2>
+      <h3>7.1 Scenario Matrix</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th>Load Profile</th><th>Execution Type</th><th>Technical Objective</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag">Baseline</span></td><td>500 GB / 10M rows</td><td>Single pipeline</td><td>Validate minimum SLA: processing under 4 hours</td></tr>
+          <tr><td><span class="tag">Scalability 2x</span></td><td>1 TB / 20M rows</td><td>Single pipeline</td><td>Validate behavior at double volume</td></tr>
+          <tr><td><span class="tag">Incremental Load</span></td><td>2 TB, 3 TB, 4 TB+</td><td>Single pipeline</td><td>Identify scaling curve and maximum sustainable volume</td></tr>
+          <tr><td><span class="tag">Large File</span></td><td>Dataset includes one 50 GB CSV file</td><td>Single pipeline</td><td>Validate large individual file handling</td></tr>
+          <tr><td><span class="tag">Small Files</span></td><td>50,000 small CSV files</td><td>Single pipeline</td><td>Measure file fragmentation and metadata overhead</td></tr>
+          <tr><td><span class="tag">Mixed Dataset</span></td><td>Small, medium, and large CSV files</td><td>Single pipeline</td><td>Simulate realistic customer delivery patterns</td></tr>
+          <tr><td><span class="tag">Data Quality</span></td><td>Controlled invalid records</td><td>Single pipeline</td><td>Measure validation and quarantine impact</td></tr>
+          <tr><td><span class="tag">Concurrency Baseline</span></td><td>2 concurrent 500 GB executions</td><td>Concurrent triggers</td><td>Validate behavior under simultaneous execution</td></tr>
+          <tr><td><span class="tag">Concurrency Growth</span></td><td>4, 8, or more concurrent executions</td><td>Concurrent triggers</td><td>Identify concurrency limits</td></tr>
+          <tr><td><span class="tag">Stress</span></td><td>Increasing volume and/or concurrency</td><td>Single and concurrent</td><td>Identify failure threshold and degradation point</td></tr>
+          <tr><td><span class="tag">Recovery</span></td><td>Re-run after heavy or failed execution</td><td>Post-stress validation</td><td>Validate system recovery</td></tr>
+          <tr><td><span class="tag">Cleanup</span></td><td>Remove test artifacts</td><td>Post-test execution</td><td>Validate repeatable cleanup and cost control</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7.2 Scenario Details</h3>
+      <div class="grid two">
+        <div class="card"><h4>Baseline Structured Data Test</h4><p><strong>Input:</strong> 500 GB structured CSV, approximately 10M rows.</p><p><strong>Success:</strong> completes under 4 hours, loads target data, handles invalid records, and updates final status.</p></div>
+        <div class="card"><h4>Scalability Test — 2x Volume</h4><p><strong>Input:</strong> 1 TB structured CSV, approximately 20M rows.</p><p><strong>Success:</strong> completes within agreed threshold without instability or excessive retries.</p></div>
+        <div class="card"><h4>Incremental Volume Test</h4><p>Run 500 GB, 1 TB, 2 TB, 3 TB, and higher volumes if approved to identify SLA threshold and production load recommendations.</p></div>
+        <div class="card"><h4>Large File Edge Case</h4><p>Validate processing of a dataset containing at least one 50 GB CSV without memory overflow or unacceptable Spark spill.</p></div>
+        <div class="card"><h4>Small File Fragmentation</h4><p>Evaluate behavior with approximately 50,000 small CSV files and measure enumeration, driver, metadata, and I/O overhead.</p></div>
+        <div class="card"><h4>Data Quality and Quarantine</h4><p>Measure validation overhead using 100% clean data and datasets with 1%, 5%, and 10% invalid records.</p></div>
+        <div class="card"><h4>Concurrency Test</h4><p>Trigger 2, 4, and 8 simultaneous executions, if approved, and capture start time, queue time, execution time, completion time, and final status.</p></div>
+        <div class="card"><h4>Stress, Recovery, and Cleanup</h4><p>Increase load until SLA breach or failure, validate recovery behavior, and confirm all test artifacts are cleaned up.</p></div>
+      </div>
+    </section>
+
+    <section id="coverage">
+      <h2>8. Positive and Negative Test Coverage</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>8.1 Positive Cases</h3>
+          <ul>
+            <li>Process clean structured CSV data.</li>
+            <li>Process 500 GB dataset within SLA.</li>
+            <li>Process 1 TB dataset within agreed scalability threshold.</li>
+            <li>Process datasets with mixed file sizes.</li>
+            <li>Process high file-count datasets.</li>
+            <li>Execute multiple pipelines simultaneously when supported by architecture.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>8.2 Negative and Edge Cases</h3>
+          <ul>
+            <li>Corrupted or malformed records.</li>
+            <li>Missing headers and incorrect delimiters.</li>
+            <li>Invalid date formats and duplicate records.</li>
+            <li>High null percentage.</li>
+            <li>One very large file and 50,000 small files.</li>
+            <li>Concurrent execution beyond supported limits.</li>
+            <li>Resource-constrained execution, if approved.</li>
+            <li>Pipeline interruption followed by recovery validation.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="metrics">
+      <h2>9. Metrics</h2>
+      <table>
+        <thead><tr><th>Category</th><th>Metrics</th></tr></thead>
+        <tbody>
+          <tr><td>End-to-End</td><td>Total trigger-to-completion time, input-to-target availability, API-to-job start time, queue time, execution time per pipeline, execution time per concurrent run.</td></tr>
+          <tr><td>Throughput</td><td>Records processed per second, GB processed per hour, files processed per minute, valid records loaded per second, invalid records quarantined per second.</td></tr>
+          <tr><td>Data Quality</td><td>Total records, valid records, invalid records, invalid percentage, quarantine processing time, quality check overhead.</td></tr>
+          <tr><td>Databricks / Spark</td><td>Job duration, stage duration, task duration, CPU, memory, shuffle, spill to disk, failed tasks, retries, cluster startup time, autoscaling, worker utilization.</td></tr>
+          <tr><td>Storage and Target</td><td>Azure Storage read throughput, throttling, target write duration, target table creation/update time, metadata operation time, file enumeration time.</td></tr>
+          <tr><td>Cost</td><td>DBU consumption per run, estimated cost per baseline, estimated cost per 1 TB run, cost per concurrent group, cost by cluster configuration, cost impact of failures or retries.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="tooling">
+      <h2>10. Tooling Strategy</h2>
+      <div class="grid two">
+        <div class="card"><h3>JMeter</h3><p>Recommended for formal API-based performance execution, concurrent triggering, repeatable test plans, response time capture, error rate measurement, and execution reports.</p></div>
+        <div class="card"><h3>Postman</h3><p>Recommended for initial endpoint validation, authentication checks, payload confirmation, and small-scale exploratory execution.</p></div>
+        <div class="card"><h3>Databricks and Spark UI</h3><p>Used to analyze execution behavior, bottlenecks, resource utilization, stage delays, memory pressure, shuffle/spill behavior, failures, and retries.</p></div>
+        <div class="card"><h3>Azure Monitoring</h3><p>Used to track storage read/write activity, network throughput, infrastructure health, resource throttling, and cost indicators where available.</p></div>
+      </div>
+    </section>
+
+    <section id="execution-plan">
+      <h2>11. Execution Plan</h2>
+      <table>
+        <thead><tr><th>Phase</th><th>Name</th><th>Key Activities</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>Requirements and Environment Readiness</td><td>Confirm SLA interpretation, 2x expectation, concurrency criterion, execution model, endpoints, authentication, environment stability, cluster configuration, monitoring access, and cleanup process.</td></tr>
+          <tr><td>1</td><td>Dataset Preparation</td><td>Prepare 500 GB, 1 TB, 50 GB file, 50,000 small files, mixed-size, invalid-record, and optional larger datasets. Document folder path, manifest, size, file count, row count, schema, and error profile.</td></tr>
+          <tr><td>2</td><td>JMeter Test Plan Preparation</td><td>Create suites for single execution, baseline, 2x, concurrency, status polling, and optional cleanup. Parameterize environment URL, auth token, customer/project IDs, manifest, job ID, thread count, and iterations.</td></tr>
+          <tr><td>3</td><td>Baseline Execution</td><td>Run the 500 GB / 10M rows scenario, capture API, Databricks, Spark, storage, and cost metrics, and compare against SLA.</td></tr>
+          <tr><td>4</td><td>Scalability Execution</td><td>Run the 1 TB / 20M rows scenario, compare against agreed 2x criteria, and document scaling behavior.</td></tr>
+          <tr><td>5</td><td>Edge Case Execution</td><td>Run 50 GB individual file, 50,000 small files, mixed dataset, and data quality overhead tests.</td></tr>
+          <tr><td>6</td><td>Concurrency Execution</td><td>Run 2, 4, and 8 concurrent pipelines if approved. For pure concurrency, start threads simultaneously or as close as technically possible.</td></tr>
+          <tr><td>7</td><td>Stress and Breaking Point</td><td>Increase load until SLA breach, pipeline failure, cluster instability, excessive cost, storage throttling, or unacceptable retry/failure rate.</td></tr>
+          <tr><td>8</td><td>Recovery and Cleanup</td><td>Validate system health, execute subsequent pipeline validation, clean test data, remove temporary files, isolate/remove target test records, and confirm cleanup completion.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="risks">
+      <h2>12. Risks and Mitigation</h2>
+      <table>
+        <thead><tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>Performance environment is unstable or unavailable</td><td>Delays execution and may invalidate results</td><td>Confirm environment readiness before formal testing</td></tr>
+          <tr><td>Baseline SLA interpretation is ambiguous</td><td>Incorrect pass/fail decisions</td><td>Obtain formal stakeholder confirmation</td></tr>
+          <tr><td>2x + 20% criterion is unclear</td><td>Misaligned expectations</td><td>Confirm whether the threshold applies to total time, throughput, or degradation</td></tr>
+          <tr><td>Pipeline concurrency model is unknown</td><td>Incorrect concurrency test design</td><td>Confirm whether execution is parallel, queued, or hybrid</td></tr>
+          <tr><td>High DBU consumption</td><td>Increased cost</td><td>Use approved job clusters, define test windows, and limit unnecessary iterations</td></tr>
+          <tr><td>Large datasets increase storage cost</td><td>Cost overrun</td><td>Implement cleanup process and storage retention rules</td></tr>
+          <tr><td>Self Service Portal is not ready</td><td>Upload performance cannot be tested</td><td>Limit current scope to backend pipeline triggering</td></tr>
+          <tr><td>Test data generation is delayed</td><td>Blocks execution</td><td>Assign dataset ownership early</td></tr>
+          <tr><td>Non-production environment differs from production</td><td>Results may not represent production behavior</td><td>Document environment differences and avoid overgeneralization</td></tr>
+          <tr><td>Other processes run during testing</td><td>Noisy or unreliable results</td><td>Coordinate clean execution windows</td></tr>
+          <tr><td>Missing monitoring access</td><td>Incomplete root cause analysis</td><td>Confirm access to Databricks, Spark UI, Azure logs, and app logs before execution</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="questions">
+      <h2>13. Open Questions</h2>
+      <div class="grid two">
+        <div class="card"><h3>Business and Acceptance Criteria</h3><ol><li>Does the 500 GB / 10M rows / &lt; 4 hours SLA apply to one pipeline execution only?</li><li>Does the 2x scenario mean exactly 1 TB / 20M rows?</li><li>Does the 20% threshold mean the 1 TB scenario must finish within approximately 4 hours and 48 minutes?</li><li>Is concurrency part of the formal acceptance criteria?</li><li>How many concurrent clients or projects should be expected in production?</li><li>What is the maximum expected dataset size per customer delivery?</li><li>Should structured and unstructured data follow the same SLA?</li></ol></div>
+        <div class="card"><h3>Technical and Architecture</h3><ol start="8"><li>Are Databricks pipelines executed in parallel, queued, or through a hybrid model?</li><li>What is the maximum number of concurrent Databricks jobs allowed?</li><li>Are there cluster, workspace, or job-level concurrency limits?</li><li>Are there API rate limits or throttling rules?</li><li>What timeout values exist at API, backend, Databricks, and storage layers?</li><li>What happens when a pipeline fails?</li><li>Is retry behavior automatic or manual?</li><li>Are cleanup, delete, or restore endpoints available?</li></ol></div>
+        <div class="card"><h3>Test Data</h3><ol start="16"><li>Who will generate the 500 GB and 1 TB datasets?</li><li>Will test data be synthetic, anonymized production-like data, or real de-identified data?</li><li>What schema should the CSV test files use?</li><li>What percentage of invalid records should be included in negative tests?</li><li>Should datasets include healthcare-like dummy data or generic test data?</li></ol></div>
+        <div class="card"><h3>Observability</h3><ol start="21"><li>Who has access to Databricks and Spark UI during test execution?</li><li>Where are pipeline execution logs stored?</li><li>How is final pipeline status updated in the Operational Portal?</li><li>Can DBU consumption be captured per run?</li><li>Can storage throughput and throttling be monitored during execution?</li></ol></div>
+      </div>
+    </section>
+
+    <section id="deliverables">
+      <h2>14. Deliverables</h2>
+      <table>
+        <thead><tr><th>Deliverable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Performance Test Plan</td><td>Complete plan covering scope, assumptions, scenarios, criteria, dataset definitions, execution approach, tools, risks, and open questions.</td></tr>
+          <tr><td>JMeter Test Suite</td><td>Reusable assets for pipeline configuration, execution, status polling, concurrent execution, and optional cleanup calls.</td></tr>
+          <tr><td>Dataset Inventory</td><td>Dataset documentation including folder path, manifest path, total size, file count, row count, schema, error profile, and purpose.</td></tr>
+          <tr><td>Results Matrix</td><td>Technical results by scenario, including dataset size, execution time, throughput, DBU usage, cost estimate, cluster configuration, pass/fail status, and bottlenecks.</td></tr>
+          <tr><td>Executive Performance Report</td><td>Stakeholder-facing summary of SLA compliance, maximum validated volume, concurrency capacity, risks, bottlenecks, production limits, and cluster/job recommendations.</td></tr>
+          <tr><td>Recommended Configuration Guide</td><td>Final technical recommendations for cluster size, autoscaling, job cluster usage, maximum dataset size, maximum concurrent executions, cleanup strategy, and monitoring requirements.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="priority">
+      <h2>15. Recommended Execution Priority</h2>
+      <ol class="priority-list">
+        <li>Confirm baseline SLA interpretation.</li>
+        <li>Confirm 2x scalability expectation.</li>
+        <li>Confirm API endpoints and execution model.</li>
+        <li>Prepare the 500 GB structured dataset.</li>
+        <li>Execute the baseline performance test.</li>
+        <li>Prepare the 1 TB structured dataset.</li>
+        <li>Execute the 2x scalability test.</li>
+        <li>Execute high-risk edge cases: 50 GB individual file and 50,000 small files.</li>
+        <li>Execute initial concurrency tests with 2 and 4 simultaneous executions.</li>
+        <li>Capture cost and Databricks metrics.</li>
+        <li>Produce the initial performance findings report.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Executive Summary</h2>
+      <p>This strategy validates the structured data ingestion and transformation capabilities of the DOM platform using dataset-based performance testing. The primary baseline target is to process <strong>500 GB / 10 million rows in less than 4 hours</strong>, followed by a <strong>1 TB / 20 million row scalability test</strong> and additional stress, edge case, concurrency, recovery, and cleanup validations.</p>
+      <p>The testing approach prioritizes backend API-triggered pipeline execution, Databricks/Spark observability, cost measurement, and production-readiness recommendations. The final outcome will define validated processing limits, scalability behavior, concurrency capacity, cost implications, and recommended operating parameters for production.</p>
+    </section>
+
+    <div class="footer">Performance Testing Strategy — DOM Project — Operational Portal / Databricks Pipelines — Structured Data</div>
+  </main>
+</body>
+</html>
