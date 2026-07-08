@@ -1,0 +1,181 @@
+{
+  "skill_name": "gap-ai-coach",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Hi! I just got my AI assessment results back. I'm a software engineer and got Level 2. Here are my results:\n\nFinal Level,Result,Action Plan\n2,\"Your submission demonstrates solid project-level AI adoption. You use GitHub Copilot and Claude consistently for code scaffolding and documentation. However, your evidence lacks measurable productivity metrics (Dimension 3), your agentic work appears experimental and not integrated into project workflows (Dimension 4), and your impact remains largely personal with no evidence of team-facing contributions (Dimension 5).\",\"1. Add sprint velocity tracking comparing AI-assisted vs. baseline performance over 2-4 sprints. 2. Document and commit at least one agentic workflow to your actual project repository with evidence of reliable operation over time. 3. Create and share a reusable prompt library or how-to guide with your team and collect adoption evidence. 4. Attach all supporting artifacts independently to each question in your re-evaluation submission.\"\n\nCan you help me understand what I need to do to reach Level 3?",
+      "expected_output": "The skill reads the CSV data, identifies the employee as Engineering track Level 2, presents the disclaimer, interprets each evaluator action item and maps it to the correct dimension, assesses urgency relative to the July/October re-evaluation windows, and generates a structured action plan with dimension-by-dimension gaps and evidence recommendations.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Engineering track is correctly identified",
+        "Level 2 is correctly extracted from the CSV data without asking the user to restate it",
+        "All four evaluator action items are addressed and mapped to specific dimensions (Dimension 3: velocity tracking, Dimension 4: agentic workflow in project, Dimension 5: reusable asset + adoption, reattach artifacts)",
+        "Urgency assessment mentions the July 2026 or October 2026 re-evaluation window",
+        "A structured action plan or roadmap is generated",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm a software engineer at GAP and I have my AI assessment coming up in a few weeks. I use GitHub Copilot and Claude Code pretty much every day — I use them to write boilerplate, debug issues, and generate test cases. I've also built a Python script that automatically creates PR descriptions using the Claude API. I'm not sure if what I'm doing is enough for Level 3 or if I need to do more. Can you help me figure out where I stand and what I need to do?",
+      "expected_output": "The skill identifies the Engineering track, enters pre-evaluation mode, walks through the 5 dimensions, conducts a gap analysis based on the work described, explains the Level 2 vs Level 3 distinction (AI-assisted vs. agentic/systemic), identifies that the PR description script is promising Dimension 4 evidence but needs documentation and reliability proof, and generates a proactive roadmap to Level 3.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Engineering track is correctly identified",
+        "Pre-evaluation mode is used (not post-evaluation mode)",
+        "The 5 evaluation dimensions are explained or referenced",
+        "Gap analysis identifies that current usage (daily Copilot + PR script) is likely Level 2, not Level 3",
+        "The Level 2 → Level 3 distinction is explained (AI-assisted vs. agentic/systemic impact)",
+        "An action plan or roadmap toward Level 3 is generated",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I'm a delivery manager and I just got my AI assessment results. I got Level 1. Here's the feedback:\n\n'Your submission demonstrates awareness and personal use of AI tools for task management and documentation. However, there is no evidence of measurable productivity impact (Dimension 3), your use of AI for client-facing materials lacks documented validation processes (Dimension 2), and there is no evidence of AI-driven project management automation or multiplier impact (Dimensions 4 and 5). Activity without impact.'\n\nI'm really disappointed. I use AI all the time for status reports, meeting summaries, and stakeholder emails. What am I doing wrong and how do I get to Level 3?",
+      "expected_output": "The skill identifies the Managers track, enters post-evaluation mode, interprets the feedback language and maps it to the correct dimensions, validates the employee's feelings while being direct about the gaps, explains that the issue is lack of documented/measurable outcomes rather than AI adoption itself, and generates a targeted plan to Level 3 with urgency-aware timing.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Managers track is correctly identified",
+        "Level 1 is correctly acknowledged",
+        "Feedback is interpreted and mapped to specific Managers track dimensions (Dimension 2: validation process, Dimension 3: metrics, Dimensions 4 and 5: automation and multiplier)",
+        "The core gap is explained: activity is happening but impact is not documented or measurable",
+        "Urgency assessment mentions the July 2026 or October 2026 re-evaluation window",
+        "A structured action plan is generated",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Hi, I work in HR at GAP as an HR Business Partner and I need help preparing for the AI assessment coming up. I've been using ChatGPT and Copilot to help me write job descriptions, draft communication templates, and summarize long policy documents. I also created a set of email templates that a few of my colleagues now use. But I'm not a technical person at all and I'm worried I won't qualify for Level 3. Can you help me figure out what I need to show and how to prepare my submission?",
+      "expected_output": "The skill identifies the Shared Services IC track (HR Business Partner is a non-technical role), enters pre-evaluation mode, explains the 5 Shared Services dimensions in accessible non-technical language, recognizes that the email templates shared with colleagues are strong Dimension 5 evidence, identifies gaps (no measurable outcomes, no systematic validation), and generates a practical roadmap appropriate for a non-technical employee.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Shared Services track is correctly identified (not Engineering)",
+        "Pre-evaluation mode is used",
+        "Language is accessible and non-technical (appropriate for an HR professional)",
+        "The shared email templates are recognized as Dimension 5 (Organizational Impact) evidence",
+        "Gap analysis identifies missing measurable outcomes and formal validation process",
+        "An action plan or roadmap is generated",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I'm the Director of Financial Planning & Analysis at GAP and I received a Level 2 on my AI Impact Assessment. Here's a summary of my feedback:\n\n'Strong personal adoption of AI tools for financial modeling and reporting. However, evidence of organizational impact is limited — there is no documented AI enablement strategy for your team, no evidence of your team's AI maturity progression, and no systematic tracking of productivity gains across the function. Individual productivity is demonstrated but team-level transformation is not.'\n\nI need to reach Level 3. I lead a team of 8 analysts. What do I need to do differently?",
+      "expected_output": "The skill identifies the Shared Services Leadership track (Director = leadership sub-track), enters post-evaluation mode, interprets the feedback correctly as pointing to Dimension 5 organizational impact gaps, maps to the leadership-specific dimensions (Strategic AI Vision, AI-Enabled Leadership, Organizational Impact), and generates a plan focused on team enablement, documented AI adoption strategy, and measurable team-level outcomes.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Shared Services Leadership (or Senior/Director) sub-track is correctly identified",
+        "Level 2 is correctly acknowledged",
+        "Feedback is mapped to leadership dimensions — specifically team-level transformation and organizational impact",
+        "The action plan focuses on team enablement, not just personal AI usage",
+        "Urgency assessment mentions the July 2026 or October 2026 re-evaluation window",
+        "A structured action plan is generated",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "I'm an experienced backend engineer and I got Level 1 on my AI assessment and I honestly think it's completely wrong. Here's what I've actually done:\n- Built a multi-step LLM pipeline that automatically triages incoming Jira tickets and routes them to the right team\n- Ran weekly AI office hours for my squad and trained 4 team members on Claude Code\n- Integrated AI-assisted code review checks into our CI/CD pipeline\n- Created a shared prompt library that 5 other engineers on my team now use\n\nHow is this Level 1? Can you help me understand what might have happened and whether I should dispute this?",
+      "expected_output": "The skill identifies the Engineering track, empathizes with the frustration, explains how the multi-agent evaluation system works and common reasons a strong submission might still score low (evidence not attached to every question, claims not verifiable, adversarial agent challenges), explains the dispute process (manager challenge → Director review), and helps the employee assess whether to dispute or re-submit with better documentation.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Engineering track is correctly identified",
+        "The response does not dismiss the employee's frustration or immediately validate Level 1 as correct",
+        "The multi-agent evaluation system (Adversarial Agent, evidence per question) is explained as a possible reason for the low score",
+        "Dispute process is explained (manager challenge, Director review)",
+        "Advice is given on whether to dispute vs. resubmit with stronger evidence",
+        "The response never promises a specific level outcome or dispute result"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "I'm a delivery manager at GAP and I have my AI assessment coming up in about 3 weeks. I've been using AI pretty regularly — I use it for writing status reports, risk flagging, and stakeholder communications. I also built a workflow that pulls project data and auto-generates a weekly health report for my clients. I want to hit Level 3. What do I need to do?",
+      "expected_output": "Skill identifies Managers track, enters pre-evaluation mode, recognizes the 3-week timeline as urgent (July 2026 window), walks through the 5 Managers dimensions, identifies the weekly health report as strong Dimension 4 evidence, explains the personal vs. systemic impact gap (Level 2 vs Level 3), and generates an urgency-appropriate (sprint-style) action plan.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Managers track is correctly identified",
+        "Pre-evaluation mode is used (not post-evaluation mode)",
+        "The 5 Managers track dimensions are explained or referenced",
+        "The weekly health report workflow is recognized as strong Dimension 4 (Agentic / Workflow Automation) evidence",
+        "Urgency is correctly assessed — 3 weeks triggers the urgent (< 6 weeks) plan with focus on quick, documentable wins",
+        "The July 2026 re-evaluation window is mentioned",
+        "An action plan or roadmap is generated",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "I just found out from my manager that I need to complete an AI Impact Assessment by July. I don't really know what it is or what I need to do. I work in finance as a financial analyst. Can you help me understand what to expect and how to prepare?",
+      "expected_output": "Skill identifies Shared Services IC track (Finance Analyst is a non-technical IC role), enters pre-evaluation mode, explains the 4-level framework and what Level 3 requires in accessible non-technical language, maps to the Shared Services IC dimensions, notes the July 2026 urgency, and generates a practical preparation roadmap appropriate for a non-technical finance professional.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Shared Services IC track is correctly identified (not Engineering or Managers)",
+        "Pre-evaluation mode is used",
+        "The 4-level scale is explained in plain language appropriate for a non-technical finance professional",
+        "The 5 Shared Services IC dimensions are explained or referenced",
+        "The July 2026 window is identified as the relevant (and urgent) deadline",
+        "An action plan or preparation roadmap is generated",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "I'm a tech lead at GAP — I manage a team of 5 engineers and I also code myself most days. I just got Level 1 on my AI assessment. The feedback says: 'No evidence of team-level AI adoption or organizational impact. Personal use of AI tools is noted but has not translated into team-level workflows or measurable project outcomes.' I'm not sure if I was evaluated as an engineer or a manager. What does this mean and how do I get to Level 3?",
+      "expected_output": "Skill addresses the track ambiguity directly (Tech Lead could be Engineering or Managers track), interprets the feedback language ('team-level adoption', 'organizational impact') as Managers-track dimension signals, advises the employee to confirm with their manager which track was used for their evaluation, explains the key distinction (Engineering = individual/systemic technical contribution; Managers = team-level force multiplier), and provides guidance for both tracks while recommending the employee clarify before investing in a specific remediation plan.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "The track ambiguity (Engineering vs. Managers) is explicitly acknowledged and addressed",
+        "Level 1 is correctly acknowledged",
+        "The feedback language is interpreted — 'team-level adoption' and 'organizational impact' are flagged as Managers-track dimension language",
+        "The employee is advised to confirm their evaluated track with their manager before building a remediation plan",
+        "The Engineering vs. Managers track distinction is explained",
+        "The July 2026 or October 2026 re-evaluation window is mentioned",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "I'm a Marketing Coordinator at GAP and I just got my AI assessment results back. I got Level 1. My feedback says: 'Awareness of AI tools is evident, and you have used AI to support content drafting and campaign briefs. However, there is no evidence of a systematic validation process for AI outputs (Dimension 2), no measurable productivity data demonstrating impact (Dimension 3), and your AI use has not extended beyond personal task support to create reusable assets or enable peers (Dimensions 4 and 5). Anecdotal use without demonstrated impact.' I feel like I've been using AI constantly — I use it for social copy, campaign briefs, email sequences, and research summaries. What did I do wrong?",
+      "expected_output": "Skill identifies Shared Services IC track (Marketing Coordinator = non-technical IC), enters post-evaluation mode, interprets the feedback and maps it to SS IC dimensions (Dimension 2: no documented validation, Dimension 3: no metrics, Dimensions 4–5: personal only, no reusable assets or peer adoption), explains the 'anecdotal use without demonstrated impact' diagnosis, assesses urgency relative to July/October windows, and generates a targeted action plan.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Shared Services IC track is correctly identified (not Engineering or Managers)",
+        "Post-evaluation mode is used (not pre-evaluation mode)",
+        "Level 1 is correctly acknowledged",
+        "Feedback is mapped to specific SS IC dimensions (Dimension 2: validation, Dimension 3: metrics, Dimensions 4 and 5: reusable assets and peer adoption)",
+        "The core gap is explained: personal AI use is happening but impact is not documented or shared",
+        "Urgency assessment mentions the July 2026 or October 2026 re-evaluation window",
+        "A structured action plan is generated",
+        "The response never promises a specific level outcome"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Hi, I'm the VP of People Operations at GAP. I haven't done my AI assessment yet but I know it's coming up and I want to make sure I'm prepared for Level 3. My team of 12 includes recruiters, HR BPs, L&D specialists, and operations coordinators. I've been personally using AI for things like org design analysis, workforce planning scenarios, and preparing executive briefings. But I honestly don't know what Level 3 looks like for someone in my role, or how different it is from just using AI well myself. Can you help me understand what I need to do?",
+      "expected_output": "Skill identifies Shared Services Leadership sub-track (VP = leadership level), enters pre-evaluation mode, explains the Level 3 distinction for leadership (personal adoption ≠ organizational impact; team transformation is the standard), walks through the 5 SS Leadership dimensions, identifies that the employee's current personal use is likely Level 2, explains that Level 3 requires documented team capability progression and function-level outcomes, and generates a pre-evaluation preparation roadmap focused on team enablement.",
+      "files": [],
+      "expectations": [
+        "Disclaimer is presented at or near the start of the response",
+        "Shared Services Leadership (VP/Director) sub-track is correctly identified",
+        "Pre-evaluation mode is used",
+        "The distinction between personal AI adoption (Level 2) and organizational/team-level transformation (Level 3) is explained",
+        "The 5 SS Leadership dimensions are explained or referenced",
+        "The action plan focuses on team enablement, not just personal AI usage improvements",
+        "A structured preparation roadmap is generated",
+        "The response never promises a specific level outcome"
+      ]
+    }
+  ]
+}
