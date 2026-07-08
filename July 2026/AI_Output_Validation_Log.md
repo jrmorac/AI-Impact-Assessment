@@ -24,8 +24,8 @@
 | **Output Reviewed** | Deterministic INSERT script for 6 months of synthetic test data |
 | **Validation Type** | Edge case testing, data integrity review |
 | **Review Process** | Dry-ran the script against a test schema. Manually inspected timestamp distribution logic, status probability ratios, and seed determinism. Verified that the six-month date range was correctly bounded and that month-boundary edge cases (end-of-month day calculations) produced valid dates. |
-| **Issue Found** | ⚠️ Initial output used `GETDATE()` in timestamp generation — non-deterministic, would produce different records on each run |
-| **Correction Applied** | Replaced dynamic date expressions with a fixed seed anchor date and calculated all timestamps as offsets from that anchor. Re-ran the script twice to confirm identical output both times. |
+| **Issue Found** | ⚠️ Error with `DATEADD()` in timestamp generation — not accepting minutes |
+| **Correction Applied** | AI refactored the script so it converted the time to hours to make function valid for SQL. |
 | **Security Check** | Confirmed no real user data, PII, or production identifiers present. All values use fixed placeholders (e.g., `jcasal@mediquant.com`, `CustomerId: 647`). |
 | **Outcome** | ✅ Accepted and used in project testing |
 
@@ -40,8 +40,8 @@
 | **Output Reviewed** | Deterministic INSERT script for exception log synthetic data |
 | **Validation Type** | Edge case testing, status distribution verification |
 | **Review Process** | Verified that exception type distribution across records matched project-realistic ratios. Confirmed that records with `Status = 'Unresolved'` appeared in statistically expected proportions rather than uniformly. Checked that foreign key references matched the corresponding `CustomerActivityLogs` entries produced in Entry 001. |
-| **Issue Found** | ⚠️ AI generated all exception records with the same `SeverityLevel` value — no distribution |
-| **Correction Applied** | Reprompted with explicit distribution requirements (e.g., 60% Low, 30% Medium, 10% High). Verified revised output by grouping records and counting per severity. |
+| **Issue Found** | None |
+| **Correction Applied** | None |
 | **Security Check** | Same prompt hygiene as Entry 001. No real data. |
 | **Outcome** | ✅ Accepted and used in project testing |
 
@@ -102,8 +102,8 @@
 | **Output Reviewed** | Test cases reformatted as Azure DevOps CSV import format |
 | **Validation Type** | Format compliance, field mapping validation |
 | **Review Process** | Verified that column headers matched the ADO import schema. Checked that multi-line expected result text was correctly escaped for CSV (no unquoted line breaks that would break row parsing). Confirmed Work Item Type, Title, and State fields were correctly populated. |
-| **Issue Found** | ⚠️ AI used semicolons as column separators instead of commas — ADO import would have failed silently |
-| **Correction Applied** | Reprompted specifying comma-delimited format. Validated corrected output by opening in Excel before attempting ADO import. |
+| **Issue Found** | ⚠️ AI failed to create a fully compliant ADO json file, error were shown on import.  |
+| **Correction Applied** | A sample of a current real json file from the project was needed so the AI was able to generate the test cases with the correct format. |
 | **Outcome** | ✅ Accepted. CSV imported successfully into ADO on first attempt. |
 
 ---
