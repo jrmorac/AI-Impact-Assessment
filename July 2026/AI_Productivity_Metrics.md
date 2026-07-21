@@ -26,7 +26,7 @@ A working day = 8 hours.
 | A | Requirements vs Proposal Comparison + Management Report | Two formal documents comparing MediQuant requirements against GAP proposal | 3 days (24h) | Prior experience: manual requirements review on similar projects requires reading both docs (~4h), cross-referencing each section (~6h), writing findings (~6h), formatting management report (~8h) | ~4 hours | **~20 hours** | Deliverable files shared with team and client. Can be cross-referenced with project communication records. |
 | B | SQL Test Data Scripts — `CustomerActivityLogs` + `CustomerExceptionLogs` | Two deterministic INSERT scripts covering 6 months of synthetic data | 1 day (8h) | Manual script authoring for 2 tables × ~4h each: schema analysis, value planning, writing inserts, testing determinism | ~1 hour | **~7 hours** | Scripts used in actual project testing. [B] artifact file available for inspection. |
 | C | DOM Performance Testing Strategy | Full QA strategy document (HTML) covering Azure infra, HITRUST/HIPAA pipelines, RBAC, CI/CD, performance testing | 3 days (24h) | Manual QA strategy authoring: research (~8h), drafting 8+ sections (~12h), formatting and review (~4h) | ~1 day (8h) | **~16 hours** | Adopted as project QA baseline. Shared with team. Referenced in May 26 review. |
-| D | Unstructured Data Test Cases (7) + ADO CSV Import | 7 structured test cases + ADO-compatible CSV | 1 day (8h) | Manual test case writing: 7 cases × ~45 min each (~5h) + CSV formatting for ADO (~3h) | ~1.5 hours | **~6.5 hours** | Test cases imported into Azure DevOps — verifiable by ADO board access. Active in project execution. |
+| D | Client required new Test Cases (27) + ADO CSV Import | 27 structured test cases + ADO-compatible CSV | 1 day (8h) | Manual test case writing: 7 cases × ~45 min each (~5h) + CSV formatting for ADO (~3h) | ~1.5 hours | **~6.5 hours** | Test cases imported into Azure DevOps — verifiable by ADO board access. Active in project execution. |
 | E | Performance Testing Plan — Annex 1 (Peak Month Capacity Simulation) | Detailed annex covering dataset characterization, throughput metrics, scalability scenarios | 2 days (16h) | Manual planning document: workload characterization (~6h), scenario design (~5h), metrics framework (~3h), formatting (~2h) | ~4 hours | **~12 hours** | Presented at May 26 stakeholder review. Adopted as official testing baseline. |
 | F | Performance Testing Meeting Minutes | Formal minutes from 66-minute technical review (5 attendees) | 2.5 hours | Manual note-taking during meeting (~1h) + post-meeting write-up and formatting (~1.5h) | ~15 minutes | **~2 hours** | Used as official post-meeting record. Distributed to all 5 attendees. |
 
@@ -42,7 +42,7 @@ The most concrete productivity signal is not hours-per-task but **project-level 
 |--------|----------------------|-----------|-------|
 | AI-assisted deliverables officially adopted by the project | 0 | 6 | **+6** |
 | Deliverables shared with client or used in client-facing contexts | 0 | 3 (Artifacts A, C, E) | **+3** |
-| Test artifacts imported into project systems (ADO) | 0 | 7 test cases | **+7 test cases** |
+| Test artifacts imported into project systems (ADO) | 0 | 27 test cases | **+27 test cases** |
 | Meetings documented with AI assistance | 0 | 1 (66 min → 15 min) | **−51 min per meeting** |
 | Project-level impact from AI work | None documented | 6 officially adopted artifacts | Qualitative shift from Level 1 to Level 2 |
 
@@ -59,7 +59,7 @@ The adversarial evaluator may challenge time-savings claims as self-reported. Th
 | A — Requirements Comparison | Document files timestamped and shared in project communication (Teams/email). Management report used in client-facing discussion — can be confirmed by Cesar Trompetero or delivery manager. |
 | B — SQL Scripts | Scripts run against test schema. Test execution records exist in project environment. File timestamped in project repository. |
 | C — QA Strategy | Shared with team as project QA baseline. Referenced in May 26 meeting minutes (Artifact F). HTML file timestamped. |
-| D — Test Cases | 7 work items visible in Azure DevOps project board. ADO import timestamp verifiable. Items in active test execution. |
+| D — Test Cases | 27 work items visible in Azure DevOps project board. ADO import timestamp verifiable. Items in active test execution. |
 | E — Performance Annex | Presented at May 26 review — attendees: Jose Mora, Cesar Trompetero, Nelson Araya, Sean Smith, Steven Yelton. Meeting minutes (Artifact F) confirm the presentation occurred. |
 | F — Meeting Minutes | Distributed to all 5 attendees post-meeting. Distribution timestamp in Teams/email records. |
 

@@ -84,12 +84,12 @@
 | **Date** | ~May 2026 |
 | **Artifact** | Artifact D — New Requested Test Cases (27 cases) |
 | **AI Tool** | GitHub Copilot |
-| **Output Reviewed** | Structured test cases for Databricks Unstructured Data Pipeline |
-| **Validation Type** | Edge case coverage review, negative scenario completeness |
-| **Review Process** | Reviewed test case set for coverage of negative, boundary, and mixed scenarios. Deliberately verified that edge cases (missing files, malformed paths, no file-path columns detected) were included in the generated set — these were specified in the prompt as design requirements, not added post-review. Confirmed each test case included step-by-step actions with expected results. |
-| **Issue Found** | ⚠️ AI omitted the "no file-path column detected" scenario — a known production failure mode |
-| **Correction Applied** | Added missing scenario via targeted reprompt. Verified the new test case matched the format of existing cases. |
-| **Outcome** | ✅ Accepted. 7 test cases imported into Azure DevOps and are in active execution. |
+| **Output Reviewed** | Client requested test cases for additional scenarios (Infra deployment, Code deployment, Security Verification,RBAC verification, Post Production Verification, Basic Performance Verification) |
+| **Validation Type** | Positive, negative scenario completeness |
+| **Review Process** | Reviewed test case set for coverage of positive, negative and mixed scenarios. Confirmed each test case included step-by-step actions with expected results. |
+| **Issue Found** | No issues found |
+| **Correction Applied** | Not required. |
+| **Outcome** | ✅ Accepted. 27 test cases created and imported into Azure DevOps Test Plan. |
 
 ---
 
@@ -146,7 +146,7 @@
 | 002 | CustomerExceptionLogs SQL | Copilot | Uniform severity distribution | Missing requirement | ✅ |
 | 003 | Proposal vs Requirements Report | Copilot/Word | Inferred finding not in source | Hallucination | ✅ |
 | 004 | Management Review Document | Copilot Word | Overstated contractual implication | Tone/accuracy | ✅ |
-| 005 | Test Cases (7 cases) | Copilot | Missing edge case scenario | Coverage gap | ✅ |
+| 005 | Test Cases (27 cases) | Copilot | None | Coverage gap | ✅ |
 | 006 | ADO CSV Import File | Copilot | Wrong CSV delimiter | Format error | ✅ |
 | 007 | Meeting Minutes | Copilot Teams | Wrong action item attribution | Attribution error | ✅ |
 | 008 | QA Strategy Document | Copilot | Hallucinated Azure Defender reference | Hallucination | ✅ |
