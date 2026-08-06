@@ -24,7 +24,7 @@ This library contains reusable, parameterized prompt templates for recurring QA 
 3. Fill in all `[PLACEHOLDER]` values with your specific task details.
 4. Copy the **PROMPT** block and paste it after the system context.
 5. Iterate with follow-up prompts as needed.
-6. **Always validate the output** before committing or sharing — see the [AI Output Validation Log](../July%202026/AI_Output_Validation_Log.md) for the governance process.
+6. **Always validate the output** before committing or sharing — see the [AI Output Validation Log](../July%202026/metrics-and-logs/AI_Output_Validation_Log.md) for the governance process.
 
 ---
 
