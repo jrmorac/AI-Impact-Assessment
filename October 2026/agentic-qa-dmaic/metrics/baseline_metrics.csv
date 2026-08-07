@@ -1,0 +1,4 @@
+metric_name,baseline_value,baseline_window,start_date,end_date,notes
+avg_triage_minutes_per_defect,45,2_sprints,2026-07-01,2026-07-31,Estimate replaced once measured values are available
+defect_reopen_rate_percent,18,2_sprints,2026-07-01,2026-07-31,Use same denominator each sprint
+repeat_defect_rate_percent,22,2_sprints,2026-07-01,2026-07-31,Track by normalized defect category

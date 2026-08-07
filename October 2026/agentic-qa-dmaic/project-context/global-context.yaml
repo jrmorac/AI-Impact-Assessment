@@ -1,0 +1,48 @@
+version: 1
+purpose: Project-agnostic QA DMAIC assistant context
+constraints:
+  data_policy: Non-sensitive artifacts only
+  pii_allowed: false
+  external_data_export_allowed: false
+workflow:
+  phases:
+    - define
+    - measure
+    - analyze
+    - improve
+    - control
+agentic:
+  min_confidence_to_autosuggest: 0.70
+  require_human_review_under_confidence: true
+  fallback_mode: rules_only
+  confidence_calibration:
+    missing_field_penalty: 0.08
+    short_text_penalty: 0.07
+    strong_repro_bonus: 0.04
+  prioritization_weights:
+    risk: 0.65
+    uncertainty: 0.25
+    repeat_signal: 0.10
+  priority_tiers:
+    high_min: 75
+    medium_min: 50
+  rca:
+    method: five-whys
+    min_hypothesis_support: 0.65
+    require_5whys_before_capa: true
+    require_evidence_artifact_for_capa: true
+    min_artifact_quality_score: 0.60
+    require_artifact_traceability: true
+    require_capa_validation_experiment: true
+    outcome_evaluation:
+      min_sample_size: 5
+      default_target_reduction_percent: 15
+      effective_threshold: 80
+      partial_threshold: 60
+      weight_target: 0.70
+      weight_regression: 0.20
+      weight_sample: 0.10
+output:
+  include_risk_score: true
+  include_quality_gate_results: true
+  include_capa_actions: true

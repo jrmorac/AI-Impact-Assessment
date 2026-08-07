@@ -1,0 +1,3 @@
+sprint_id,period_start,period_end,defects_triaged,avg_triage_minutes_per_defect,defect_reopen_rate_percent,repeat_defect_rate_percent,accepted_suggestions_count,flagged_suggestions_count,reviewer
+SPRINT-1,2026-08-01,2026-08-14,0,0,0,0,0,0,QA_Lead
+SPRINT-2,2026-08-15,2026-08-28,0,0,0,0,0,0,QA_Lead

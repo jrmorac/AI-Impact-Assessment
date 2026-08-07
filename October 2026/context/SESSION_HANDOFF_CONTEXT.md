@@ -133,6 +133,82 @@ Client operates under HIPAA healthcare data regulations. AI tools restricted to 
 - Links to validation log and prompt library
 - **Pending:** Replicate this file into the REAL DOM project repo for verifiable, git-timestamped evidence
 
+### Created: Project-Agnostic Agentic QA DMAIC Starter (Dimensions 4 + 5 foundation)
+- Folder: `October 2026/agentic-qa-dmaic/`
+- Purpose: reusable defect triage and root-cause support workflow with configurable context files per client/project
+- Architecture implemented: `planner -> analyzer -> validator` pipeline in `src/main.py`
+- Context model: reusable YAML profiles in `project-context/` (`global-context.yaml`, `project-profile.template.yaml`, `quality-gates.template.yaml`, `dom-mediquant.example.yaml`)
+- Evidence model: run-level tracking in `evidence/evidence_log.csv`, correction tracking in `evidence/validation_corrections_log.md`, KPI templates in `metrics/`
+- Synthetic sample input and successful execution output created:
+  - Input: `data/input/synthetic_defects_sprint1.json`
+  - Output: `data/output/report_sprint1.json`
+  - First recorded run: 3 defects analyzed, 3 accepted, 0 flagged (UTC timestamp logged)
+- Dependency baseline: `requirements.txt` with `PyYAML`
+- Current status: runnable foundation complete; next phase is integration with real non-sensitive QA artifacts and teammate adoption proof
+
+### Enhancement: Confidence Calibration + Prioritization Scoring (Aug 6, 2026)
+- Upgraded the agent workflow to calibrate confidence using data completeness and narrative quality signals.
+- Added risk-based prioritization with configurable weights (`risk`, `uncertainty`, `repeat_signal`) and priority tiers.
+- Output now includes:
+  - `confidence_breakdown`
+  - `priority_score`
+  - `priority_tier`
+  - `repeat_signal`
+  - `summary.priority_breakdown`
+- Added mixed dataset for validator stress-testing:
+  - Input: `data/input/synthetic_defects_sprint1_mixed.json`
+  - Output: `data/output/report_sprint1_mixed.json`
+- Mixed run evidence: 3 defects analyzed, 2 accepted, 1 flagged (missing fields + confidence below threshold), with one `high` priority item detected.
+- Added step-by-step execution artifact:
+  - `DAY_BY_DAY_SPRINT1_GUIDE.md` (10 working days with evidence checkpoints)
+
+### Enhancement: Five Whys RCA + Evidence-Gated CAPA (Aug 7, 2026)
+- Added structured Five Whys chain generation for each defect in the agent output.
+- Added hypothesis support scoring based on factual evidence completeness.
+- Added strict CAPA gate: CAPA recommendations are now deferred unless support threshold is met and evidence artifacts are attached.
+- New output behavior:
+  - `action_mode = investigate_first` when evidence is insufficient
+  - `action_mode = confirmed_capa` when evidence supports the hypothesis
+- Added validation checks for RCA completeness and hypothesis support threshold.
+- Added sample evidence-backed input for demonstration:
+  - `data/input/synthetic_defects_with_evidence.json`
+  - outputs in `data/output/report_with_evidence.json` and `data/output/report_evidence_case.json`
+- Result pattern now aligns better with Six Sigma discipline: no trial-and-error CAPA without supporting data.
+
+### Enhancement: Artifact Quality Scoring + Traceability + Mandatory CAPA Validation Experiment (Aug 7, 2026)
+- Added artifact quality scoring to RCA decisioning, including:
+  - artifact presence
+  - artifact count
+  - signal diversity
+  - defect-ID traceability in artifact names
+  - date context in artifact names
+- Added strict traceability policy: evidence artifacts must be linkable to the defect ID before CAPA can be confirmed.
+- Added mandatory CAPA validation experiment object for every confirmed CAPA, including baseline metric, intervention, measurement window, acceptance criteria, and rollback condition.
+- Added RCA config knobs in context files:
+  - `min_artifact_quality_score`
+  - `require_artifact_traceability`
+  - `require_capa_validation_experiment`
+- Validation outcomes:
+  - baseline and mixed inputs without traceable artifacts now return `investigate_first`
+  - evidence-rich input with traceable artifacts returns `confirmed_capa` and includes validation experiment payload
+
+### Enhancement: Experiment Outcome Ingestion + CAPA Effectiveness Scoring (Aug 7, 2026)
+- Implemented ingestion of optional `experiment_outcome` data in defect input.
+- Added automatic CAPA effectiveness evaluation with output statuses:
+  - `effective`
+  - `partial`
+  - `ineffective`
+  - `not_available`
+  - `invalid_data`
+- Added score computation based on:
+  - target achievement
+  - adjacent regression signal
+  - sample size adequacy
+- Added report summary aggregation under `summary.capa_effectiveness_breakdown`.
+- Added synthetic dataset for demonstration:
+  - `data/input/synthetic_defects_with_experiment_outcomes.json`
+  - output: `data/output/report_with_experiment_outcomes.json`
+
 ---
 
 ## Pending Human Actions
