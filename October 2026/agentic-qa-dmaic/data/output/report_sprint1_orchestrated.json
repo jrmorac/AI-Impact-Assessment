@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-13T04:49:41.951362+00:00",
+  "generated_at_utc": "2026-08-11T18:23:08.632195+00:00",
   "project": {
     "client_name": "SampleClient",
     "project_name": "SampleProject",
@@ -180,7 +180,7 @@
       },
       "agent_trace": [
         {
-          "timestamp_utc": "2026-08-13T04:49:41.951176+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.631936+00:00",
           "agent": "planner_agent",
           "input": {
             "defect_id": "PRJ-DEF-002",
@@ -192,7 +192,7 @@
           }
         },
         {
-          "timestamp_utc": "2026-08-13T04:49:41.951247+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.632047+00:00",
           "agent": "analyzer_agent",
           "input": {
             "defect_id": "PRJ-DEF-002",
@@ -206,7 +206,7 @@
           }
         },
         {
-          "timestamp_utc": "2026-08-13T04:49:41.951256+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.632058+00:00",
           "agent": "validator_agent",
           "input": {
             "defect_id": "PRJ-DEF-002",
@@ -357,7 +357,7 @@
       },
       "agent_trace": [
         {
-          "timestamp_utc": "2026-08-13T04:49:41.950967+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.631719+00:00",
           "agent": "planner_agent",
           "input": {
             "defect_id": "PRJ-DEF-001",
@@ -369,7 +369,7 @@
           }
         },
         {
-          "timestamp_utc": "2026-08-13T04:49:41.951140+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.631893+00:00",
           "agent": "analyzer_agent",
           "input": {
             "defect_id": "PRJ-DEF-001",
@@ -383,7 +383,7 @@
           }
         },
         {
-          "timestamp_utc": "2026-08-13T04:49:41.951157+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.631913+00:00",
           "agent": "validator_agent",
           "input": {
             "defect_id": "PRJ-DEF-001",
@@ -534,7 +534,7 @@
       },
       "agent_trace": [
         {
-          "timestamp_utc": "2026-08-13T04:49:41.951271+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.632077+00:00",
           "agent": "planner_agent",
           "input": {
             "defect_id": "PRJ-DEF-003",
@@ -546,7 +546,7 @@
           }
         },
         {
-          "timestamp_utc": "2026-08-13T04:49:41.951326+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.632150+00:00",
           "agent": "analyzer_agent",
           "input": {
             "defect_id": "PRJ-DEF-003",
@@ -560,7 +560,7 @@
           }
         },
         {
-          "timestamp_utc": "2026-08-13T04:49:41.951332+00:00",
+          "timestamp_utc": "2026-08-11T18:23:08.632157+00:00",
           "agent": "validator_agent",
           "input": {
             "defect_id": "PRJ-DEF-003",

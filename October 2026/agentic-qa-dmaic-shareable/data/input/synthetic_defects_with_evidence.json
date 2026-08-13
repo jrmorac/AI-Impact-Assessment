@@ -1,0 +1,31 @@
+﻿[
+  {
+    "defect_id": "PRJ-DEF-201",
+    "created_date": "2026-08-07",
+    "severity": "high",
+    "component": "CustomerActivityIngestion",
+    "summary": "Recurring duplicate records after nightly merge window",
+    "reproduction_steps": "Execute synthetic batch B twice under same merge key and compare target uniqueness counts",
+    "observed_behavior": "Duplicate keys increased from 0 to 37 in repeated run",
+    "expected_behavior": "Duplicate key count remains 0 under idempotent merge",
+    "evidence_artifacts": [
+      "PRJ-DEF-201_sql-output-dup-count-2026-08-07.csv",
+      "PRJ-DEF-201_pipeline-run-log-merge-window-2026-08-07.txt"
+    ]
+  },
+  {
+    "defect_id": "PRJ-DEF-202",
+    "created_date": "2026-08-07",
+    "severity": "critical",
+    "component": "ExceptionAPI",
+    "summary": "API latency crosses SLA during synthetic peak load",
+    "reproduction_steps": "Replay synthetic peak profile P3 with fixed payload over 10 minutes",
+    "observed_behavior": "P95 latency rose from 1.2s baseline to 4.8s; 3 timeout responses",
+    "expected_behavior": "P95 latency stays under 2.0s with zero timeout responses",
+    "evidence_artifacts": [
+      "PRJ-DEF-202_apm-latency-chart-p3-2026-08-07.png",
+      "PRJ-DEF-202_api-timeout-trace-2026-08-07.json"
+    ]
+  }
+]
+

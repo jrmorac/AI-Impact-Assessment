@@ -1,0 +1,49 @@
+﻿project:
+  client_name: PlaceholderClient
+  project_name: PlaceholderProject
+  domain: sample-domain
+  tech_stack:
+    - sql-server
+    - databricks
+    - api
+  qa_frameworks:
+    - risk-based-testing
+    - shift-left
+  standards:
+    - HIPAA
+    - internal-secure-coding
+
+severity_model:
+  critical: 5
+  high: 4
+  medium: 3
+  low: 2
+  info: 1
+
+defect_taxonomy:
+  - data-quality
+  - business-rule
+  - integration
+  - performance
+  - security
+  - test-automation
+
+manual_bottlenecks:
+  - repetitive triage notes
+  - duplicate root-cause analysis across similar defects
+  - inconsistent CAPA proposals
+
+success_metrics:
+  target_triage_time_reduction_percent: 25
+  target_reopen_rate_reduction_percent: 15
+  target_repeat_defect_reduction_percent: 20
+
+agentic:
+  rca:
+    interactive:
+      min_depth: 2
+      target_depth: 5
+      max_depth: 8
+      min_answer_length: 25
+      min_evidence_items: 1
+

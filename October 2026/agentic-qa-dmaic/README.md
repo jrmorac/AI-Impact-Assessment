@@ -2,13 +2,6 @@
 
 Purpose: project-agnostic defect triage and root-cause support workflow that combines Six Sigma and Software QA.
 
-This starter is designed to help build Level 3 evidence for the Engineering track:
-- D1: Daily AI-first workflow using structured context files.
-- D2: Formal validation via quality gates and correction logging.
-- D3: Measurable impact with baseline and sprint metrics templates.
-- D4: Agentic pipeline (planner, analyzer, validator) that runs repeatedly.
-- D5: Reusable, shareable framework across projects and clients.
-
 ## What this starter does
 
 1. Reads project context from YAML files.
@@ -25,8 +18,8 @@ This starter is designed to help build Level 3 evidence for the Engineering trac
 9. Requires a CAPA validation experiment plan for every confirmed CAPA recommendation.
 10. Ingests experiment outcomes and computes CAPA effectiveness scores (effective/partial/ineffective/not_available).
 11. Supports interactive RCA sessions with checkpoint gating and adaptive stop/continue logic.
-4. Produces a structured output report in data/output.
-5. Appends an evidence row for assessment tracking.
+12. Produces a structured output report in data/output, including per-defect `agent_trace` for planner/analyzer/validator execution visibility.
+13. Appends an evidence row for assessment tracking.
 
 ## Project structure
 
@@ -80,6 +73,112 @@ Export a formal RCA case report:
 python src/main.py export-rca-report --session evidence/rca_sessions/prj-def-201.json --output evidence/rca_reports/prj-def-201.md
 ```
 
+Run a guided one-command RCA workflow (interactive terminal wizard):
+
+```text
+python src/main.py guided-rca --context project-context/baseline-project.yaml --input data/input/synthetic_defects_with_evidence.json --defect-id PRJ-DEF-201 --role qa
+```
+
+Optional guided flags:
+- `--session` to reuse or pin a session path
+- `--output-report` to customize the exported markdown report path
+- `--role` values: `dev`, `qa`, `sre`, `release-manager`
+- `--quick-plan` to run non-interactively from a predefined JSON answer plan
+
+Run guided mode non-interactively (quick mode):
+
+```text
+python src/main.py guided-rca --context project-context/baseline-project.yaml --input data/input/synthetic_defects_with_evidence.json --defect-id PRJ-DEF-201 --role qa --quick-plan data/input/quick_plan_prj-def-201.json --session evidence/rca_sessions/prj-def-201-quick.json --output-report evidence/rca_reports/prj-def-201-quick.md
+```
+
+Quick plan schema:
+
+```json
+{
+   "default_evidence_refs": ["artifact-a", "artifact-b"],
+   "default_flags": {
+      "controllable": true,
+      "resolved": false,
+      "prevents_recurrence": false
+   },
+   "answers": [
+      {
+         "answer": "Because ..."
+      },
+      {
+         "answer": "Because ...",
+         "evidence_refs": ["artifact-c"],
+         "resolved": true,
+         "prevents_recurrence": true
+      }
+   ]
+}
+```
+
+Sample quick plan included:
+- `data/input/quick_plan_prj-def-201.json`
+
+Guided mode improvements for real team adoption:
+- one-command session flow from start to report export
+- role-based answer templates shown at each Why step
+- automatic evidence suggestion by defect ID from `evidence/` and `data/`
+- automatic report export when the stop condition is reached
+- optional non-interactive quick mode for demos and CI-assisted execution
+
+## CAPA CSV Export (ADO/Jira/Generic)
+
+Export CAPA tasks from a confirmed RCA session as import-ready CSV:
+
+```text
+python src/main.py export-capa-csv --session evidence/rca_sessions/prj-def-201-quick.json --output evidence/capa_exports/prj-def-201-ado.csv --provider ado --assignee qa.lead@sampleclient.com --due-date 2026-08-28
+```
+
+Jira format example:
+
+```text
+python src/main.py export-capa-csv --session evidence/rca_sessions/prj-def-201-quick.json --output evidence/capa_exports/prj-def-201-jira.csv --provider jira --assignee qa.lead --due-date 2026-08-28
+```
+
+Provider options:
+- `ado`: columns for Azure DevOps import
+- `jira`: columns for Jira CSV import
+- `generic`: neutral schema for custom tooling
+
+## ADO Test Case CSV Export
+
+Export ADO-compatible Test Case work items from an RCA session using the required field order:
+
+```text
+python src/main.py export-ado-testcases-csv --session evidence/rca_sessions/prj-def-201-quick.json --output evidence/capa_exports/prj-def-201-ado-testcases.csv --assigned-to qa.lead@sampleclient.com --area-path SampleProject\\QA --iteration-path SampleProject\\Sprint-2 --state Design
+```
+
+Expanded mode example (adds negative and boundary variants per base test case):
+
+```text
+python src/main.py export-ado-testcases-csv --session evidence/rca_sessions/prj-def-201-quick.json --output evidence/capa_exports/prj-def-201-ado-testcases-expanded.csv --assigned-to qa.lead@sampleclient.com --area-path SampleProject\\QA --iteration-path SampleProject\\Sprint-2 --state Design --variant-set expanded
+```
+
+Exported columns (exact order):
+- `ID`
+- `Work Item Type`
+- `Title`
+- `Assigned To`
+- `State`
+- `Area Path`
+- `Iteration Path`
+- `Description`
+- `Repro Steps`
+- `System Info`
+- `Acceptance Criteria`
+
+Notes:
+- Output is comma-delimited CSV.
+- `Work Item Type` is set to `Test Case` for all rows.
+- `ID` is left empty so ADO assigns it on import.
+- Multi-step content is represented with `\\n` inside quoted fields for safe row integrity.
+- `--variant-set standard` exports core CAPA-aligned cases only (default).
+- `--variant-set expanded` exports standard + negative + boundary variants.
+
 The interactive RCA session will:
 - continue if another Why is needed
 - stop when the checkpoint confirms a controllable cause that should prevent recurrence
@@ -108,4 +207,43 @@ Use evidence/evidence_log.csv and evidence/validation_corrections_log.md.
 ## Guided execution
 
 Use DAY_BY_DAY_SPRINT1_GUIDE.md for a 10-day implementation cadence with evidence checkpoints.
+
+## Local Web UI (localhost)
+
+Run the local UI server:
+
+```text
+python src/web_app.py --host 127.0.0.1 --port 8787
+```
+
+Open in browser:
+
+```text
+http://127.0.0.1:8787
+```
+
+What the UI supports:
+- Start RCA session from context/input/defect selection
+- Defect ID dropdown is auto-loaded from the selected input JSON list (field `defect_id`)
+- Manual Defect ID override when you need to type an ID not present in dropdown
+- Load latest saved session from a selector
+- One-click quick plan execution (non-interactive)
+- Answer or revise Why nodes with evidence refs and checkpoint flags
+- Vertical option cards for `controllable`, `resolved`, `prevents recurrence`, and `revise current node` with inline explanations
+- Built-in stop-logic hint explaining early closure before Why 5 when checkpoint criteria are satisfied
+- Refresh and inspect live session state
+- Export RCA report, CAPA CSV, and ADO Test Case CSV
+- Agent Trace Viewer for batch reports: pick report + defect ID and inspect `agent_trace` directly in UI
+
+API health endpoint:
+
+```text
+http://127.0.0.1:8787/api/health
+```
+
+Agent trace endpoint:
+
+```text
+http://127.0.0.1:8787/api/report-agent-trace?report=data/output/report_sprint1_orchestrated.json
+```
 
