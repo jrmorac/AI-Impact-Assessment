@@ -18,7 +18,8 @@ Use the Agentic QA project as the primary evidence asset, but do not rely on pro
 - The package includes `Why 1`, `Why 3`, and `Why 5` demo cases.
 - `Run Demo Case` generates the RCA report, CAPA CSV, and ADO Test Case CSV automatically.
 - `Run Quick Plan` is optional and intended for repeatable predefined-plan execution.
-- Current latest distribution: `October 2026/dist/agentic-qa-rca-shareable-20260814-160656.zip`.
+- Current latest distribution: `October 2026/dist/agentic-qa-rca-shareable-20260814-161905.zip`.
+- README documentation now explains the CAPA and ADO Test Case generation flow from the consolidated 5-Whys RCA record.
 
 ## Sequence of actions
 

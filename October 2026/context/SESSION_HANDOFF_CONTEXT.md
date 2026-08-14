@@ -351,7 +351,8 @@ This tool is designed around synthetic/demo inputs and non-production QA artifac
 - `Run Demo Case` creates a fresh session and automatically generates the RCA report, CAPA CSV, and ADO Test Case CSV.
 - Clarified that `Run Quick Plan` is optional and intended for repeatable predefined-plan execution.
 - Updated the main, Spanish, and shareable README files with the Web UI-first workflow.
-- Regenerated the shareable package and retained only the latest ZIP: `October 2026/dist/agentic-qa-rca-shareable-20260814-160656.zip`.
+- Regenerated the shareable package and retained only the latest ZIP: `October 2026/dist/agentic-qa-rca-shareable-20260814-161905.zip`.
+- Added README guidance explaining how the consolidated 5-Whys RCA record generates CAPA tasks and ADO Test Cases, including expanded negative and boundary variants.
 - Validated the renamed main package, shareable dry run, and demo artifact generation.
 
 ### Current State and Decision for the Next Session
