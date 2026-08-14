@@ -50,6 +50,25 @@ Abre `http://127.0.0.1:8787` en el navegador. Todo el flujo está disponible des
 
 La acción de demo genera automáticamente el reporte RCA, las tareas CAPA y los casos de prueba ADO. Las sesiones manuales pueden exportar los mismos artefactos desde el panel de exportación.
 
+### Cómo se generan CAPA y los casos de prueba
+
+Después de la sesión de 5 Whys, la herramienta utiliza el registro completo del RCA para generar los entregables. Usa el resumen del defecto, el componente, el comportamiento observado y esperado, la causa raíz confirmada y las referencias de evidencia recopiladas durante la cadena de Why.
+
+La salida CAPA contiene cuatro tipos de tareas:
+
+- implementar el control correctivo
+- agregar cobertura de regresión
+- agregar un monitoreo o quality gate
+- validar la efectividad de la acción correctiva
+
+La salida de casos de prueba ADO contiene tres casos base:
+
+- el control correctivo resuelve el defecto
+- el regression gate detecta recurrencia
+- la validación de la acción correctiva no produce regresiones
+
+La salida se basa en la decisión consolidada de causa raíz; la herramienta no crea una tarea CAPA por cada Why individual. La exportación expandida de casos de prueba puede agregar variantes negativas y de frontera.
+
 ### ¿Qué acción de la UI debo usar?
 
 - `Run Demo Case`: recomendado para demostraciones; carga un caso incluido y completa automáticamente el flujo, incluyendo RCA, CAPA y casos de prueba.

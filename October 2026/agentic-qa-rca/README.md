@@ -49,6 +49,25 @@ Open `http://127.0.0.1:8787` in your browser. The complete workflow is available
 
 The demo action generates the RCA report, CAPA tasks, and ADO test cases automatically. Manual sessions can export the same artifacts from the export panel.
 
+### How CAPA and Test Cases are generated
+
+After the 5-Whys session, the tool uses the complete RCA record to generate the deliverables. It uses the defect summary, component, observed and expected behavior, confirmed root cause, and evidence references collected across the Why chain.
+
+CAPA output contains four task types:
+
+- implement the corrective control
+- add regression coverage
+- add a monitoring or workflow gate
+- validate corrective-action effectiveness
+
+ADO Test Case output contains three base cases:
+
+- corrective control resolves the defect
+- regression gate detects recurrence
+- corrective-action validation shows no regression
+
+The output is based on the consolidated root-cause decision; the tool does not create one CAPA task for every individual Why. Expanded Test Case export can additionally create negative and boundary variants.
+
 ### Which UI action should I use?
 
 - `Run Demo Case`: recommended for demonstrations; loads a bundled case and completes the flow automatically, including RCA, CAPA, and Test Case outputs.
