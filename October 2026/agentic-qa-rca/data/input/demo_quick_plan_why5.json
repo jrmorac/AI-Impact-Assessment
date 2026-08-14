@@ -1,0 +1,26 @@
+{
+  "default_evidence_refs": ["DEMO-WHY5_api-request-log.json", "DEMO-WHY5_invalid-records.csv"],
+  "answers": [
+    {
+      "answer": "Because the API accepted invalid synthetic records instead of rejecting them during request validation."
+    },
+    {
+      "answer": "Because the validation rule for the invalid record condition was missing from the API path."
+    },
+    {
+      "answer": "Because the implementation story did not include the required validation behavior.",
+      "evidence_refs": ["DEMO-WHY5_story-requirement.md"]
+    },
+    {
+      "answer": "Because assumptions during refinement allowed the missing validation requirement to remain unchallenged.",
+      "evidence_refs": ["DEMO-WHY5_refinement-notes.md"]
+    },
+    {
+      "answer": "Because the refinement process lacked a requirement validation checkpoint for this class of API rule.",
+      "evidence_refs": ["DEMO-WHY5_process-checklist.md"],
+      "resolved": true,
+      "controllable": true,
+      "prevents_recurrence": true
+    }
+  ]
+}

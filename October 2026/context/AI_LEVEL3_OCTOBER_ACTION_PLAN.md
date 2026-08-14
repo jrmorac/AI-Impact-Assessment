@@ -9,7 +9,16 @@ Reach Level 3 in the Engineering track by October 2026 by demonstrating:
 - adoption beyond personal use
 
 ## Core strategy
-Use the Agentic QA DMAIC project as the primary evidence asset, but do not rely on production client data or sensitive evidence. The project is positioned as a reusable, shareable QA workflow built around synthetic data and governance-safe practices.
+Use the Agentic QA project as the primary evidence asset, but do not rely on production client data or sensitive evidence. The project is positioned as a reusable, shareable QA workflow built around synthetic data and governance-safe practices. It should not be presented as a complete Six Sigma or RCA implementation unless that terminology is explicitly requested.
+
+## Current implementation status — August 14, 2026
+
+- The preferred entry point is the local Web UI, not the terminal.
+- The shareable package is `October 2026/agentic-qa-rca-shareable/`.
+- The package includes `Why 1`, `Why 3`, and `Why 5` demo cases.
+- `Run Demo Case` generates the RCA report, CAPA CSV, and ADO Test Case CSV automatically.
+- `Run Quick Plan` is optional and intended for repeatable predefined-plan execution.
+- Current latest distribution: `October 2026/dist/agentic-qa-rca-shareable-20260814-160656.zip`.
 
 ## Sequence of actions
 

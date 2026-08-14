@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic QA RCA Console</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: #fffaf3;
+      --ink: #1f2937;
+      --muted: #5f6b7a;
+      --brand: #0f766e;
+      --accent: #b45309;
+      --line: #d6cfc3;
+      --ok: #166534;
+      --warn: #92400e;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #f6d8b8 0, var(--bg) 40%);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 30px;
+      letter-spacing: 0.3px;
+    }
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 3px 10px rgba(31, 41, 55, 0.08);
+    }
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 17px;
+    }
+    .section-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: 17px;
+    }
+    label {
+      display: block;
+      margin: 8px 0 4px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    input:not([type="checkbox"]), select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-sizing: border-box;
+      background: #fff;
+      color: var(--ink);
+    }
+    textarea { min-height: 110px; resize: vertical; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #fff;
+      background: var(--brand);
+      font-weight: 600;
+    }
+    button.alt { background: var(--accent); }
+    button.ghost { background: #475569; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .muted { color: var(--muted); font-size: 12px; }
+    .mono {
+      font-family: Consolas, "Courier New", monospace;
+      white-space: pre-wrap;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      max-height: 270px;
+      overflow: auto;
+    }
+    .status {
+      margin: 10px 0 0;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      background: #ecfeff;
+      color: #0f172a;
+      border: 1px solid #a5f3fc;
+    }
+    .workflow-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 10px;
+    }
+    .step-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .step-pill.active {
+      background: rgba(15, 118, 110, 0.1);
+      color: var(--brand);
+      border-color: rgba(15, 118, 110, 0.35);
+    }
+    .step-pill.done {
+      background: rgba(22, 101, 52, 0.09);
+      color: var(--ok);
+      border-color: rgba(22, 101, 52, 0.25);
+    }
+    .session-banner {
+      margin: 0 0 12px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .session-banner.info { border-color: #bfdbfe; background: #eff6ff; }
+    .session-banner.success { border-color: #bbf7d0; background: #f0fdf4; }
+    .session-banner.warning { border-color: #fcd34d; background: #fffbeb; }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    details.advanced-panel {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 10px;
+    }
+    details.advanced-panel summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    details.advanced-panel summary::-webkit-details-marker { display: none; }
+    details.advanced-panel[open] summary { margin-bottom: 8px; }
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .checks {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .option-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+    .option-item label {
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .option-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin: 1px 0 0;
+      flex: 0 0 auto;
+    }
+    .option-help {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .logic-hint {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #c7e5df;
+      border-radius: 8px;
+      background: #f0fdfa;
+      color: #0f172a;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .logic-hint strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #0f766e;
+    }
+    .term-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+    .term-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(15, 118, 110, 0.06);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    h1 .term-pill {
+      font-size: 0.82em;
+      padding: 4px 10px;
+      vertical-align: middle;
+    }
+    .help-btn, .section-help-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 700;
+      font-size: 10px;
+      cursor: pointer;
+      padding: 0;
+      box-shadow: none;
+    }
+    .help-btn:hover, .help-btn:focus-visible, .section-help-btn:hover, .section-help-btn:focus-visible {
+      background: var(--accent);
+      outline: none;
+    }
+    .term-tooltip {
+      position: fixed;
+      z-index: 1000;
+      max-width: 240px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fffaf3;
+      box-shadow: 0 16px 32px rgba(31, 41, 55, 0.18);
+      color: var(--ink);
+      font-size: 11px;
+      line-height: 1.35;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+    .term-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .term-tooltip strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--brand);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Agentic QA <span class="term-pill">RCA <button class="help-btn" type="button" data-term="RCA" aria-label="RCA definition">?</button></span> / <span class="term-pill">CAPA <button class="help-btn" type="button" data-term="CAPA" aria-label="CAPA definition">?</button></span> Console</h1>
+    <p class="subtitle">Tool for structured root cause analysis using the 5-Why method, with corrective action tracking and test case generation for QA and engineering teams.</p>
+    <div class="workflow-steps" aria-label="Workflow steps">
+      <span class="step-pill active">1. Start</span>
+      <span class="step-pill">2. Diagnose</span>
+      <span class="step-pill">3. Export</span>
+    </div>
+    <div id="sessionStatusBanner" class="session-banner info">No session loaded. Start a session to begin the RCA workflow.</div>
+    <div id="termTooltip" class="term-tooltip" role="tooltip" aria-live="polite"></div>
+
+    <div class="grid">
+      <section class="card">
+        <h2 class="section-title">1) Start Session <button class="section-help-btn" type="button" data-section="startSession" aria-label="Start Session help">?</button></h2>
+        <p class="muted">Use the <strong>RCA</strong> and <strong>CAPA</strong> workflow to drive a disciplined root-cause and corrective-action process.</p>
+        <label for="context">Context file</label>
+        <select id="context"></select>
+
+        <label for="input">Input file</label>
+        <select id="input"></select>
+
+        <label for="defect">Defect ID</label>
+        <select id="defect"></select>
+        <p class="muted">Defect IDs are loaded from the selected input JSON (field: defect_id).</p>
+
+        <label for="manualDefect">Manual Defect ID (optional override)</label>
+        <input id="manualDefect" placeholder="Use only if not present in dropdown">
+
+        <div class="row">
+          <div>
+            <label for="role">Role</label>
+            <select id="role">
+              <option value="qa">qa</option>
+              <option value="dev">dev</option>
+              <option value="sre">sre</option>
+              <option value="release-manager">release-manager</option>
+            </select>
+          </div>
+          <div>
+            <label for="session">Session path (optional)</label>
+            <input id="session" placeholder="evidence/rca_sessions/my-session.json">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="startBtn">Start RCA Session</button>
+          <button id="newSessionBtn" class="ghost">New Session</button>
+          <button id="statusBtn" class="ghost">Refresh Status</button>
+        </div>
+
+        <label for="latestSession">Latest session</label>
+        <select id="latestSession"></select>
+        <div class="actions">
+          <button id="loadSessionBtn" class="ghost">Load Selected Session</button>
+        </div>
+
+        <label for="quickPlan">Quick plan</label>
+        <select id="quickPlan"></select>
+        <div class="actions">
+          <button id="runQuickPlanBtn" class="ghost">Run Quick Plan</button>
+        </div>
+
+        <label for="demoCase">Demo case</label>
+        <select id="demoCase">
+          <option value="why1">Why 1 - simple operational issue</option>
+          <option value="why3" selected>Why 3 - moderate complexity</option>
+          <option value="why5">Why 5 - complex defect escape</option>
+        </select>
+        <div class="actions">
+          <button id="demoRunBtn" class="alt">Run Demo Case</button>
+        </div>
+        <div id="startStatus" class="status">Ready.</div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">2) Answer Current Why <button class="section-help-btn" type="button" data-section="answerCurrentWhy" aria-label="Answer Current Why help">?</button></h2>
+        <label for="question">Current question</label>
+        <div id="question" class="mono"></div>
+
+        <label for="answer">Answer</label>
+        <textarea id="answer" placeholder="Because ..."></textarea>
+
+        <label for="evidence">Evidence refs (comma-separated)</label>
+        <input id="evidence" placeholder="artifact1.csv, artifact2.txt">
+        <p id="evidenceHints" class="muted"></p>
+
+        <div class="checks">
+          <div class="option-item">
+            <label><input type="checkbox" id="controllable" checked> controllable</label>
+            <p class="option-help">Use this when your team can directly act on this cause (engineering, QA, or release process).</p>
+          </div>
+          <div class="option-item">
+            <label><input type="checkbox" id="resolved"> resolved</label>
+            <p class="option-help">Use this when fixing this cause would solve the current defect, not only a side factor.</p>
+          </div>
+          <div class="option-item">
+            <label><input type="checkbox" id="prevents"> prevents recurrence</label>
+            <p class="option-help">Use this when the fix adds a durable control that prevents this defect class from happening again.</p>
+          </div>
+          <div class="option-item">
+            <label><input type="checkbox" id="revise"> revise current node</label>
+            <p class="option-help">Use this to replace the current Why answer instead of creating a new deeper Why step.</p>
+          </div>
+        </div>
+
+        <div class="logic-hint">
+          <strong>Stop logic</strong>
+          The flow can stop at Why 1 or at any later depth when all required checks pass and you mark
+          controllable + resolved + prevents recurrence as true. Five Whys is the normal target; deeper analysis remains available for edge cases.
+          If evidence or answer quality is weak, the flow will request more evidence for the same Why instead of stopping.
+        </div>
+
+        <div class="actions">
+          <button id="submitBtn">Submit Answer</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid" style="margin-top:12px;">
+      <section class="card">
+        <h2 class="section-title">3) Export Artifacts <button class="section-help-btn" type="button" data-section="exportArtifacts" aria-label="Export Artifacts help">?</button></h2>
+
+        <label for="reportOutput">Report output (optional)</label>
+        <input id="reportOutput" placeholder="evidence/rca_reports/session.md">
+
+        <div class="actions">
+          <button id="exportReportBtn" class="alt">Export Report</button>
+        </div>
+
+        <label for="capaOutput">CAPA CSV output</label>
+        <input id="capaOutput" value="evidence/capa_exports/session-ado.csv">
+        <div class="row">
+          <div>
+            <label for="provider">CAPA provider</label>
+            <select id="provider">
+              <option value="ado">ado</option>
+              <option value="jira">jira</option>
+              <option value="generic">generic</option>
+            </select>
+          </div>
+          <div>
+            <label for="assignee">Assignee</label>
+            <input id="assignee" placeholder="qa.lead@sampleclient.com">
+          </div>
+        </div>
+
+        <label for="dueDate">Due date</label>
+        <input id="dueDate" placeholder="YYYY-MM-DD">
+        <div class="actions">
+          <button id="exportCapaBtn" class="alt">Export CAPA CSV</button>
+        </div>
+
+        <label for="adoTcOutput">ADO TestCase CSV output</label>
+        <input id="adoTcOutput" value="evidence/capa_exports/session-ado-testcases.csv">
+
+        <details class="advanced-panel">
+          <summary>Advanced options</summary>
+          <div class="row">
+            <div>
+              <label for="areaPath">Area Path</label>
+              <input id="areaPath" placeholder="SampleProject\\QA">
+            </div>
+            <div>
+              <label for="iterationPath">Iteration Path</label>
+              <input id="iterationPath" placeholder="SampleProject\\Sprint-2">
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="variantSet">Variant Set</label>
+              <select id="variantSet">
+                <option value="standard">standard</option>
+                <option value="expanded">expanded</option>
+              </select>
+            </div>
+            <div>
+              <label for="state">State</label>
+              <input id="state" value="Design">
+            </div>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button id="exportAdoTcBtn" class="alt">Export ADO TestCase CSV</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">Session Snapshot <button class="section-help-btn" type="button" data-section="sessionSnapshot" aria-label="Session Snapshot help">?</button></h2>
+        <div id="snapshot" class="mono"></div>
+
+        <h2 class="section-title" style="margin-top:14px;">Agent Trace Viewer <button class="section-help-btn" type="button" data-section="agentTraceViewer" aria-label="Agent Trace Viewer help">?</button></h2>
+        <label for="reportFile">Batch report file</label>
+        <select id="reportFile"></select>
+
+        <label for="reportDefect">Defect ID in report</label>
+        <select id="reportDefect"></select>
+
+        <div class="actions">
+          <button id="loadTraceBtn" class="ghost">Load Agent Trace</button>
+        </div>
+
+        <div id="agentTrace" class="mono">No agent trace loaded.</div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const termDefinitions = {
+      RCA: {
+        term: "RCA",
+        text: "Root Cause Analysis — a structured method to identify the underlying reason a defect or failure happened."
+      },
+      CAPA: {
+        term: "CAPA",
+        text: "Corrective and Preventive Actions — actions taken to fix the current issue and prevent recurrence."
+      },
+      RCA: {
+        term: "RCA",
+        text: "Define, Measure, Analyze, Improve, Control — a Six Sigma improvement cycle used to reduce defects and stabilize processes."
+      },
+      D4: {
+        term: "D4",
+        text: "Dimension 4 — Agentic workflow evidence. This is the area that shows an AI workflow runs with some autonomy and orchestration."
+      },
+      D5: {
+        term: "D5",
+        text: "Dimension 5 — Multiplier and adoption. This is the evidence that reusable assets are being shared and used by teammates."
+      }
+    };
+
+    const sectionHelp = {
+      startSession: {
+        title: "Start Session",
+        text: "Select the context, input file, and defect to begin a guided RCA workflow. Use this section to launch a new session and set the analysis scope."
+      },
+      answerCurrentWhy: {
+        title: "Answer Current Why",
+        text: "Record the current root-cause answer with evidence and required flags. Complete the Why step, add evidence references, and submit the response to advance the analysis."
+      },
+      exportArtifacts: {
+        title: "Export Artifacts",
+        text: "Export the RCA report, CAPA actions, and ADO test cases after the analysis is complete. Use the output fields to select file locations and required metadata."
+      },
+      sessionSnapshot: {
+        title: "Session Snapshot",
+        text: "Review the current session state and values captured by the RCA workflow. This panel helps confirm the active issue, current question, and evidence that has been recorded."
+      },
+      agentTraceViewer: {
+        title: "Agent Trace Viewer",
+        text: "Inspect the generated agent trace for the selected report and defect. Use this view to validate the reasoning path and confirm what the workflow produced."
+      }
+    };
+
+    const state = {
+      sessionPath: "",
+      session: null,
+      evidenceSuggestions: [],
+      reportTrace: []
+    };
+
+    const byId = (id) => document.getElementById(id);
+
+    function bindTermTooltips() {
+      const tooltip = byId("termTooltip");
+      const buttons = document.querySelectorAll(".help-btn, .section-help-btn");
+
+      buttons.forEach((button) => {
+        const term = button.dataset.term;
+        const section = button.dataset.section;
+        const entry = termDefinitions[term] || (section ? sectionHelp[section] : null);
+        if (!entry) return;
+
+        const show = (event) => {
+          const rect = button.getBoundingClientRect();
+          const label = entry.term || entry.title;
+          tooltip.innerHTML = `<strong>${label}</strong>${entry.text}`;
+          tooltip.classList.add("visible");
+          tooltip.style.left = `${Math.min(window.innerWidth - 320, rect.left + 18)}px`;
+          tooltip.style.top = `${Math.max(12, rect.top + 22)}px`;
+        };
+
+        const hide = () => tooltip.classList.remove("visible");
+
+        button.addEventListener("mouseenter", show);
+        button.addEventListener("focus", show);
+        button.addEventListener("mouseleave", hide);
+        button.addEventListener("blur", hide);
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          tooltip.classList.toggle("visible");
+          if (tooltip.classList.contains("visible")) {
+            show(event);
+          }
+        });
+      });
+    }
+
+    async function api(path, method = "GET", body = null) {
+      const options = { method, headers: { "Content-Type": "application/json" } };
+      if (body) options.body = JSON.stringify(body);
+      const res = await fetch(path, options);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Request failed");
+      return data;
+    }
+
+    function setStatus(msg, isError = false) {
+      const el = byId("startStatus");
+      el.textContent = msg;
+      el.style.background = isError ? "#fee2e2" : "#ecfeff";
+      el.style.borderColor = isError ? "#fecaca" : "#a5f3fc";
+      el.style.color = isError ? "#7f1d1d" : "#0f172a";
+    }
+
+    function updateSessionBanner(message, tone = "info") {
+      const el = byId("sessionStatusBanner");
+      el.textContent = message;
+      el.className = `session-banner ${tone}`;
+    }
+
+    function updateActionState() {
+      const hasSession = Boolean(state.sessionPath || byId("session").value.trim());
+      const exportButtons = [
+        byId("exportReportBtn"),
+        byId("exportCapaBtn"),
+        byId("exportAdoTcBtn")
+      ];
+      exportButtons.forEach((button) => {
+        if (button) button.disabled = !hasSession;
+      });
+    }
+
+    function renderSnapshot() {
+      byId("snapshot").textContent = state.session ? JSON.stringify(state.session, null, 2) : "No session loaded.";
+      byId("question").textContent = state.session?.current_question || "No active question.";
+      byId("evidenceHints").textContent = state.evidenceSuggestions.length
+        ? "Suggestions: " + state.evidenceSuggestions.join(", ")
+        : "No evidence suggestions yet.";
+    }
+
+    function currentSessionPath() {
+      const override = byId("session").value.trim();
+      return override || state.sessionPath;
+    }
+
+    async function loadBootstrap() {
+      const data = await api("/api/bootstrap");
+      const contextSel = byId("context");
+      const inputSel = byId("input");
+      const quickPlanSel = byId("quickPlan");
+      const sessionSel = byId("latestSession");
+      const reportSel = byId("reportFile");
+
+      contextSel.innerHTML = data.contexts.map(v => `<option value="${v}">${v}</option>`).join("");
+      inputSel.innerHTML = data.inputs.map(v => `<option value="${v}">${v}</option>`).join("");
+      quickPlanSel.innerHTML = (data.quick_plans || []).map(v => `<option value="${v}">${v}</option>`).join("");
+      sessionSel.innerHTML = (data.sessions || []).map(v => `<option value="${v}">${v}</option>`).join("");
+      reportSel.innerHTML = (data.output_reports || []).map(v => `<option value="${v}">${v}</option>`).join("");
+
+      await loadDefects();
+      await loadAgentTrace(true);
+    }
+
+    async function loadAgentTrace(refreshDefectsOnly = false) {
+      try {
+        const report = byId("reportFile").value;
+        if (!report) {
+          byId("agentTrace").textContent = "No batch report available yet.";
+          byId("reportDefect").innerHTML = "";
+          return;
+        }
+
+        const selectedDefect = byId("reportDefect").value;
+        const suffix = selectedDefect ? `&defect_id=${encodeURIComponent(selectedDefect)}` : "";
+        const data = await api(`/api/report-agent-trace?report=${encodeURIComponent(report)}${suffix}`);
+
+        const defectSel = byId("reportDefect");
+        defectSel.innerHTML = (data.defect_ids || []).map(v => `<option value="${v}">${v}</option>`).join("");
+        if (data.selected_defect_id) {
+          defectSel.value = data.selected_defect_id;
+        }
+
+        if (!refreshDefectsOnly) {
+          state.reportTrace = data.agent_trace || [];
+          byId("agentTrace").textContent = state.reportTrace.length
+            ? JSON.stringify(state.reportTrace, null, 2)
+            : "No agent_trace found for selected defect/report.";
+        }
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    async function loadDefects() {
+      const input = byId("input").value;
+      if (!input) return;
+      const data = await api(`/api/defects?input=${encodeURIComponent(input)}`);
+      const defectSel = byId("defect");
+      defectSel.innerHTML = data.defect_ids.map(v => `<option value="${v}">${v}</option>`).join("");
+      if (!data.defect_ids.length) {
+        setStatus("No defect IDs found in selected input. Use Manual Defect ID override.", true);
+      }
+    }
+
+    async function loadSelectedSession() {
+      const selected = byId("latestSession").value;
+      if (!selected) {
+        setStatus("No session selected.", true);
+        return;
+      }
+      byId("session").value = selected;
+      await refreshStatus();
+    }
+
+    async function startSession() {
+      try {
+        const payload = {
+          context: byId("context").value,
+          input: byId("input").value,
+          defect_id: byId("manualDefect").value.trim() || byId("defect").value,
+          role: byId("role").value,
+          session: byId("session").value.trim()
+        };
+        const data = await api("/api/start", "POST", payload);
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        byId("session").value = data.session_path;
+        byId("reportOutput").value = data.default_report_path || "";
+        updateSessionBanner(`Active session: ${data.session_path}`, "success");
+        setStatus(`Session started: ${data.session_path}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    async function runQuickPlan() {
+      try {
+        const payload = {
+          context: byId("context").value,
+          input: byId("input").value,
+          defect_id: byId("manualDefect").value.trim() || byId("defect").value,
+          role: byId("role").value,
+          session: byId("session").value.trim(),
+          quick_plan: byId("quickPlan").value,
+          output_report: byId("reportOutput").value.trim()
+        };
+        const data = await api("/api/run-quick-plan", "POST", payload);
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        byId("session").value = data.session_path;
+        byId("reportOutput").value = data.report_path || byId("reportOutput").value;
+        updateSessionBanner(`Active session: ${data.session_path}`, "success");
+        setStatus(`Quick plan completed. Status: ${data.session.status}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    async function runDemo() {
+      try {
+        const demoCase = byId("demoCase").value;
+        const inputPath = "data/input/demo_cases.json";
+        const planPath = `data/input/demo_quick_plan_${demoCase}.json`;
+        byId("input").value = inputPath;
+        await loadDefects();
+        byId("defect").value = `DEMO-${demoCase.toUpperCase()}`;
+        byId("manualDefect").value = "";
+        byId("quickPlan").value = planPath;
+        byId("session").value = "";
+        byId("reportOutput").value = "";
+        const data = await api("/api/run-demo", "POST", {
+          context: byId("context").value,
+          input: inputPath,
+          case: demoCase,
+          role: byId("role").value
+        });
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        byId("session").value = data.session_path;
+        byId("reportOutput").value = data.report_path || "";
+        updateSessionBanner(`Active demo session: ${data.session_path}`, "success");
+        setStatus(`Demo completed. RCA: ${data.report_path} | CAPA: ${data.capa_path} | Test cases: ${data.testcases_path}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    function startNewSession() {
+      state.sessionPath = "";
+      state.session = null;
+      state.evidenceSuggestions = [];
+      byId("session").value = "";
+      byId("reportOutput").value = "";
+      byId("answer").value = "";
+      byId("evidence").value = "";
+      byId("resolved").checked = false;
+      byId("prevents").checked = false;
+      byId("revise").checked = false;
+      updateSessionBanner("No session loaded. Start a new RCA session.", "info");
+      setStatus("Ready for a new session.");
+      updateActionState();
+      renderSnapshot();
+    }
+
+    async function refreshStatus() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const data = await api("/api/status", "POST", { session });
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        updateSessionBanner(`Active session: ${data.session_path} | Status: ${data.session.status}`, "info");
+        setStatus(`Session loaded: ${data.session.status}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    async function submitAnswer() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const evidenceRefs = byId("evidence").value
+          .split(",")
+          .map(v => v.trim())
+          .filter(Boolean);
+
+        const payload = {
+          session,
+          answer: byId("answer").value,
+          evidence_refs: evidenceRefs,
+          controllable: byId("controllable").checked,
+          resolved: byId("resolved").checked,
+          prevents_recurrence: byId("prevents").checked,
+          revise: byId("revise").checked
+        };
+
+        const data = await api("/api/answer", "POST", payload);
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        byId("answer").value = "";
+        updateSessionBanner(`Active session: ${data.session_path} | Status: ${data.session.status}`, "success");
+        setStatus(`Answer submitted. Status: ${data.session.status}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    async function exportReport() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const output = byId("reportOutput").value.trim();
+        const data = await api("/api/export-report", "POST", { session, output });
+        setStatus(`Report exported: ${data.report_path}`);
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    async function exportCapa() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const payload = {
+          session,
+          output: byId("capaOutput").value.trim(),
+          provider: byId("provider").value,
+          assignee: byId("assignee").value.trim(),
+          due_date: byId("dueDate").value.trim()
+        };
+        const data = await api("/api/export-capa", "POST", payload);
+        setStatus(`CAPA CSV exported: ${data.csv_path}`);
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    async function exportAdoTc() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const payload = {
+          session,
+          output: byId("adoTcOutput").value.trim(),
+          assigned_to: byId("assignee").value.trim(),
+          area_path: byId("areaPath").value.trim(),
+          iteration_path: byId("iterationPath").value.trim(),
+          state: byId("state").value.trim() || "Design",
+          variant_set: byId("variantSet").value
+        };
+        const data = await api("/api/export-ado-testcases", "POST", payload);
+        setStatus(`ADO TestCase CSV exported: ${data.csv_path}`);
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    byId("input").addEventListener("change", loadDefects);
+    byId("startBtn").addEventListener("click", startSession);
+    byId("newSessionBtn").addEventListener("click", startNewSession);
+    byId("statusBtn").addEventListener("click", refreshStatus);
+    byId("loadSessionBtn").addEventListener("click", loadSelectedSession);
+    byId("runQuickPlanBtn").addEventListener("click", runQuickPlan);
+    byId("demoRunBtn").addEventListener("click", runDemo);
+    byId("submitBtn").addEventListener("click", submitAnswer);
+    byId("exportReportBtn").addEventListener("click", exportReport);
+    byId("exportCapaBtn").addEventListener("click", exportCapa);
+    byId("exportAdoTcBtn").addEventListener("click", exportAdoTc);
+    byId("reportFile").addEventListener("change", () => loadAgentTrace(true));
+    byId("loadTraceBtn").addEventListener("click", () => loadAgentTrace(false));
+
+    bindTermTooltips();
+
+    updateSessionBanner("No session loaded. Start a session to begin the RCA workflow.", "info");
+    updateActionState();
+
+    loadBootstrap().then(() => {
+      setStatus("Bootstrap loaded.");
+      renderSnapshot();
+    }).catch(err => setStatus(err.message, true));
+  </script>
+</body>
+</html>

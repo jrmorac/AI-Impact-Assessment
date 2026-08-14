@@ -202,13 +202,13 @@ Secondary quick win: add `.github/copilot-instructions.md` to the DOM repo.
 
 ### New Evidence Generated in This Milestone
 
-- `October 2026/agentic-qa-dmaic/evidence/rca_reports/prj-def-201-wording2-final.md`
-- `October 2026/agentic-qa-dmaic/data/output/report_sprint1_orchestrated.json`
-- `October 2026/agentic-qa-dmaic/src/orchestrator.py`
-- `October 2026/agentic-qa-dmaic/src/workflow_agents/capa_agent.py`
-- `October 2026/agentic-qa-dmaic/src/workflow_agents/testcase_agent.py`
-- `October 2026/agentic-qa-dmaic/src/web_app.py`
-- `October 2026/agentic-qa-dmaic/web/index.html`
+- `October 2026/agentic-qa-rca/evidence/rca_reports/prj-def-201-wording2-final.md`
+- `October 2026/agentic-qa-rca/data/output/report_sprint1_orchestrated.json`
+- `October 2026/agentic-qa-rca/src/orchestrator.py`
+- `October 2026/agentic-qa-rca/src/workflow_agents/capa_agent.py`
+- `October 2026/agentic-qa-rca/src/workflow_agents/testcase_agent.py`
+- `October 2026/agentic-qa-rca/src/web_app.py`
+- `October 2026/agentic-qa-rca/web/index.html`
 
 ## Progress Update (Aug 11, 2026) — Distribution Readiness
 
@@ -221,9 +221,9 @@ Secondary quick win: add `.github/copilot-instructions.md` to the DOM repo.
 
 ### Evidence Added
 
-- `October 2026/agentic-qa-dmaic-shareable/README.md`
-- `October 2026/agentic-qa-dmaic-shareable/PACKAGE_CONTENTS.md`
-- `October 2026/agentic-qa-dmaic-shareable/check-env.ps1`
-- `October 2026/agentic-qa-dmaic-shareable/start-local.ps1`
-- `October 2026/agentic-qa-dmaic-shareable/package-shareable.ps1`
-- `October 2026/dist/agentic-qa-dmaic-shareable-20260811-165441.zip`
+- `October 2026/agentic-qa-rca-shareable/README.md`
+- `October 2026/agentic-qa-rca-shareable/PACKAGE_CONTENTS.md`
+- `October 2026/agentic-qa-rca-shareable/check-env.ps1`
+- `October 2026/agentic-qa-rca-shareable/start-local.ps1`
+- `October 2026/agentic-qa-rca-shareable/package-shareable.ps1`
+- `October 2026/dist/agentic-qa-rca-shareable-20260811-165441.zip`

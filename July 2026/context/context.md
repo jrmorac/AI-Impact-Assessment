@@ -7,7 +7,7 @@ SESSION NOTE (Updated Aug 7, 2026):
 - For October submission drafting content, use:
 	- October 2026/AI Impact 2026 October.md
 - For leadership communication assets created in the October cycle, use:
-	- October 2026/deliverables/GAP_Leadership_Presentation_Script_Agentic_QA_DMAIC.md
+	- October 2026/deliverables/GAP_Leadership_Presentation_Script_Agentic_QA_RCA.md
 
 ABOUT ME:
 - Role: QA Engineer on the DOM project (MediQuant client)

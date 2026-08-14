@@ -1,8 +1,12 @@
 # Session Handoff Context — GAP AI Impact Assessment
 **Engineer:** Jose Rafael Mora Casal  
 **Role:** QA Engineer — DOM project (MediQuant client)  
-**Last Updated:** August 12, 2026  
+**Last Updated:** August 14, 2026  
 **Purpose:** Resume coaching and work continuation in a new conversation
+
+**Project framing note:** This tool is a generic QA workflow for structured analysis, defect triage, and root-cause support using synthetic/demo inputs. Do not add unrelated regulatory framing to future evidence, project narratives, or evaluation documentation.
+
+**Communication and terminology note:** Keep responses concise unless Jose requests details. Do not present the tool as a complete Six Sigma or RCA implementation; mention Six Sigma or RCA only when explicitly requested or when directly required by the evaluation evidence.
 
 ---
 
@@ -16,7 +20,7 @@
 | Track | **Engineering** |
 | Next re-evaluation window | October 2026 |
 | GAP AI Coach skill | Installed at `.github/skills/gap-ai-coach/` |
-| Current status | **Prototype is functional and shareable; evidence collection is now the priority** |
+| Current status | **RCA tool is functional, Web UI-first, shareable, and ready for teammate pilot testing** |
 
 **Active goal (as of Aug 12):** Jose has built a credible agentic QA workflow and a shareable package, and the next priority is to get teammate feedback and adoption evidence before the October submission. The immediate objective is to move from a strong local prototype to a tested, reusable team asset while strengthening D3 (metrics), D4 (agentic workflow), and D5 (multiplier/adoption).
 
@@ -28,11 +32,12 @@
 - Confirmed the project remains functional and runnable via the main CLI workflow.
 - Validated that the main batch workflow produces generated outputs and records evidence in the log.
 - Identified that the system intentionally blocks CAPA confirmation when evidence is weak, which is correct behavior for a governance-first workflow.
-- Decided that the best next move is not to chase production evidence in a restricted HIPAA environment, but to use the tool as a team-shareable pilot and collect adoption evidence.
+- Decided that the best next move is to use the tool as a team-shareable pilot and collect adoption evidence rather than pursue production evidence.
 
 ### Decision for October Level 3
 - The project is not being treated as a production evidence source.
 - It will be treated as a reusable, shareable, agentic QA asset whose value is proven through teammate pilot usage, feedback, and measurable workflow improvements.
+- The evaluation story should stay focused on QA workflow value, tool adoption, and process evidence, not on healthcare compliance framing.
 
 ### Immediate next actions
 1. Repackage the project for local teammate use.
@@ -93,7 +98,7 @@ Submitted responses for all 5 Engineering track dimensions:
 - **D1/D2:** adequate foundations, but not enough to offset the other gaps.
 
 **Project constraints (context for all coaching):**  
-Client operates under HIPAA healthcare data regulations. AI tools restricted to non-sensitive artifacts only (no PII, no production data). This limits agent/pipeline work on client infrastructure but does not block personal/internal tooling.
+This tool is designed around synthetic/demo inputs and non-production QA artifacts. The evidence story is based on reusable workflow validation, teammate adoption, and measurable process improvement rather than client production data or regulatory framing.
 
 ---
 
@@ -159,7 +164,7 @@ Client operates under HIPAA healthcare data regulations. AI tools restricted to 
 ### Created: Level 3 Roadmap (all dimensions)
 - File: `October 2026/evaluation/Level_3_Roadmap.md`
 - QA-specific plan to reach Level 3 by the October window
-- "Agentic QA under HIPAA" framing: build automation around non-sensitive QA artifacts (requirements text, synthetic data, test cases), not client data
+- Agentic QA framing: build automation around synthetic and non-production QA artifacts.
 - 4 milestones with acceptance criteria:
   - **M1 (critical):** Build Test Case Generation Agent (runnable script from the prompt template) — closes D4
   - **M2:** Prove team adoption (2+ colleagues) — closes D5
@@ -169,12 +174,12 @@ Client operates under HIPAA healthcare data regulations. AI tools restricted to 
 
 ### Created: Project AI Config (Dimension 1 — Level 3 signal)
 - File: `.github/copilot-instructions.md`
-- DOM/QA project-specific Copilot instructions: HIPAA guardrails, deterministic SQL rules, test case structure, ADO CSV conventions, document traceability, meeting minutes attribution
+- DOM/QA project-specific Copilot instructions: synthetic-data guardrails, deterministic SQL rules, test case structure, ADO CSV conventions, document traceability, meeting minutes attribution
 - Links to validation log and prompt library
 - **Pending:** Replicate this file into the REAL DOM project repo for verifiable, git-timestamped evidence
 
-### Created: Project-Agnostic Agentic QA DMAIC Starter (Dimensions 4 + 5 foundation)
-- Folder: `October 2026/agentic-qa-dmaic/`
+### Created: Project-Agnostic Agentic QA RCA Starter (Dimensions 4 + 5 foundation)
+- Folder: `October 2026/agentic-qa-rca/`
 - Purpose: reusable defect triage and root-cause support workflow with configurable context files per client/project
 - Architecture implemented: `planner -> analyzer -> validator` pipeline in `src/main.py`
 - Context model: reusable YAML profiles in `project-context/` (`global-context.yaml`, `project-profile.template.yaml`, `quality-gates.template.yaml`, `dom-mediquant.example.yaml`)
@@ -282,7 +287,7 @@ Client operates under HIPAA healthcare data regulations. AI tools restricted to 
 - Session status: `root_cause_confirmed`.
 - Confirmed root cause summary: missing explicit ownership/governance for idempotency-by-design, resulting in absent mandatory replay controls in engineering and QA gates.
 - Exported final RCA report:
-  - `October 2026/agentic-qa-dmaic/evidence/rca_reports/prj-def-201-wording2-final.md`
+  - `October 2026/agentic-qa-rca/evidence/rca_reports/prj-def-201-wording2-final.md`
 - Added CAPA and validation experiment section directly into the final report for immediate execution planning.
 
 ### Productization + UX Snapshot (Aug 11, 2026)
@@ -309,7 +314,7 @@ Client operates under HIPAA healthcare data regulations. AI tools restricted to 
   - handoff continuity context
 
 ### Shareable Distribution Milestone (Aug 11, 2026)
-- Created a clean teammate-facing package in `October 2026/agentic-qa-dmaic-shareable/`.
+- Created a clean teammate-facing package in `October 2026/agentic-qa-rca-shareable/`.
 - Added first-run environment validation script:
   - `check-env.ps1` (Python/version/PyYAML/required-files/port check)
 - Added one-command launcher:
@@ -317,7 +322,7 @@ Client operates under HIPAA healthcare data regulations. AI tools restricted to 
 - Added one-command zip packaging flow:
   - `package-shareable.ps1` (builds timestamped zip in `October 2026/dist/`)
 - Distribution artifact refreshed and old duplicate removed; current package:
-  - `October 2026/dist/agentic-qa-dmaic-shareable-20260811-170319.zip`
+  - `October 2026/dist/agentic-qa-rca-shareable-20260811-170319.zip`
 - October submission draft content is now isolated in:
   - `October 2026/AI Impact 2026 October.md`
 - July draft template was cleaned to remove October-specific milestone content:
@@ -326,18 +331,28 @@ Client operates under HIPAA healthcare data regulations. AI tools restricted to 
 ### End-of-Day Session Update (Aug 11, 2026)
 - Session closed after regenerating the shareable package and retaining only the latest zip artifact.
 - Added GAP leadership presentation script for deck/video production:
-  - `October 2026/deliverables/GAP_Leadership_Presentation_Script_Agentic_QA_DMAIC.md`
+  - `October 2026/deliverables/GAP_Leadership_Presentation_Script_Agentic_QA_RCA.md`
 - Next session should begin with deck adaptation for target audience (Engineering leadership vs Delivery leadership) and a short dry-run talk track.
 
 ### Session Close Milestone (Aug 12, 2026)
 - The shareable package is ready for teammate pilot testing, and the latest zip has been rebuilt and retained as the single distribution artifact.
-- The tool is framed as a QA support workflow using RCA (Root Cause Analysis), CAPA (Corrective and Preventive Actions), and DMAIC (Define, Measure, Analyze, Improve, Control) terminology to reduce confusion for non-Six-Sigma users.
+- The tool is framed as a QA support workflow using RCA (Root Cause Analysis) and CAPA (Corrective and Preventive Actions).
 - Web usability improvements were applied to the local UI to reduce friction and improve guidance: a workflow indicator, active session status banner, collapsed advanced options, and section-level help tooltips for usage guidance.
 - The title and subtitle were refined for clarity and the glossary tooltips were preserved as compact, non-intrusive support.
 - Pilot instructions and feedback collection were prepared in Spanish for easier teammate onboarding.
 - Current objective: validate usability with at least 2 colleagues, collect feedback, and turn that into D5 adoption evidence.
 - The current codebase and package are in a good state for peer testing; the next session should focus on feedback capture, iteration, and evidence packaging rather than further feature invention.
-- A separate concept document exists for Phase 2 AI enhancement ideas (`October 2026/agentic-qa-dmaic/phase2-ai-enhancements.md`), but this is intentionally not the active workstream for the current pilot phase. The active work remains deterministic, human-reviewed RCA workflow validation and adoption evidence.
+- A separate concept document exists for Phase 2 AI enhancement ideas (`October 2026/agentic-qa-rca/phase2-ai-enhancements.md`), but this is intentionally not the active workstream for the current pilot phase. The active work remains deterministic, human-reviewed RCA workflow validation and adoption evidence.
+
+### Session Closeout (Aug 14, 2026)
+- Renamed the tool packages to `agentic-qa-rca` and `agentic-qa-rca-shareable`.
+- Standardized the Web UI as the preferred user entry point; CLI commands remain available for automation, CI, or advanced users.
+- Added bundled `Why 1`, `Why 3`, and `Why 5` demos.
+- `Run Demo Case` creates a fresh session and automatically generates the RCA report, CAPA CSV, and ADO Test Case CSV.
+- Clarified that `Run Quick Plan` is optional and intended for repeatable predefined-plan execution.
+- Updated the main, Spanish, and shareable README files with the Web UI-first workflow.
+- Regenerated the shareable package and retained only the latest ZIP: `October 2026/dist/agentic-qa-rca-shareable-20260814-160656.zip`.
+- Validated the renamed main package, shareable dry run, and demo artifact generation.
 
 ### Current State and Decision for the Next Session
 - The project is currently in a stable, shareable state for pilot testing.
@@ -345,28 +360,21 @@ Client operates under HIPAA healthcare data regulations. AI tools restricted to 
 - The app already demonstrates a credible operational workflow and can support D4-style evidence as a reusable, structured tool if paired with pilot usage data.
 - The AI enhancement concept is saved as a future-phase design artifact and should not distract from current pilot testing objectives.
 
-### Next Session Fast Start (Agentic QA DMAIC)
-1. Open `October 2026/agentic-qa-dmaic-shareable/` and confirm the package is the latest clean build.
-2. Send the Spanish pilot email and feedback form to 2 teammates.
-3. Collect and log feedback in a lightweight adoption tracker with:
+### Next Session Fast Start (Agentic QA RCA)
+1. Open `October 2026/agentic-qa-rca-shareable/` and confirm the package is the latest clean build.
+2. Start the Web UI with `start-local.ps1` and open the displayed localhost URL.
+3. Run `Run Demo Case` once and confirm the RCA, CAPA, and ADO Test Case outputs.
+4. Send the Spanish pilot email and feedback form to 2 teammates.
+5. Collect and log feedback in a lightweight adoption tracker with:
    - teammate name
    - date tested
    - task tested
    - whether it worked
    - issues found
    - suggested improvement
-4. If feedback is positive, refine the package and rerun the sample end-to-end validation.
-5. When evidence is sufficient, update the October submission draft with the adoption data and test results.
-6. If the team wants to continue technical work, reopen the main project and run a fresh RCA session:
-   - `python src/main.py start-rca --context project-context/baseline-project.yaml --input data/input/synthetic_defects_with_evidence.json --defect-id PRJ-DEF-201 --session evidence/rca_sessions/<new-session>.json`
-7. Answer Why prompts and attach evidence refs:
-   - `python src/main.py answer-rca --session evidence/rca_sessions/<new-session>.json --answer "..." --evidence-ref <artifact> --controllable`
-8. Check status anytime:
-   - `python src/main.py status-rca --session evidence/rca_sessions/<new-session>.json`
-9. If needed, correct current node:
-   - `python src/main.py revise-rca --session evidence/rca_sessions/<new-session>.json --answer "..." --evidence-ref <artifact>`
-10. Export session report at closure:
-   - `python src/main.py export-rca-report --session evidence/rca_sessions/<new-session>.json --output evidence/rca_reports/<new-session>.md`
+6. If feedback is positive, refine the package and rerun the sample end-to-end validation.
+7. When evidence is sufficient, update the October submission draft with the adoption data and test results.
+8. Use the CLI only when a repeatable automation or CI scenario requires it.
 
 ---
 
@@ -408,7 +416,7 @@ The July result came back as Level 1, so the October window is now the main reco
 **Highest priority (Dimension 4 — Agentic):**
 - Build at least one runnable AI workflow that orchestrates a real task end to end.
 - Prove it runs on multiple real inputs with logs or repo history.
-- Use only non-sensitive artifacts so it stays HIPAA-safe.
+- Use synthetic/demo and non-production QA artifacts for the pilot.
 
 **Medium priority (Dimension 3 — Metrics):**
 - Start tracking productivity prospectively for 2–4 sprints with a method the evaluator can inspect.
