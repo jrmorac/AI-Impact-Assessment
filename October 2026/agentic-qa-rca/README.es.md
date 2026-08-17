@@ -41,11 +41,11 @@ python src/web_app.py --host 127.0.0.1 --port 8787
 
 Abre `http://127.0.0.1:8787` en el navegador. Todo el flujo está disponible desde la UI:
 
-1. Selecciona el contexto, el archivo de entrada y el Defect ID.
+1. Selecciona el contexto, el archivo de entrada y el Defect ID. Al cambiar el archivo de entrada, la lista de Defect IDs se actualiza automáticamente.
 2. Selecciona `Run Demo Case` para los ejemplos incluidos `Why 1`, `Why 3` o `Why 5`, o usa `Start RCA Session` para un caso manual.
-3. Responde cada Why y agrega las referencias de evidencia.
+3. Responde cada Why y agrega las referencias de evidencia. Usa los controles anterior/siguiente para revisar el historial de preguntas y respuestas; la respuesta, evidencia y banderas de decisión seleccionadas se restauran en el formulario.
 4. Revisa el estado de la sesión y el reporte de causa raíz.
-5. Usa `Export Report`, `Export CAPA CSV` y `Export ADO TestCase CSV` para generar los entregables.
+5. Usa `Export Report`, `Export CAPA CSV` y `Export ADO TestCase CSV` para generar los entregables. Cada exportación abre una vista previa de confirmación con el contenido generado.
 6. Usa `New Session` antes de iniciar otro análisis.
 
 La acción de demo genera automáticamente el reporte RCA, las tareas CAPA y los casos de prueba ADO. Las sesiones manuales pueden exportar los mismos artefactos desde el panel de exportación.
@@ -73,7 +73,7 @@ La salida se basa en la decisión consolidada de causa raíz; la herramienta no 
 
 - `Run Demo Case`: recomendado para demostraciones; carga un caso incluido y completa automáticamente el flujo, incluyendo RCA, CAPA y casos de prueba.
 - `Start RCA Session`: recomendado para un caso real o personalizado; responde cada Why manualmente y exporta los artefactos desde la UI al finalizar.
-- `Run Quick Plan`: opcional; ejecuta un plan de respuestas predefinido contra el input actual. Es útil para pruebas repetibles, pero no es necesario para el uso normal.
+- Los quick plans siguen disponibles para CLI y automatización, pero ya no se muestran como una acción separada en la UI. Usa `Run Demo Case` para los ejemplos repetibles incluidos.
 
 ## Ejecución demo
 

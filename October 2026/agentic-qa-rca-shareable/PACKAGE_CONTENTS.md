@@ -26,6 +26,8 @@ This package was prepared for QA team sharing and local validation.
 - `demo_quick_plan_why5.json`: Stops at Why 5.
 - `demo-run`: Generates an RCA report, CAPA CSV, and ADO Test Case CSV automatically.
 
+The web UI refreshes defect IDs when the input file changes, provides Why history navigation with restored answers and decision flags, and previews generated export content before dismissal.
+
 ## Why this package is clean
 
 - Historical outputs and development traces are excluded.

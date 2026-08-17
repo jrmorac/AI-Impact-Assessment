@@ -40,11 +40,11 @@ python src/web_app.py --host 127.0.0.1 --port 8787
 
 Open `http://127.0.0.1:8787` in your browser. The complete workflow is available from the UI:
 
-1. Select a context, input file, and defect ID.
+1. Select a context, input file, and defect ID. Changing the input file refreshes the available defect IDs automatically.
 2. Select `Run Demo Case` for the bundled `Why 1`, `Why 3`, or `Why 5` examples, or select `Start RCA Session` for a manual case.
-3. Answer each Why and attach evidence references.
+3. Answer each Why and attach evidence references. Use the back/next controls to review the recorded question-and-answer history; selected answers, evidence, and decision flags are restored in the form.
 4. Review the session status and root-cause report.
-5. Use `Export Report`, `Export CAPA CSV`, and `Export ADO TestCase CSV` to generate the deliverables.
+5. Use `Export Report`, `Export CAPA CSV`, and `Export ADO TestCase CSV` to generate the deliverables. Each export opens a confirmation preview with the generated file content.
 6. Use `New Session` before starting another analysis.
 
 The demo action generates the RCA report, CAPA tasks, and ADO test cases automatically. Manual sessions can export the same artifacts from the export panel.
@@ -72,7 +72,7 @@ The output is based on the consolidated root-cause decision; the tool does not c
 
 - `Run Demo Case`: recommended for demonstrations; loads a bundled case and completes the flow automatically, including RCA, CAPA, and Test Case outputs.
 - `Start RCA Session`: recommended for a real or custom case; answer each Why manually and export the artifacts from the UI when finished.
-- `Run Quick Plan`: optional; runs a selected predefined answer plan against the current input. It is useful for repeatable tests, not required for normal use.
+- Quick plans remain available for CLI and automation workflows, but are not exposed as a separate UI action. Use `Run Demo Case` for the bundled repeatable examples.
 
 ## Demo Run
 

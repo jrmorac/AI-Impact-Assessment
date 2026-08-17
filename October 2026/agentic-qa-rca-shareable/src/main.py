@@ -829,7 +829,13 @@ def run_demo(
 
     project_root = context_path.parent.parent
     selected_session = session_path or _default_session_path(demo_defect_ids[case_name])
+    if not selected_session.is_absolute():
+        selected_session = project_root / selected_session
+    selected_session = selected_session.resolve()
     selected_report = output_report_path or _default_report_path(selected_session)
+    if not selected_report.is_absolute():
+        selected_report = project_root / selected_report
+    selected_report = selected_report.resolve()
     quick_plan_path = project_root / "data" / "input" / f"demo_quick_plan_{case_name}.json"
 
     result = run_guided_rca(
@@ -842,8 +848,8 @@ def run_demo(
         quick_plan=_load_quick_plan(quick_plan_path),
     )
 
-    capa_path = project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-capa.csv"
-    testcases_path = project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-testcases.csv"
+    capa_path = (project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-capa.csv").resolve()
+    testcases_path = (project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-testcases.csv").resolve()
     export_capa_csv(
         session_path=selected_session,
         output_path=capa_path,

@@ -495,3 +495,44 @@ AI Impact Assessment/
 Use this to restart coaching in a new chat:
 
 "I received my July 2026 result: Level 1. Review October 2026/context/SESSION_HANDOFF_CONTEXT.md, then help me rebuild for October with D4 agentic evidence, D5 adoption proof, and prospective D3 metrics."
+
+---
+
+## Session Closeout — August 17, 2026
+
+### Shareable RCA package status
+
+- Primary package: `October 2026/agentic-qa-rca-shareable/`
+- Web UI remains the preferred workflow, launched with `start-local.ps1`.
+- Input-file changes refresh the Defect ID dropdown and clear stale session state.
+- `Run Demo Case` is the only user-facing quick execution action. Quick plans remain available for CLI and automation workflows.
+- Why history navigation restores the selected question, answer, evidence references, and decision flags. The Why 1, Why 3, and Why 5 demos were verified.
+- Demo final decisions verified:
+  - Why 1 stops at Why 1 with `resolved=true` and `prevents_recurrence=true`.
+  - Why 3 stops at Why 3 with `resolved=true` and `prevents_recurrence=true`.
+  - Why 5 stops at Why 5 with `resolved=true` and `prevents_recurrence=true`.
+- Export Report, Export CAPA CSV, and Export ADO TestCase CSV show a confirmation preview containing the generated file content and an `OK` button.
+- Demo path handling was corrected so generated sessions and reports stay under the shareable package's `evidence/` folders.
+
+### Documentation and distribution
+
+- Updated documentation:
+  - `October 2026/agentic-qa-rca-shareable/README.md`
+  - `October 2026/agentic-qa-rca-shareable/PACKAGE_CONTENTS.md`
+  - `October 2026/agentic-qa-rca/README.md`
+  - `October 2026/agentic-qa-rca/README.es.md`
+- Runtime reports, session logs, CSV exports, and batch output files were removed from the shareable package before packaging.
+- Current distribution archive: `October 2026/dist/agentic-qa-rca-shareable-20260817-110240.zip`
+- Archive validation confirmed zero runtime artifacts.
+- Shareable runtime folders are intentionally empty and ready for a new pilot run:
+  - `data/output/`
+  - `evidence/rca_reports/`
+  - `evidence/rca_sessions/`
+  - `evidence/capa_exports/`
+
+### Recommended next-session actions
+
+1. Pilot the clean archive with 2–3 teammates using synthetic cases only.
+2. Capture feedback on usability, time saved, and generated RCA/CAPA/test-case quality.
+3. Record adoption and validation evidence in the October metrics and validation logs.
+4. Avoid committing generated runtime artifacts unless they are intentionally selected as evidence.
