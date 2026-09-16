@@ -15,17 +15,28 @@ This is a clean, shareable build of the RCA tool for QA teams.
 - Historical session files
 - Generated reports/exports
 - Working evidence logs from development
+- Development records under `October 2026/agentic-qa-rca/development-records/`
 - Temporary or local runtime artifacts
+
+Development records are internal engineering artifacts and are intentionally excluded from this shareable package.
 
 ## Preferred workflow: Web UI
 
 Start the local web UI from this folder:
 
 ```text
-powershell -ExecutionPolicy Bypass -File .\start-local.ps1
+python start_local.py
+```
+
+macOS/Linux alternative:
+
+```text
+bash ./start-local.sh
 ```
 
 The script runs environment checks and starts the web app on the first available port from `8787`. Open the URL shown in the terminal, normally `http://127.0.0.1:8787`.
+
+Security note: no `ExecutionPolicy Bypass` command is required.
 
 Use the UI for the complete workflow:
 
@@ -66,8 +77,9 @@ The output is based on the consolidated root-cause decision; the tool does not c
 Optional flags:
 
 ```text
-powershell -ExecutionPolicy Bypass -File .\start-local.ps1 -DryRun
-powershell -ExecutionPolicy Bypass -File .\start-local.ps1 -SkipCheck
+python start_local.py --dry-run
+python start_local.py --skip-check
+python start_local.py --host 127.0.0.1 --port 8787
 ```
 
 ## CLI fallback and automation
@@ -77,7 +89,13 @@ The terminal commands below are secondary options for automation, CI, or advance
 Run the first-time environment check only:
 
 ```text
-powershell -ExecutionPolicy Bypass -File .\check-env.ps1
+python check_env.py
+```
+
+macOS/Linux alternative:
+
+```text
+bash ./check-env.sh
 ```
 
 Install dependencies:
@@ -109,16 +127,26 @@ http://127.0.0.1:8787
 From this folder, run:
 
 ```text
-powershell -ExecutionPolicy Bypass -File .\package-shareable.ps1
+python package_shareable.py
+```
+
+macOS/Linux alternative:
+
+```text
+bash ./package-shareable.sh
 ```
 
 The script creates a timestamped zip in the sibling `dist/` folder and excludes local runtime outputs.
 
 ## Included Utility Scripts
 
-- `check-env.ps1`: Validates Python, required files, PyYAML import, and local port readiness.
-- `start-local.ps1`: Runs checks and launches the web app on the first available port.
-- `package-shareable.ps1`: Builds a clean timestamped zip for teammate distribution.
+- `check_env.py`: Cross-platform environment validation (Python/version/dependency/files/port).
+- `start_local.py`: Cross-platform startup with automatic port fallback.
+- `package_shareable.py`: Cross-platform clean packaging to sibling `dist/`.
+- `check-env.sh`: Shell wrapper for `check_env.py` (macOS/Linux).
+- `start-local.sh`: Shell wrapper for `start_local.py` (macOS/Linux).
+- `package-shareable.sh`: Shell wrapper for `package_shareable.py` (macOS/Linux).
+- `check-env.ps1`, `start-local.ps1`, `package-shareable.ps1`: Optional Windows PowerShell scripts when policy allows trusted local script execution.
 
 ## Key CLI Commands
 

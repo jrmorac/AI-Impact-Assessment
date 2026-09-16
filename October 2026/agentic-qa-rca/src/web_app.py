@@ -511,6 +511,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
                 "report_path": _rel(_resolve_path(result["report_path"])),
                 "capa_path": _rel(_resolve_path(result["capa_path"])),
                 "testcases_path": _rel(_resolve_path(result["testcases_path"])),
+                "batch_report_path": _rel(_resolve_path(result["batch_report_path"])),
             },
         )
 

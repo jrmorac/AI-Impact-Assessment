@@ -14,9 +14,13 @@ This package was prepared for QA team sharing and local validation.
 
 ## Utility Scripts Included
 
-- `check-env.ps1`: First-run environment validation (Python/version/dependency/files/port)
-- `start-local.ps1`: One-command local startup with automatic port fallback
-- `package-shareable.ps1`: Generates clean timestamped zip package in sibling `dist/`
+- `check_env.py`: Cross-platform first-run environment validation (Python/version/dependency/files/port)
+- `start_local.py`: Cross-platform local startup with automatic port fallback
+- `package_shareable.py`: Cross-platform clean timestamped zip package in sibling `dist/`
+- `check-env.sh`: macOS/Linux wrapper for `check_env.py`
+- `start-local.sh`: macOS/Linux wrapper for `start_local.py`
+- `package-shareable.sh`: macOS/Linux wrapper for `package_shareable.py`
+- `check-env.ps1`, `start-local.ps1`, `package-shareable.ps1`: Optional Windows PowerShell scripts
 
 ## Demo Contents
 

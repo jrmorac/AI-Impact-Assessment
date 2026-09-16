@@ -592,9 +592,42 @@ def _derive_ado_test_cases(session: Dict[str, Any], variant_set: str = "standard
     )
 
     base_cases = [
-        {"title": f"{defect_id} - Corrective control resolves the observed defect", "description": base_description, "repro_steps": f"1. Prepare the synthetic conditions for: {summary}.\\n2. Execute the workflow before applying the corrective control.\\n3. Apply the corrective control linked to the confirmed root cause.\\n4. Execute the same deterministic scenario again.", "acceptance_criteria": f"The observed behavior is no longer present and the expected behavior is met: {expected_behavior}.", "system_info": system_info},
-        {"title": f"{defect_id} - Regression gate detects recurrence", "description": base_description, "repro_steps": "1. Run the deterministic regression scenario with the corrective control enabled.\\n2. Capture the result and supporting evidence artifact.\\n3. Repeat the scenario under the relevant boundary or recurrence condition.\\n4. Verify the gate reports a clear pass or failure.", "acceptance_criteria": "The regression gate passes only when the expected behavior is observed and emits actionable diagnostics otherwise.", "system_info": system_info},
-        {"title": f"{defect_id} - Corrective action validation shows no regression", "description": base_description, "repro_steps": "1. Execute the agreed before/after validation sample.\\n2. Compare defect recurrence and adjacent quality metrics.\\n3. Record the sample size, results, and evidence references.\\n4. Confirm the validation outcome and any follow-up action.", "acceptance_criteria": "The defect does not recur in the validation sample and no related regression is introduced.", "system_info": system_info},
+        {
+            "title": f"{defect_id} - Corrective control resolves the observed defect",
+            "description": base_description,
+            "repro_steps": (
+                f"1. Prepare the synthetic conditions for: {summary}.\\n"
+                "2. Execute the workflow before applying the corrective control.\\n"
+                "3. Apply the corrective control linked to the confirmed root cause.\\n"
+                "4. Execute the same deterministic scenario again."
+            ),
+            "acceptance_criteria": f"The observed behavior is no longer present and the expected behavior is met: {expected_behavior}.",
+            "system_info": system_info,
+        },
+        {
+            "title": f"{defect_id} - Regression gate detects recurrence",
+            "description": base_description,
+            "repro_steps": (
+                "1. Run the deterministic regression scenario with the corrective control enabled.\\n"
+                "2. Capture the result and supporting evidence artifact.\\n"
+                "3. Repeat the scenario under the relevant boundary or recurrence condition.\\n"
+                "4. Verify the gate reports a clear pass or failure."
+            ),
+            "acceptance_criteria": "The regression gate passes only when the expected behavior is observed and emits actionable diagnostics otherwise.",
+            "system_info": system_info,
+        },
+        {
+            "title": f"{defect_id} - Corrective action validation shows no regression",
+            "description": base_description,
+            "repro_steps": (
+                "1. Execute the agreed before/after validation sample.\\n"
+                "2. Compare defect recurrence and adjacent quality metrics.\\n"
+                "3. Record the sample size, results, and evidence references.\\n"
+                "4. Confirm the validation outcome and any follow-up action."
+            ),
+            "acceptance_criteria": "The defect does not recur in the validation sample and no related regression is introduced.",
+            "system_info": system_info,
+        },
     ]
 
     if variant_set != "expanded":
@@ -829,13 +862,7 @@ def run_demo(
 
     project_root = context_path.parent.parent
     selected_session = session_path or _default_session_path(demo_defect_ids[case_name])
-    if not selected_session.is_absolute():
-        selected_session = project_root / selected_session
-    selected_session = selected_session.resolve()
     selected_report = output_report_path or _default_report_path(selected_session)
-    if not selected_report.is_absolute():
-        selected_report = project_root / selected_report
-    selected_report = selected_report.resolve()
     quick_plan_path = project_root / "data" / "input" / f"demo_quick_plan_{case_name}.json"
 
     result = run_guided_rca(
@@ -848,8 +875,19 @@ def run_demo(
         quick_plan=_load_quick_plan(quick_plan_path),
     )
 
-    capa_path = (project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-capa.csv").resolve()
-    testcases_path = (project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-testcases.csv").resolve()
+    # Produce a batch-style JSON report with agent traces so the UI trace viewer
+    # can load demo-case traces without requiring a separate manual batch run.
+    batch_report_path = project_root / "data" / "output" / f"report_{selected_session.stem}.json"
+    evidence_log_path = project_root / "evidence" / "evidence_log.csv"
+    run(
+        context_path=context_path,
+        input_path=input_path,
+        output_path=batch_report_path,
+        evidence_log_path=evidence_log_path,
+    )
+
+    capa_path = project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-capa.csv"
+    testcases_path = project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-testcases.csv"
     export_capa_csv(
         session_path=selected_session,
         output_path=capa_path,
@@ -868,6 +906,7 @@ def run_demo(
     )
     result["capa_path"] = capa_path.as_posix()
     result["testcases_path"] = testcases_path.as_posix()
+    result["batch_report_path"] = batch_report_path.as_posix()
     return result
 
 

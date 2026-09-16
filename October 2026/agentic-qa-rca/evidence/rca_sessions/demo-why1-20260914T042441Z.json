@@ -1,0 +1,81 @@
+{
+  "session_id": "demo-why1-20260914T042441Z",
+  "created_at_utc": "2026-09-14T04:24:41.571802+00:00",
+  "updated_at_utc": "2026-09-14T04:24:41.577463+00:00",
+  "status": "root_cause_confirmed",
+  "project": {
+    "client_name": "SampleClient",
+    "project_name": "SampleProject",
+    "domain": "sample-domain",
+    "tech_stack": [
+      "azure",
+      "databricks",
+      "sql-server"
+    ],
+    "qa_frameworks": [
+      "risk-based-testing",
+      "rca"
+    ],
+    "standards": [
+      "HIPAA",
+      "deterministic-sql"
+    ]
+  },
+  "input_file": "C:\\Users\\JoseRafaelMoraCasal\\AI Impact Assessment\\October 2026\\agentic-qa-rca\\data\\input\\demo_cases.json",
+  "defect": {
+    "defect_id": "DEMO-WHY1",
+    "created_date": "2026-08-14",
+    "severity": "medium",
+    "component": "SyntheticFileTransfer",
+    "summary": "Nightly file transfer failed",
+    "reproduction_steps": "Fill the synthetic landing area to its configured capacity and run the scheduled transfer.",
+    "observed_behavior": "The transfer stops before creating the outbound file.",
+    "expected_behavior": "The transfer creates the outbound file or reports a clear capacity action.",
+    "evidence_artifacts": [
+      "DEMO-WHY1_storage-utilization.txt",
+      "DEMO-WHY1_transfer-alert.txt"
+    ]
+  },
+  "category": "data-quality",
+  "current_why_index": 1,
+  "current_question": "Why did Nightly file transfer failed (The transfer stops before creating the outbound file.) occur in SyntheticFileTransfer, and what evidence supports that first causal explanation? Start with the most direct data-quality cause you can defend.",
+  "session_config": {
+    "min_depth": 1,
+    "target_depth": 5,
+    "max_depth": 8,
+    "min_answer_length": 25,
+    "min_evidence_items": 1
+  },
+  "why_chain": [
+    {
+      "why_index": 1,
+      "question": "Why did Nightly file transfer failed (The transfer stops before creating the outbound file.) occur in SyntheticFileTransfer, and what evidence supports that first causal explanation? Start with the most direct data-quality cause you can defend.",
+      "answer": "Because the synthetic landing area reached its configured storage capacity, the transfer could not create the outbound file.",
+      "evidence_refs": [
+        "DEMO-WHY1_storage-utilization.txt",
+        "DEMO-WHY1_transfer-alert.txt"
+      ],
+      "resolved_by_this_cause": true,
+      "controllable_cause": true,
+      "prevents_recurrence": true,
+      "checkpoint": {
+        "decision": "stop_root_cause_confirmed",
+        "checks": {
+          "answer_specific_enough": true,
+          "evidence_items_sufficient": true,
+          "causal_link_stated": true,
+          "controllable_cause": true,
+          "prevents_recurrence": true,
+          "resolved_by_this_cause": true,
+          "minimum_depth_met": true,
+          "max_depth_reached": false
+        },
+        "recommended_data_requests": []
+      },
+      "recorded_at_utc": "2026-09-14T04:24:41.577447+00:00"
+    }
+  ],
+  "root_cause_summary": "Because the synthetic landing area reached its configured storage capacity, the transfer could not create the outbound file.",
+  "stop_reason": "Checkpoint confirmed a controllable cause that should prevent recurrence.",
+  "next_action": "Document CAPA and validation plan against this confirmed root cause."
+}

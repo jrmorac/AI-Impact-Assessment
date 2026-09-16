@@ -55,10 +55,6 @@ def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: Dict[s
     handler.wfile.write(body)
 
 
-def _file_preview(path: Path) -> str:
-    return path.read_text(encoding="utf-8")
-
-
 def _read_json_body(handler: BaseHTTPRequestHandler) -> Dict[str, Any]:
     size = int(handler.headers.get("Content-Length", "0"))
     raw = handler.rfile.read(size) if size > 0 else b"{}"
@@ -396,7 +392,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
         else:
             output_path = _resolve_path("", default=_default_report_path(session_path))
         report_path = export_session_report(session_path=session_path, output_path=output_path)
-        _json_response(self, HTTPStatus.OK, {"report_path": _rel(report_path), "content": _file_preview(report_path), "kind": "Report"})
+        _json_response(self, HTTPStatus.OK, {"report_path": _rel(report_path)})
 
     def _handle_export_capa(self, payload: Dict[str, Any]) -> None:
         session_path = _resolve_path(str(payload.get("session", "")))
@@ -411,7 +407,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
             assignee=assignee,
             due_date=due_date,
         )
-        _json_response(self, HTTPStatus.OK, {"csv_path": _rel(csv_path), "provider": provider, "content": _file_preview(csv_path), "kind": "CAPA CSV"})
+        _json_response(self, HTTPStatus.OK, {"csv_path": _rel(csv_path), "provider": provider})
 
     def _handle_export_ado_testcases(self, payload: Dict[str, Any]) -> None:
         session_path = _resolve_path(str(payload.get("session", "")))
@@ -433,7 +429,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
         _json_response(
             self,
             HTTPStatus.OK,
-            {"csv_path": _rel(csv_path), "schema": "ado-testcase", "variant_set": variant_set, "content": _file_preview(csv_path), "kind": "ADO TestCase CSV"},
+            {"csv_path": _rel(csv_path), "schema": "ado-testcase", "variant_set": variant_set},
         )
 
     def _handle_run_quick_plan(self, payload: Dict[str, Any]) -> None:
@@ -515,6 +511,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
                 "report_path": _rel(_resolve_path(result["report_path"])),
                 "capa_path": _rel(_resolve_path(result["capa_path"])),
                 "testcases_path": _rel(_resolve_path(result["testcases_path"])),
+                "batch_report_path": _rel(_resolve_path(result["batch_report_path"])),
             },
         )
 

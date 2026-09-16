@@ -875,6 +875,17 @@ def run_demo(
         quick_plan=_load_quick_plan(quick_plan_path),
     )
 
+    # Produce a batch-style JSON report with agent traces so the UI trace viewer
+    # can load demo-case traces without requiring a separate manual batch run.
+    batch_report_path = project_root / "data" / "output" / f"report_{selected_session.stem}.json"
+    evidence_log_path = project_root / "evidence" / "evidence_log.csv"
+    run(
+        context_path=context_path,
+        input_path=input_path,
+        output_path=batch_report_path,
+        evidence_log_path=evidence_log_path,
+    )
+
     capa_path = project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-capa.csv"
     testcases_path = project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-testcases.csv"
     export_capa_csv(
@@ -895,6 +906,7 @@ def run_demo(
     )
     result["capa_path"] = capa_path.as_posix()
     result["testcases_path"] = testcases_path.as_posix()
+    result["batch_report_path"] = batch_report_path.as_posix()
     return result
 
 

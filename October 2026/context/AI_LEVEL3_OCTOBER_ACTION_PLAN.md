@@ -11,6 +11,9 @@ Reach Level 3 in the Engineering track by October 2026 by demonstrating:
 ## Core strategy
 Use the Agentic QA project as the primary evidence asset, but do not rely on production client data or sensitive evidence. The project is positioned as a reusable, shareable QA workflow built around synthetic data and governance-safe practices. It should not be presented as a complete Six Sigma or RCA implementation unless that terminology is explicitly requested.
 
+## Packaging boundary
+Development records under `October 2026/agentic-qa-rca/development-records/` are internal implementation evidence and are explicitly excluded from the shareable package.
+
 ## Current implementation status — August 14, 2026
 
 - The preferred entry point is the local Web UI, not the terminal.
@@ -109,3 +112,50 @@ The project is Level 3-ready when it can be framed as:
 
 ## Key principle
 The objective is not to pretend this is production data work. The objective is to demonstrate a credible, repeatable, documented, and shared AI engineering workflow that is relevant to regulated QA and is strong enough to show Level 3 impact.
+
+## Context sync update - August 25, 2026
+
+- Latest manager re-assessment completed in:
+  - `October 2026/agentic-qa-rca/MANAGEMENT_RECOMMENDATIONS.md`
+- Future-phase technical hardening backlog documented in:
+  - `October 2026/agentic-qa-rca/FUTURE_PHASE_RECOMMENDATIONS.md`
+
+Current phase decision:
+- Keep the project in controlled pilot mode.
+- Prioritize teammate adoption evidence and measurable outcomes before additional feature expansion.
+- Schedule API path-safety hardening and automated regression tests in a future phase after pilot evidence collection.
+
+## Context sync update - September 09, 2026
+
+- Architecture review completed for `October 2026/agentic-qa-rca/` with focus on reducing human dependency in the RCA loop.
+- Selected next implementation scope (approved):
+  - Checkpoint Preview Assist Mode (Web UI + CLI)
+  - Suggest Answer Assist Mode (Web UI + CLI)
+- AI suggestion policy for this phase:
+  - Retrieval-first suggestions are the default path.
+  - Optional model-based suggestions are allowed only behind feature flags.
+  - Mandatory fallback to retrieval/template suggestions when model path is unavailable.
+- Governance policy remains unchanged:
+  - Deterministic checkpoint gates remain authoritative.
+  - No auto-accept or auto-export of AI-generated recommendations.
+  - Human review and approval required before final submission actions.
+- Recommendation tracking and implementation sequence were added to:
+  - `October 2026/agentic-qa-rca/FUTURE_PHASE_RECOMMENDATIONS.md`
+
+## Context sync update - September 13, 2026
+
+- Multi-agent implementation/review cycle completed with evidence captured in:
+  - `October 2026/agentic-qa-rca/development-records/20260913-agent-review-cycle-01/`
+- QA findings F-001 through F-006 were implemented and validated with deterministic API/runtime checks.
+- Shareable package was re-synced with latest source updates and rebuilt.
+- Current retained distribution artifact:
+  - `October 2026/dist/agentic-qa-rca-shareable-20260913-224422.zip`
+- Packaging guidance remains cross-platform and avoids `ExecutionPolicy Bypass` usage in default instructions.
+
+Current gate status:
+- Integration decision is still **Conditionally Approved** pending manual browser evidence and final owner sign-off.
+
+Immediate closeout actions:
+1. Attach manual browser evidence for CR-003 and CR-005.
+2. Record final sign-off in governance and integration decision records.
+3. Keep distribution parity by regenerating shareable ZIP only after source-sync checks.

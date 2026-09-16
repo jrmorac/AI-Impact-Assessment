@@ -320,6 +320,7 @@
         <p class="muted">Use the <strong>RCA</strong> and <strong>CAPA</strong> workflow to drive a disciplined root-cause and corrective-action process.</p>
         <label for="context">Context file</label>
         <select id="context"></select>
+        <p class="muted">Choose one context profile for this run. You do not need all context files at once.</p>
 
         <label for="input">Input file</label>
         <select id="input"></select>
@@ -340,6 +341,7 @@
               <option value="sre">sre</option>
               <option value="release-manager">release-manager</option>
             </select>
+            <p id="roleHint" class="muted">Role changes answer guidance templates; it is not only for records.</p>
           </div>
           <div>
             <label for="session">Session path (optional)</label>
@@ -357,6 +359,7 @@
         <select id="latestSession"></select>
         <div class="actions">
           <button id="loadSessionBtn" class="ghost">Load Selected Session</button>
+          <button id="refreshListsBtn" class="ghost">Refresh Session and Report Lists</button>
         </div>
 
         <label for="quickPlan">Quick plan</label>
@@ -464,10 +467,12 @@
             <div>
               <label for="areaPath">Area Path</label>
               <input id="areaPath" placeholder="SampleProject\\QA">
+              <p class="muted">Optional. Set only if your ADO process requires an Area Path.</p>
             </div>
             <div>
               <label for="iterationPath">Iteration Path</label>
               <input id="iterationPath" placeholder="SampleProject\\Sprint-2">
+              <p class="muted">Optional. Use when test cases must be assigned to a specific iteration.</p>
             </div>
           </div>
 
@@ -478,10 +483,12 @@
                 <option value="standard">standard</option>
                 <option value="expanded">expanded</option>
               </select>
+              <p class="muted">Optional. Use expanded to include negative and boundary variants.</p>
             </div>
             <div>
               <label for="state">State</label>
               <input id="state" value="Design">
+              <p class="muted">Optional. Defaults to Design if left blank.</p>
             </div>
           </div>
         </details>
@@ -504,6 +511,7 @@
 
         <div class="actions">
           <button id="loadTraceBtn" class="ghost">Load Agent Trace</button>
+          <button id="refreshTraceListsBtn" class="ghost">Refresh Trace Inputs</button>
         </div>
 
         <div id="agentTrace" class="mono">No agent trace loaded.</div>
@@ -521,8 +529,8 @@
         term: "CAPA",
         text: "Corrective and Preventive Actions — actions taken to fix the current issue and prevent recurrence."
       },
-      RCA: {
-        term: "RCA",
+      DMAIC: {
+        term: "DMAIC",
         text: "Define, Measure, Analyze, Improve, Control — a Six Sigma improvement cycle used to reduce defects and stabilize processes."
       },
       D4: {
@@ -566,6 +574,43 @@
     };
 
     const byId = (id) => document.getElementById(id);
+
+    const roleHints = {
+      qa: "QA role focuses on test and gate coverage; guidance emphasizes defect escape and validation gaps.",
+      dev: "Dev role focuses on implementation mechanics; guidance emphasizes control and code path failures.",
+      sre: "SRE role focuses on operability and safeguards; guidance emphasizes monitoring and alerting gaps.",
+      "release-manager": "Release-manager role focuses on governance criteria; guidance emphasizes approval and risk controls."
+    };
+
+    function updateRoleHint() {
+      const role = byId("role").value;
+      byId("roleHint").textContent = roleHints[role] || "Role changes answer guidance templates; it is not only for records.";
+    }
+
+    function setOptions(selectEl, values, preferredValue = "") {
+      const safeValues = Array.isArray(values) ? values : [];
+      selectEl.innerHTML = safeValues.map(v => `<option value="${v}">${v}</option>`).join("");
+      if (!safeValues.length) return;
+      if (preferredValue && safeValues.includes(preferredValue)) {
+        selectEl.value = preferredValue;
+      }
+    }
+
+    async function refreshSessionAndReportLists() {
+      const data = await api("/api/bootstrap");
+      const sessionSel = byId("latestSession");
+      const reportSel = byId("reportFile");
+      const prevSession = sessionSel.value;
+      const prevReport = reportSel.value;
+
+      setOptions(sessionSel, data.sessions || [], prevSession);
+      setOptions(reportSel, data.output_reports || [], prevReport);
+
+      if (!reportSel.value && (data.output_reports || []).length) {
+        reportSel.value = data.output_reports[0];
+      }
+      await loadAgentTrace(true);
+    }
 
     function bindTermTooltips() {
       const tooltip = byId("termTooltip");
@@ -658,14 +703,15 @@
       const sessionSel = byId("latestSession");
       const reportSel = byId("reportFile");
 
-      contextSel.innerHTML = data.contexts.map(v => `<option value="${v}">${v}</option>`).join("");
-      inputSel.innerHTML = data.inputs.map(v => `<option value="${v}">${v}</option>`).join("");
-      quickPlanSel.innerHTML = (data.quick_plans || []).map(v => `<option value="${v}">${v}</option>`).join("");
-      sessionSel.innerHTML = (data.sessions || []).map(v => `<option value="${v}">${v}</option>`).join("");
-      reportSel.innerHTML = (data.output_reports || []).map(v => `<option value="${v}">${v}</option>`).join("");
+      setOptions(contextSel, data.contexts || []);
+      setOptions(inputSel, data.inputs || []);
+      setOptions(quickPlanSel, data.quick_plans || []);
+      setOptions(sessionSel, data.sessions || []);
+      setOptions(reportSel, data.output_reports || []);
 
       await loadDefects();
       await loadAgentTrace(true);
+      updateRoleHint();
     }
 
     async function loadAgentTrace(refreshDefectsOnly = false) {
@@ -734,6 +780,7 @@
         state.evidenceSuggestions = data.evidence_suggestions || [];
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.default_report_path || "";
+        await refreshSessionAndReportLists();
         updateSessionBanner(`Active session: ${data.session_path}`, "success");
         setStatus(`Session started: ${data.session_path}`);
         updateActionState();
@@ -760,6 +807,7 @@
         state.evidenceSuggestions = data.evidence_suggestions || [];
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.report_path || byId("reportOutput").value;
+        await refreshSessionAndReportLists();
         updateSessionBanner(`Active session: ${data.session_path}`, "success");
         setStatus(`Quick plan completed. Status: ${data.session.status}`);
         updateActionState();
@@ -772,11 +820,12 @@
     async function runDemo() {
       try {
         const demoCase = byId("demoCase").value;
+        const demoDefectId = `DEMO-${demoCase.toUpperCase()}`;
         const inputPath = "data/input/demo_cases.json";
         const planPath = `data/input/demo_quick_plan_${demoCase}.json`;
         byId("input").value = inputPath;
         await loadDefects();
-        byId("defect").value = `DEMO-${demoCase.toUpperCase()}`;
+        byId("defect").value = demoDefectId;
         byId("manualDefect").value = "";
         byId("quickPlan").value = planPath;
         byId("session").value = "";
@@ -792,8 +841,15 @@
         state.evidenceSuggestions = data.evidence_suggestions || [];
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.report_path || "";
+        await refreshSessionAndReportLists();
+        if (data.batch_report_path) {
+          byId("reportFile").value = data.batch_report_path;
+          await loadAgentTrace(true);
+          byId("reportDefect").value = demoDefectId;
+          await loadAgentTrace(false);
+        }
         updateSessionBanner(`Active demo session: ${data.session_path}`, "success");
-        setStatus(`Demo completed. RCA: ${data.report_path} | CAPA: ${data.capa_path} | Test cases: ${data.testcases_path}`);
+        setStatus(`Demo completed. RCA: ${data.report_path} | CAPA: ${data.capa_path} | Test cases: ${data.testcases_path} | Trace report: ${data.batch_report_path || "n/a"}`);
         updateActionState();
         renderSnapshot();
       } catch (err) {
@@ -801,7 +857,7 @@
       }
     }
 
-    function startNewSession() {
+    async function startNewSession() {
       state.sessionPath = "";
       state.session = null;
       state.evidenceSuggestions = [];
@@ -816,6 +872,11 @@
       setStatus("Ready for a new session.");
       updateActionState();
       renderSnapshot();
+      try {
+        await refreshSessionAndReportLists();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
     }
 
     async function refreshStatus() {
@@ -874,6 +935,7 @@
         if (!session) throw new Error("Session path is required.");
         const output = byId("reportOutput").value.trim();
         const data = await api("/api/export-report", "POST", { session, output });
+        await refreshSessionAndReportLists();
         setStatus(`Report exported: ${data.report_path}`);
       } catch (err) {
         setStatus(err.message, true);
@@ -892,6 +954,7 @@
           due_date: byId("dueDate").value.trim()
         };
         const data = await api("/api/export-capa", "POST", payload);
+        await refreshSessionAndReportLists();
         setStatus(`CAPA CSV exported: ${data.csv_path}`);
       } catch (err) {
         setStatus(err.message, true);
@@ -912,6 +975,7 @@
           variant_set: byId("variantSet").value
         };
         const data = await api("/api/export-ado-testcases", "POST", payload);
+        await refreshSessionAndReportLists();
         setStatus(`ADO TestCase CSV exported: ${data.csv_path}`);
       } catch (err) {
         setStatus(err.message, true);
@@ -919,10 +983,12 @@
     }
 
     byId("input").addEventListener("change", loadDefects);
+    byId("role").addEventListener("change", updateRoleHint);
     byId("startBtn").addEventListener("click", startSession);
     byId("newSessionBtn").addEventListener("click", startNewSession);
     byId("statusBtn").addEventListener("click", refreshStatus);
     byId("loadSessionBtn").addEventListener("click", loadSelectedSession);
+    byId("refreshListsBtn").addEventListener("click", refreshSessionAndReportLists);
     byId("runQuickPlanBtn").addEventListener("click", runQuickPlan);
     byId("demoRunBtn").addEventListener("click", runDemo);
     byId("submitBtn").addEventListener("click", submitAnswer);
@@ -931,6 +997,7 @@
     byId("exportAdoTcBtn").addEventListener("click", exportAdoTc);
     byId("reportFile").addEventListener("change", () => loadAgentTrace(true));
     byId("loadTraceBtn").addEventListener("click", () => loadAgentTrace(false));
+    byId("refreshTraceListsBtn").addEventListener("click", refreshSessionAndReportLists);
 
     bindTermTooltips();
 
