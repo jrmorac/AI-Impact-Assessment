@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -50,6 +51,41 @@ def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: Dict[s
     body = json.dumps(payload, indent=2).encode("utf-8")
     handler.send_response(status)
     handler.send_header("Content-Type", "application/json; charset=utf-8")
+    handler.send_header("Content-Length", str(len(body)))
+    handler.end_headers()
+    handler.wfile.write(body)
+
+
+def _serve_preview(handler: BaseHTTPRequestHandler, file_path: Path) -> None:
+    if not file_path.exists() or not file_path.is_file():
+        _json_response(handler, HTTPStatus.NOT_FOUND, {"error": "File not found"})
+        return
+
+    try:
+        text = file_path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        text = file_path.read_bytes().decode("utf-8", errors="replace")
+
+    safe_text = html.escape(text)
+    title = file_path.name
+    body = (
+        "<!doctype html>"
+        "<html><head>"
+        "<meta charset='utf-8'>"
+        f"<title>{html.escape(title)}</title>"
+        "<style>"
+        "body { font-family: Segoe UI, sans-serif; margin: 24px; background: #f8fafc; color: #0f172a; }"
+        "pre { background: #fff; border: 1px solid #dbe2ea; border-radius: 10px; padding: 16px; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; }"
+        "h1 { font-size: 20px; margin-bottom: 12px; }"
+        "</style>"
+        "</head><body>"
+        f"<h1>{html.escape(title)}</h1>"
+        f"<pre>{safe_text}</pre>"
+        "</body></html>"
+    ).encode("utf-8")
+
+    handler.send_response(HTTPStatus.OK)
+    handler.send_header("Content-Type", "text/html; charset=utf-8")
     handler.send_header("Content-Length", str(len(body)))
     handler.end_headers()
     handler.wfile.write(body)
@@ -193,6 +229,20 @@ class RcaWebHandler(BaseHTTPRequestHandler):
                     "output_reports": _list_output_reports(),
                 },
             )
+            return
+
+        if parsed.path == "/api/file-preview":
+            query = parse_qs(parsed.query)
+            file_value = (query.get("path") or [""])[0]
+            if not file_value:
+                _json_response(self, HTTPStatus.BAD_REQUEST, {"error": "Missing query parameter: path"})
+                return
+            try:
+                preview_path = _resolve_path(file_value)
+            except Exception as exc:  # noqa: BLE001
+                _json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+                return
+            _serve_preview(self, preview_path)
             return
 
         if parsed.path == "/api/defects":
