@@ -1,12 +1,14 @@
 # Session Handoff Context — GAP AI Impact Assessment
 **Engineer:** Jose Rafael Mora Casal  
 **Role:** QA Engineer — DOM project (MediQuant client)  
-**Last Updated:** September 13, 2026  
+**Last Updated:** September 16, 2026
 **Purpose:** Resume coaching and work continuation in a new conversation
 
 **Project framing note:** This tool is a generic QA workflow for structured analysis, defect triage, and root-cause support using synthetic/demo inputs. Do not add unrelated regulatory framing to future evidence, project narratives, or evaluation documentation.
 
 **Packaging boundary note:** Development record artifacts under `October 2026/agentic-qa-rca/development-records/` are internal engineering documentation and must not be included in the shareable package.
+
+**Workspace source-of-truth note:** For future development sessions, update and validate the code in the main workspace at `C:\Users\JoseRafaelMoraCasal\AI Impact Assessment` unless Jose explicitly requests isolated worktree-only changes. If a session starts in a worktree, apply the implementation to the main workspace before testing or packaging so code and distribution validation are performed once against the actual source of truth.
 
 **Communication and terminology note:** Keep responses concise unless Jose requests details. Do not present the tool as a complete Six Sigma or RCA implementation; mention Six Sigma or RCA only when explicitly requested or when directly required by the evaluation evidence.
 
@@ -620,4 +622,3 @@ Use this to restart coaching in a new chat:
 3. Add Web UI panels for ranked suggestions and live checkpoint preview with confidence + provenance labels.
 4. Add matching CLI commands (`suggest-answer`, `preview-checkpoint`) and fallback behavior tests.
 5. Run smoke validation with assist disabled and enabled to confirm backward compatibility.
-

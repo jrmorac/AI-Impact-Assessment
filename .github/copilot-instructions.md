@@ -8,6 +8,11 @@
 - **Infrastructure:** Azure / Databricks
 - **Work management:** Azure DevOps (ADO)
 
+## Workspace Source of Truth
+
+- For development changes, update and validate the main workspace at `C:\Users\JoseRafaelMoraCasal\AI Impact Assessment` unless the user explicitly requests worktree-only changes.
+- If a session is running from an isolated worktree, transfer the implementation to the main workspace before testing, packaging, or reporting completion. Do not repeat full implementation and validation separately in both locations.
+
 ## Compliance Guardrails (NON-NEGOTIABLE)
 
 This is a **HIPAA-regulated healthcare** environment. When generating any output:

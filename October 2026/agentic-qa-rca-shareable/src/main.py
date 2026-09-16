@@ -860,9 +860,21 @@ def run_demo(
     if case_name not in demo_defect_ids:
         raise ValueError(f"Unknown demo case: {case_name}")
 
-    project_root = context_path.parent.parent
+    project_root = Path(__file__).resolve().parent.parent
+    if not context_path.is_absolute():
+        context_path = project_root / context_path
+    context_path = context_path.resolve()
+    if not input_path.is_absolute():
+        input_path = project_root / input_path
+    input_path = input_path.resolve()
     selected_session = session_path or _default_session_path(demo_defect_ids[case_name])
+    if not selected_session.is_absolute():
+        selected_session = project_root / selected_session
+    selected_session = selected_session.resolve()
     selected_report = output_report_path or _default_report_path(selected_session)
+    if not selected_report.is_absolute():
+        selected_report = project_root / selected_report
+    selected_report = selected_report.resolve()
     quick_plan_path = project_root / "data" / "input" / f"demo_quick_plan_{case_name}.json"
 
     result = run_guided_rca(
@@ -877,8 +889,8 @@ def run_demo(
 
     # Produce a batch-style JSON report with agent traces so the UI trace viewer
     # can load demo-case traces without requiring a separate manual batch run.
-    batch_report_path = project_root / "data" / "output" / f"report_{selected_session.stem}.json"
-    evidence_log_path = project_root / "evidence" / "evidence_log.csv"
+    batch_report_path = (project_root / "data" / "output" / f"report_{selected_session.stem}.json").resolve()
+    evidence_log_path = (project_root / "evidence" / "evidence_log.csv").resolve()
     run(
         context_path=context_path,
         input_path=input_path,
@@ -886,8 +898,8 @@ def run_demo(
         evidence_log_path=evidence_log_path,
     )
 
-    capa_path = project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-capa.csv"
-    testcases_path = project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-testcases.csv"
+    capa_path = (project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-capa.csv").resolve()
+    testcases_path = (project_root / "evidence" / "capa_exports" / f"{selected_session.stem}-testcases.csv").resolve()
     export_capa_csv(
         session_path=selected_session,
         output_path=capa_path,

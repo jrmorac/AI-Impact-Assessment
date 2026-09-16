@@ -231,6 +231,20 @@
       margin-bottom: 4px;
       color: #0f766e;
     }
+    .why-history {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+    }
+    .why-history button { padding: 6px 10px; }
+    .why-history button:disabled { opacity: 0.45; }
+    .why-history-label {
+      min-width: 92px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
     .term-strip {
       display: flex;
       flex-wrap: wrap;
@@ -384,6 +398,12 @@
         <h2 class="section-title">2) Answer Current Why <button class="section-help-btn" type="button" data-section="answerCurrentWhy" aria-label="Answer Current Why help">?</button></h2>
         <label for="question">Current question</label>
         <div id="question" class="mono"></div>
+        <div class="why-history" aria-label="Why history navigation">
+          <button id="whyBackBtn" class="ghost" type="button" aria-label="Previous Why">&#8592;</button>
+          <span id="whyHistoryLabel" class="why-history-label" aria-live="polite">Current Why</span>
+          <button id="whyNextBtn" class="ghost" type="button" aria-label="Next Why">&#8594;</button>
+        </div>
+        <div id="whyAnswerHistory" class="muted"></div>
 
         <label for="answer">Answer</label>
         <textarea id="answer" placeholder="Because ..."></textarea>
@@ -570,7 +590,8 @@
       sessionPath: "",
       session: null,
       evidenceSuggestions: [],
-      reportTrace: []
+      reportTrace: [],
+      whyHistoryIndex: -1
     };
 
     const byId = (id) => document.getElementById(id);
@@ -684,7 +705,26 @@
 
     function renderSnapshot() {
       byId("snapshot").textContent = state.session ? JSON.stringify(state.session, null, 2) : "No session loaded.";
-      byId("question").textContent = state.session?.current_question || "No active question.";
+      const history = Array.isArray(state.session?.why_chain) ? state.session.why_chain : [];
+      const historyIndex = history.length && state.whyHistoryIndex >= 0
+        ? Math.min(state.whyHistoryIndex, history.length - 1)
+        : -1;
+      state.whyHistoryIndex = historyIndex;
+      const selected = historyIndex >= 0 ? history[historyIndex] : null;
+      const evidenceRefs = Array.isArray(selected?.evidence_refs) ? selected.evidence_refs : [];
+
+      byId("question").textContent = selected?.question || state.session?.current_question || "No active question.";
+      byId("whyAnswerHistory").textContent = selected ? `Answer: ${selected.answer || ""}` : "No historical Why selected.";
+      byId("whyHistoryLabel").textContent = selected ? `Why ${selected.why_index} of ${history.length}` : "Current Why";
+      byId("whyBackBtn").disabled = !history.length || historyIndex === 0;
+      byId("whyNextBtn").disabled = historyIndex < 0;
+      byId("submitBtn").disabled = !state.sessionPath || historyIndex >= 0 || state.session?.status !== "awaiting_answer";
+      byId("answer").value = selected?.answer || "";
+      byId("evidence").value = evidenceRefs.join(", ");
+      byId("controllable").checked = selected ? Boolean(selected.controllable_cause) : true;
+      byId("resolved").checked = selected ? Boolean(selected.resolved_by_this_cause) : false;
+      byId("prevents").checked = selected ? Boolean(selected.prevents_recurrence) : false;
+      byId("revise").checked = false;
       byId("evidenceHints").textContent = state.evidenceSuggestions.length
         ? "Suggestions: " + state.evidenceSuggestions.join(", ")
         : "No evidence suggestions yet.";
@@ -778,6 +818,7 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = data.session?.why_chain?.length ? data.session.why_chain.length - 1 : -1;
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.default_report_path || "";
         await refreshSessionAndReportLists();
@@ -805,6 +846,7 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = data.session?.why_chain?.length ? data.session.why_chain.length - 1 : -1;
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.report_path || byId("reportOutput").value;
         await refreshSessionAndReportLists();
@@ -839,6 +881,7 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = data.session?.why_chain?.length ? data.session.why_chain.length - 1 : -1;
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.report_path || "";
         await refreshSessionAndReportLists();
@@ -861,6 +904,7 @@
       state.sessionPath = "";
       state.session = null;
       state.evidenceSuggestions = [];
+      state.whyHistoryIndex = -1;
       byId("session").value = "";
       byId("reportOutput").value = "";
       byId("answer").value = "";
@@ -887,6 +931,7 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = data.session?.why_chain?.length ? data.session.why_chain.length - 1 : -1;
         updateSessionBanner(`Active session: ${data.session_path} | Status: ${data.session.status}`, "info");
         setStatus(`Session loaded: ${data.session.status}`);
         updateActionState();
@@ -919,6 +964,7 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = -1;
         byId("answer").value = "";
         updateSessionBanner(`Active session: ${data.session_path} | Status: ${data.session.status}`, "success");
         setStatus(`Answer submitted. Status: ${data.session.status}`);
@@ -982,6 +1028,19 @@
       }
     }
 
+    function moveWhyHistory(delta) {
+      const history = Array.isArray(state.session?.why_chain) ? state.session.why_chain : [];
+      if (!history.length) return;
+      if (delta < 0 && state.whyHistoryIndex < 0) {
+        state.whyHistoryIndex = history.length - 1;
+      } else if (delta > 0 && state.whyHistoryIndex >= history.length - 1) {
+        state.whyHistoryIndex = -1;
+      } else {
+        state.whyHistoryIndex = Math.min(Math.max(state.whyHistoryIndex + delta, 0), history.length - 1);
+      }
+      renderSnapshot();
+    }
+
     byId("input").addEventListener("change", loadDefects);
     byId("role").addEventListener("change", updateRoleHint);
     byId("startBtn").addEventListener("click", startSession);
@@ -992,6 +1051,8 @@
     byId("runQuickPlanBtn").addEventListener("click", runQuickPlan);
     byId("demoRunBtn").addEventListener("click", runDemo);
     byId("submitBtn").addEventListener("click", submitAnswer);
+    byId("whyBackBtn").addEventListener("click", () => moveWhyHistory(-1));
+    byId("whyNextBtn").addEventListener("click", () => moveWhyHistory(1));
     byId("exportReportBtn").addEventListener("click", exportReport);
     byId("exportCapaBtn").addEventListener("click", exportCapa);
     byId("exportAdoTcBtn").addEventListener("click", exportAdoTc);
