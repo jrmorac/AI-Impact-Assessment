@@ -8,6 +8,12 @@ Use and adapt this block for the October submission update.
 
 The project has moved from a local proof-of-concept into a shareable QA capability package. The current milestone is teammate pilot testing, with the goal of collecting adoption and usability evidence before the October submission. This is the most practical next step toward stronger D5 evidence and a more defensible Level 3 narrative.
 
+### Training evidence to include in the October record
+
+I completed GAP's Autonomous Engineer Intensive Training on May 7, 2026. The course has since been renamed to "Intro to Agentic Development" in the GAP catalog, but it is the same foundational learning milestone and should be counted as evidence for the upcoming October assessment. The certificate is stored in the evidence folder for traceability: October 2026/evidence/GAP_Intro_to_Agentic_Development_20260507_Certificate.pdf.
+
+I also completed the Anthropic Claude 101 course as part of my continuing AI upskilling. This course strengthens my practical prompt design, workflow grounding, and model-use judgment, and it is relevant supporting evidence for the October Level 3 narrative. I have referenced this completion in the training evidence record, and the certificate should be added to the same evidence folder once the actual attachment file is available in the workspace.
+
 ## Project Constraints (Suggested Selection)
 
 - [x] Client limitations on AI usage

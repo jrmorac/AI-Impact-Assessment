@@ -4,13 +4,13 @@
 **Last Updated:** September 16, 2026
 **Purpose:** Resume coaching and work continuation in a new conversation
 
-**Project framing note:** This tool is a generic QA workflow for structured analysis, defect triage, and root-cause support using synthetic/demo inputs. Do not add unrelated regulatory framing to future evidence, project narratives, or evaluation documentation.
+**Project framing note:** This tool is a generic QA workflow for structured analysis, defect triage, and root-cause support using synthetic/demo inputs. The core runtime is deterministic and human-controlled; the AI value is in its design, validation workflow, and the agentic development/review process used to build and govern the tool. Do not present the runtime engine as autonomous AI decision-making or a production AI system.
 
 **Packaging boundary note:** Development record artifacts under `October 2026/agentic-qa-rca/development-records/` are internal engineering documentation and must not be included in the shareable package.
 
 **Workspace source-of-truth note:** For future development sessions, update and validate the code in the main workspace at `C:\Users\JoseRafaelMoraCasal\AI Impact Assessment` unless Jose explicitly requests isolated worktree-only changes. If a session starts in a worktree, apply the implementation to the main workspace before testing or packaging so code and distribution validation are performed once against the actual source of truth.
 
-**Communication and terminology note:** Keep responses concise unless Jose requests details. Do not present the tool as a complete Six Sigma or RCA implementation; mention Six Sigma or RCA only when explicitly requested or when directly required by the evaluation evidence.
+**Communication and terminology note:** Keep responses concise unless Jose requests details. Do not present the tool as a complete Six Sigma or RCA implementation; mention Six Sigma or RCA only when explicitly requested or when directly required by the evaluation evidence. For October evidence, frame the project as AI-assisted development of a deterministic QA workflow plus a documented multi-agent engineering review model.
 
 ---
 

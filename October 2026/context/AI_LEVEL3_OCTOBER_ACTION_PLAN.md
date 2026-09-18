@@ -9,7 +9,7 @@ Reach Level 3 in the Engineering track by October 2026 by demonstrating:
 - adoption beyond personal use
 
 ## Core strategy
-Use the Agentic QA project as the primary evidence asset, but do not rely on production client data or sensitive evidence. The project is positioned as a reusable, shareable QA workflow built around synthetic data and governance-safe practices. It should not be presented as a complete Six Sigma or RCA implementation unless that terminology is explicitly requested.
+Use the Agentic QA project as the primary evidence asset, but do not rely on production client data or sensitive evidence. The project is positioned as a reusable, shareable QA workflow built around synthetic data and governance-safe practices. The runtime tool remains deterministic and human-controlled; the AI value is in the workflow design, validation discipline, and the agentic development/review process used to create and govern the system. It should not be presented as a complete Six Sigma or RCA implementation unless that terminology is explicitly requested.
 
 ## Packaging boundary
 Development records under `October 2026/agentic-qa-rca/development-records/` are internal implementation evidence and are explicitly excluded from the shareable package.
