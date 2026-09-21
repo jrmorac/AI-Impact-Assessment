@@ -1,7 +1,7 @@
 # Session Handoff Context — GAP AI Impact Assessment
 **Engineer:** Jose Rafael Mora Casal  
 **Role:** QA Engineer — DOM project (MediQuant client)  
-**Last Updated:** September 16, 2026
+**Last Updated:** September 21, 2026
 **Purpose:** Resume coaching and work continuation in a new conversation
 
 **Project framing note:** This tool is a generic QA workflow for structured analysis, defect triage, and root-cause support using synthetic/demo inputs. The core runtime is deterministic and human-controlled; the AI value is in its design, validation workflow, and the agentic development/review process used to build and govern the tool. Do not present the runtime engine as autonomous AI decision-making or a production AI system.
@@ -25,6 +25,12 @@
 | Next re-evaluation window | October 2026 |
 | GAP AI Coach skill | Installed at `.github/skills/gap-ai-coach/` |
 | Current status | **RCA tool is functional, Web UI-first, shareable, and ready for teammate pilot testing** |
+
+### September 21, 2026 Toolkit Evaluation Milestone
+
+The Agentic QA RCA application was uploaded to the GAP AI Toolkit space and evaluated for production readiness. The submitted version was rejected and generated feedback covering path containment, regression and CI coverage, structured observability, browser security/accessibility, and operating documentation. The source feedback is recorded in `October 2026/AI Agent Evaluator feedback report.md`.
+
+The current workstream is an agent-assisted update of the application. Senior Backend Engineer, Senior Frontend Engineer, Senior QA Agent, and Senior Agentic Engineer reviews produced the remediation package at `October 2026/agentic-qa-rca/development-records/20260921-agent-evaluator-remediation/`. Production approval remains blocked until the applicable requirements are implemented and validated with deterministic evidence. This is a toolkit production-readiness result, not the official GAP maturity-level decision.
 
 **Active goal (as of Aug 12):** Jose has built a credible agentic QA workflow and a shareable package, and the next priority is to get teammate feedback and adoption evidence before the October submission. The immediate objective is to move from a strong local prototype to a tested, reusable team asset while strengthening D3 (metrics), D4 (agentic workflow), and D5 (multiplier/adoption).
 
@@ -622,3 +628,42 @@ Use this to restart coaching in a new chat:
 3. Add Web UI panels for ranked suggestions and live checkpoint preview with confidence + provenance labels.
 4. Add matching CLI commands (`suggest-answer`, `preview-checkpoint`) and fallback behavior tests.
 5. Run smoke validation with assist disabled and enabled to confirm backward compatibility.
+
+## Session Closeout — September 20, 2026
+
+### Documentation and distribution updates
+
+- Expanded the Web UI instructions in both README files with a practical user manual covering startup, session setup, Why answers, evidence, checkpoint flags, demos, exports, saved sessions, trace inspection, and recovery steps.
+- Rebuilt the shareable package:
+  - `October 2026/dist/agentic-qa-rca-shareable-20260920-222805.zip`
+- Removed the previous shareable archive:
+  - `October 2026/dist/agentic-qa-rca-shareable-20260916-125022.zip`
+- Validated that exactly one shareable ZIP remains, the updated README is included, and no runtime output files are packaged.
+
+### Next-session starting point
+
+The latest shareable ZIP is ready for distribution. Remaining release-gate work is manual browser evidence for CR-003 and CR-005, followed by final owner sign-off.
+
+## Session Closeout — September 21, 2026
+
+### Version 2 implementation
+
+- Created isolated development copies:
+  - `October 2026/agentic-qa-rca-v2/`
+  - `October 2026/agentic-qa-rca-shareable-v2/`
+- Preserved the original `agentic-qa-rca` and `agentic-qa-rca-shareable` folders.
+- Implemented backend remediation for path containment, read/write allowlists, traversal and symlink rejection, request IDs, structured JSON lifecycle/error logging, semantic error responses, request-body limits, and string boolean parsing.
+- Implemented frontend remediation for CSP compatibility, loading and duplicate-submit states, actionable request-ID errors, skip navigation, focus-visible styling, live status announcements, and modal focus restoration.
+- Added focused security tests in both v2 packages.
+
+### Validation and distribution
+
+- Working v2 test result: 4 passed, 1 skipped due to Windows symlink privilege limits.
+- Shareable v2 test result: 6 passed, 1 skipped due to Windows symlink privilege limits.
+- Editor diagnostics: no errors in the changed backend, test, or frontend files.
+- Current ZIP: `October 2026/dist/agentic-qa-rca-shareable-v2-20260921-162546.zip`
+- The ZIP opens and contains the updated `src/web_app.py`, `tests/test_web_app_security.py`, and `web/index.html`.
+
+### Next-session starting point
+
+Run the broader regression and browser validation against v2, complete the operations/documentation and traceability updates, then reassess the release gate. Production approval remains blocked until the required evidence and named owner sign-off are complete.

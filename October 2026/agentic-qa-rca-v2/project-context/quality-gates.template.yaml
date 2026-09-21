@@ -1,0 +1,30 @@
+quality_gates:
+  required_fields:
+    - defect_id
+    - created_date
+    - severity
+    - component
+    - summary
+    - reproduction_steps
+    - observed_behavior
+    - expected_behavior
+  reject_conditions:
+    - missing_required_fields
+    - confidence_below_threshold
+    - no_testable_capa
+  validation_checks:
+    - boundary_condition_considered
+    - negative_case_considered
+    - deterministic_test_data_if_sql_related
+    - standards_mapped
+    - evidence_artifact_traceability
+    - artifact_quality_threshold
+    - capa_validation_experiment_defined_for_confirmed_actions
+  standards_map:
+    HIPAA:
+      - no_real_patient_data
+      - no_pii
+    deterministic_sql:
+      - no_getdate
+      - no_newid
+      - no_rand

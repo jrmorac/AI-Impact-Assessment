@@ -159,3 +159,13 @@ Immediate closeout actions:
 1. Attach manual browser evidence for CR-003 and CR-005.
 2. Record final sign-off in governance and integration decision records.
 3. Keep distribution parity by regenerating shareable ZIP only after source-sync checks.
+
+## Context Sync Update — September 20, 2026
+
+- Added a detailed Web UI user manual to the main and shareable README files.
+- Rebuilt the retained shareable distribution:
+  - `October 2026/dist/agentic-qa-rca-shareable-20260920-222805.zip`
+- Deleted the older shareable ZIP and confirmed that only the latest matching archive remains.
+- Validated archive contents: updated README present and runtime output folders excluded.
+
+Release status remains conditionally approved. The next evidence priority is manual browser validation for CR-003 and CR-005, followed by final owner sign-off.
