@@ -49,6 +49,86 @@ Open `http://127.0.0.1:8787` in your browser. The complete workflow is available
 
 The demo action generates the RCA report, CAPA tasks, and ADO test cases automatically. Manual sessions can export the same artifacts from the export panel.
 
+## Web UI User Manual
+
+### Start the application
+
+1. Open a terminal in the `agentic-qa-rca` folder.
+2. Start the server with the command shown above.
+3. Open the displayed local URL in a browser.
+4. Keep the terminal running while using the Web UI. Stop the server with `Ctrl+C` when finished.
+
+The application runs locally. Use synthetic or non-sensitive QA data only.
+
+### Start a manual RCA session
+
+1. In **Context file**, choose the project profile that defines the severity model, taxonomy, quality gates, and RCA settings.
+2. In **Input file**, choose a JSON file containing a list of defect objects.
+3. Choose a **Defect ID**. The dropdown is populated from the selected input file's `defect_id` fields. If the ID is not listed, enter it in **Manual Defect ID**.
+4. Choose a role: `qa`, `dev`, `sre`, or `release-manager`. The role changes the guidance shown for writing answers.
+5. Optionally enter a session path. Leave it blank to create a timestamped session under `evidence/rca_sessions/`.
+6. Select **Start RCA Session**.
+
+The first question is created from the selected defect's summary, observed behavior, component, and inferred defect category. The session is saved as JSON so it can be reviewed or resumed.
+
+### Answer each Why
+
+1. Read the **Current question** and write a specific causal answer in the **Answer** box. Start with `Because ...` and name the mechanism, control, or process failure.
+2. Add evidence references in the comma-separated **Evidence refs** field. Use filenames or other traceable references, for example `run-log.txt, duplicate-count.csv`.
+3. Set the decision flags carefully:
+   - **controllable**: the team can change or control this cause.
+   - **resolved**: fixing this cause would solve the current defect, not only a contributing symptom.
+   - **prevents recurrence**: the fix adds a durable control that prevents the defect from returning.
+   - **revise current node**: replace the current answer instead of adding another Why step.
+4. Select **Submit Answer**.
+
+The checkpoint rules validate answer length, causal wording, evidence, controllability, resolution, and recurrence prevention. If the answer or evidence is weak, the session stays on the same Why and tells you what to strengthen.
+
+### Navigate and revise the Why history
+
+- Use the left and right arrow buttons beside **Current Why** to review recorded questions and answers.
+- Selecting a previous Why restores its answer, evidence references, and decision flags in the form.
+- Use **revise current node** when correcting an answer. This updates the existing Why instead of creating a duplicate entry.
+- The workflow normally targets five Whys, but it can stop earlier when the checkpoint confirms a controllable root cause that resolves the defect and prevents recurrence.
+
+### Use demo cases
+
+Select a demo case and choose **Run Demo Case** to run a complete synthetic example:
+
+- **Why 1**: simple issue that stops at the first Why.
+- **Why 3**: moderate issue that stops at the third Why.
+- **Why 5**: complex issue that continues to the fifth Why.
+
+The demo creates a fresh session and generates the RCA report, CAPA CSV, and ADO Test Case CSV. Use demos to understand the workflow before running a custom case.
+
+### Export the results
+
+Use the export panel after a session has been started:
+
+- **Export Report** creates the Markdown RCA case report.
+- **Export CAPA CSV** creates corrective and preventive action tasks. Choose `ado`, `jira`, or `generic` as the provider and optionally set an assignee and due date.
+- **Export ADO TestCase CSV** creates ADO-compatible test cases. The standard variant exports the core cases; the expanded variant also adds negative and boundary cases.
+
+Set output paths before exporting. The UI opens a preview of each generated file; review it and select **OK** to close the preview. The export buttons remain unavailable until a session is loaded.
+
+### Load an existing session
+
+Use **Latest session** and **Load Selected Session** to reopen a saved session. Use **Refresh Session and Report Lists** after creating files outside the current page. **Refresh Status** reloads the current session state without starting a new one.
+
+Select **New Session** before beginning another manual analysis. This clears the active session from the form while preserving existing session files.
+
+### Agent Trace Viewer
+
+The **Agent Trace Viewer** is for batch reports. Select a report file and defect ID, then choose **Load Agent Trace** to inspect the planner, analyzer, and validator steps recorded for that defect. Use **Refresh Trace Inputs** after generating a new batch report.
+
+### Common issues
+
+- **No defect IDs appear:** confirm that the selected input is a JSON list and each defect has a non-empty `defect_id` field, then refresh the page or change the input file.
+- **The session will not advance:** add a concrete answer, at least one evidence reference, and a clear causal link. Review the recommended data requests shown by the workflow.
+- **Exports are disabled:** start or load a session first.
+- **The browser cannot connect:** confirm the Python server is still running and use the exact localhost URL printed in the terminal.
+- **Starting another case shows old data:** select **New Session**, then select the new context, input, and defect.
+
 ### How CAPA and Test Cases are generated
 
 After the 5-Whys session, the tool uses the complete RCA record to generate the deliverables. It uses the defect summary, component, observed and expected behavior, confirmed root cause, and evidence references collected across the Why chain.
