@@ -1,0 +1,139 @@
+{
+  "session_id": "demo-why3-20260914T042509Z",
+  "created_at_utc": "2026-09-14T04:25:09.273923+00:00",
+  "updated_at_utc": "2026-09-14T04:25:09.301567+00:00",
+  "status": "root_cause_confirmed",
+  "project": {
+    "client_name": "SampleClient",
+    "project_name": "SampleProject",
+    "domain": "sample-domain",
+    "tech_stack": [
+      "azure",
+      "databricks",
+      "sql-server"
+    ],
+    "qa_frameworks": [
+      "risk-based-testing",
+      "rca"
+    ],
+    "standards": [
+      "HIPAA",
+      "deterministic-sql"
+    ]
+  },
+  "input_file": "C:\\Users\\JoseRafaelMoraCasal\\AI Impact Assessment\\October 2026\\agentic-qa-rca\\data\\input\\demo_cases.json",
+  "defect": {
+    "defect_id": "DEMO-WHY3",
+    "created_date": "2026-08-14",
+    "severity": "high",
+    "component": "SyntheticBillingService",
+    "summary": "Synthetic invoices contain incorrect tax values",
+    "reproduction_steps": "Run the billing job against the supplied synthetic customer and tax-rate snapshot.",
+    "observed_behavior": "Invoices use tax rates from an outdated reference snapshot.",
+    "expected_behavior": "Invoices use the current tax-rate reference data.",
+    "evidence_artifacts": [
+      "DEMO-WHY3_invoice-diff.csv",
+      "DEMO-WHY3_tax-table-snapshot.json",
+      "DEMO-WHY3_refresh-job-history.txt"
+    ]
+  },
+  "category": "data-quality",
+  "current_why_index": 3,
+  "current_question": "What deeper cause made this possible: the tax-rate reference table was not refreshed with the current synthetic rates before the billing job ran? What evidence shows that this deeper cause is real rather than assumed?",
+  "session_config": {
+    "min_depth": 1,
+    "target_depth": 5,
+    "max_depth": 8,
+    "min_answer_length": 25,
+    "min_evidence_items": 1
+  },
+  "why_chain": [
+    {
+      "why_index": 1,
+      "question": "Why did Synthetic invoices contain incorrect tax values (Invoices use tax rates from an outdated reference snapshot.) occur in SyntheticBillingService, and what evidence supports that first causal explanation? Start with the most direct data-quality cause you can defend.",
+      "answer": "Because the billing job applied an outdated tax-rate reference snapshot to the synthetic invoices.",
+      "evidence_refs": [
+        "DEMO-WHY3_invoice-diff.csv",
+        "DEMO-WHY3_tax-table-snapshot.json"
+      ],
+      "resolved_by_this_cause": false,
+      "controllable_cause": true,
+      "prevents_recurrence": false,
+      "checkpoint": {
+        "decision": "continue",
+        "checks": {
+          "answer_specific_enough": true,
+          "evidence_items_sufficient": true,
+          "causal_link_stated": true,
+          "controllable_cause": true,
+          "prevents_recurrence": false,
+          "resolved_by_this_cause": false,
+          "minimum_depth_met": true,
+          "max_depth_reached": false
+        },
+        "recommended_data_requests": [
+          "Explain whether removing this cause would actually stop recurrence, and why."
+        ]
+      },
+      "recorded_at_utc": "2026-09-14T04:25:09.284195+00:00"
+    },
+    {
+      "why_index": 2,
+      "question": "What deeper cause made this possible: the billing job applied an outdated tax-rate reference snapshot to the synthetic invoices? What evidence shows that this deeper cause is real rather than assumed?",
+      "answer": "Because the tax-rate reference table was not refreshed with the current synthetic rates before the billing job ran.",
+      "evidence_refs": [
+        "DEMO-WHY3_invoice-diff.csv",
+        "DEMO-WHY3_tax-table-snapshot.json"
+      ],
+      "resolved_by_this_cause": false,
+      "controllable_cause": true,
+      "prevents_recurrence": false,
+      "checkpoint": {
+        "decision": "continue",
+        "checks": {
+          "answer_specific_enough": true,
+          "evidence_items_sufficient": true,
+          "causal_link_stated": true,
+          "controllable_cause": true,
+          "prevents_recurrence": false,
+          "resolved_by_this_cause": false,
+          "minimum_depth_met": true,
+          "max_depth_reached": false
+        },
+        "recommended_data_requests": [
+          "Explain whether removing this cause would actually stop recurrence, and why."
+        ]
+      },
+      "recorded_at_utc": "2026-09-14T04:25:09.292476+00:00"
+    },
+    {
+      "why_index": 3,
+      "question": "What deeper cause made this possible: the tax-rate reference table was not refreshed with the current synthetic rates before the billing job ran? What evidence shows that this deeper cause is real rather than assumed?",
+      "answer": "Because the scheduled tax-rate refresh job failed for the required refresh window, leaving the reference snapshot outdated.",
+      "evidence_refs": [
+        "DEMO-WHY3_refresh-job-history.txt"
+      ],
+      "resolved_by_this_cause": true,
+      "controllable_cause": true,
+      "prevents_recurrence": true,
+      "checkpoint": {
+        "decision": "stop_root_cause_confirmed",
+        "checks": {
+          "answer_specific_enough": true,
+          "evidence_items_sufficient": true,
+          "causal_link_stated": true,
+          "controllable_cause": true,
+          "prevents_recurrence": true,
+          "resolved_by_this_cause": true,
+          "minimum_depth_met": true,
+          "max_depth_reached": false
+        },
+        "recommended_data_requests": []
+      },
+      "recorded_at_utc": "2026-09-14T04:25:09.301543+00:00"
+    }
+  ],
+  "root_cause_summary": "Because the scheduled tax-rate refresh job failed for the required refresh window, leaving the reference snapshot outdated.",
+  "stop_reason": "Checkpoint confirmed a controllable cause that should prevent recurrence.",
+  "next_action": "Document CAPA and validation plan against this confirmed root cause."
+}

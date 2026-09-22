@@ -38,7 +38,10 @@ WRITE_ALLOWLIST = (
     PROJECT_ROOT / "data" / "output",
     PROJECT_ROOT / "evidence" / "rca_sessions",
     PROJECT_ROOT / "evidence" / "rca_reports",
+    PROJECT_ROOT / "evidence" / "capa_exports",
 )
+CAPA_PROVIDERS = {"ado", "jira", "generic"}
+ADO_VARIANT_SETS = {"standard", "expanded"}
 MAX_REQUEST_BODY_BYTES = 1_048_576
 LOGGER = logging.getLogger("agentic_qa.web")
 LOGGER.setLevel(logging.INFO)
@@ -110,6 +113,25 @@ def _parse_bool(value: Any, *, default: bool) -> bool:
         if normalized in {"false", "0", "no"}:
             return False
     raise RequestValidationError("Boolean fields must be true or false")
+
+
+def _export_output_path(payload: Dict[str, Any], session_path: Path, suffix: str) -> Path:
+    output = str(payload.get("output", "")).strip()
+    if output:
+        return _resolve_path(output, access="write")
+    return _resolve_path(
+        "",
+        default=Path("evidence/capa_exports") / f"{session_path.stem}-{suffix}.csv",
+        access="write",
+    )
+
+
+def _validated_choice(payload: Dict[str, Any], field: str, default: str, choices: set[str]) -> str:
+    value = str(payload.get(field, default)).strip().lower() or default
+    if value not in choices:
+        allowed = ", ".join(sorted(choices))
+        raise RequestValidationError(f"{field} must be one of: {allowed}")
+    return value
 
 
 def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: Dict[str, Any]) -> None:
@@ -428,9 +450,9 @@ class RcaWebHandler(BaseHTTPRequestHandler):
         if parsed.path == "/api/run-quick-plan":
             self._handle_run_quick_plan(payload)
             return
-            if parsed.path == "/api/run-demo":
-                self._handle_run_demo(payload)
-                return
+        if parsed.path == "/api/run-demo":
+            self._handle_run_demo(payload)
+            return
 
         raise FileNotFoundError(parsed.path)
 
@@ -497,6 +519,15 @@ class RcaWebHandler(BaseHTTPRequestHandler):
         controllable = _parse_bool(payload.get("controllable"), default=True)
         prevents_recurrence = _parse_bool(payload.get("prevents_recurrence"), default=False)
         revise = _parse_bool(payload.get("revise"), default=False)
+        advanced_continuation = _parse_bool(payload.get("advanced_continuation"), default=False)
+        target_why_index = payload.get("target_why_index")
+        if target_why_index is not None:
+            try:
+                target_why_index = int(target_why_index)
+            except (TypeError, ValueError) as exc:
+                raise RequestValidationError("target_why_index must be an integer") from exc
+            if target_why_index < 1:
+                raise RequestValidationError("target_why_index must be positive")
 
         if revise:
             session = revise_current_answer(
@@ -506,6 +537,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
                 resolved=resolved,
                 controllable=controllable,
                 prevents_recurrence=prevents_recurrence,
+                target_why_index=target_why_index,
             )
         else:
             session = answer_session(
@@ -515,6 +547,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
                 resolved=resolved,
                 controllable=controllable,
                 prevents_recurrence=prevents_recurrence,
+                advanced_continuation=advanced_continuation,
             )
 
         suggestions = _discover_evidence_refs(PROJECT_ROOT, session)
@@ -554,8 +587,8 @@ class RcaWebHandler(BaseHTTPRequestHandler):
 
     def _handle_export_capa(self, payload: Dict[str, Any]) -> None:
         session_path = _resolve_path(str(payload.get("session", "")), access="read")
-        output_path = _resolve_path(str(payload.get("output", "")), access="write")
-        provider = str(payload.get("provider", "ado"))
+        output_path = _export_output_path(payload, session_path, "capa")
+        provider = _validated_choice(payload, "provider", "ado", CAPA_PROVIDERS)
         assignee = str(payload.get("assignee", ""))
         due_date = str(payload.get("due_date", ""))
         csv_path = export_capa_csv(
@@ -569,12 +602,12 @@ class RcaWebHandler(BaseHTTPRequestHandler):
 
     def _handle_export_ado_testcases(self, payload: Dict[str, Any]) -> None:
         session_path = _resolve_path(str(payload.get("session", "")), access="read")
-        output_path = _resolve_path(str(payload.get("output", "")), access="write")
+        output_path = _export_output_path(payload, session_path, "testcases")
         assigned_to = str(payload.get("assigned_to", ""))
         area_path = str(payload.get("area_path", ""))
         iteration_path = str(payload.get("iteration_path", ""))
-        state = str(payload.get("state", "Design"))
-        variant_set = str(payload.get("variant_set", "standard"))
+        state = str(payload.get("state", "Design")).strip() or "Design"
+        variant_set = _validated_choice(payload, "variant_set", "standard", ADO_VARIANT_SETS)
         csv_path = export_ado_testcases_csv(
             session_path=session_path,
             output_path=output_path,

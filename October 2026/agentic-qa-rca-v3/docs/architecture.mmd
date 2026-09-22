@@ -1,0 +1,10 @@
+flowchart LR
+    UI[Local Web UI] --> API[ThreadingHTTPServer API]
+    CLI[CLI] --> ENGINE[Deterministic RCA Engine]
+    API --> ENGINE
+    ENGINE --> PLAN[Planner]
+    PLAN --> ANALYZE[Analyzer]
+    ANALYZE --> VALIDATE[Validator]
+    VALIDATE --> OUTPUT[Reports and CSV Exports]
+    ENGINE --> SESSION[Local JSON Sessions]
+    CONTEXT[Project Context YAML] --> ENGINE

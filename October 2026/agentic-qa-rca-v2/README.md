@@ -2,6 +2,8 @@
 
 Purpose: project-agnostic defect triage and root-cause support workflow that combines Six Sigma and Software QA.
 
+**Architecture and evaluator applicability:** See [ARCHITECTURE_AND_EVALUATOR_APPLICABILITY.md](ARCHITECTURE_AND_EVALUATOR_APPLICABILITY.md) for the deterministic, LLM-free release boundary, applicable controls, deferred LLM requirements, data handling, retention, and release governance.
+
 ## What this starter does
 
 1. Reads project context from YAML files.

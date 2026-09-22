@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Runtime outputs
+/data/output/*.json
+/evidence/rca_sessions/*.json
+/evidence/rca_reports/*.md
+/evidence/capa_exports/*.csv
+/evidence/evidence_log.csv
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

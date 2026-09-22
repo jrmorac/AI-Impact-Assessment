@@ -2,6 +2,8 @@
 
 This is a clean, shareable build of the RCA tool for QA teams.
 
+**Architecture and evaluator applicability:** See [ARCHITECTURE_AND_EVALUATOR_APPLICABILITY.md](ARCHITECTURE_AND_EVALUATOR_APPLICABILITY.md) for the deterministic, LLM-free release boundary, applicable controls, deferred LLM requirements, data handling, retention, and release governance.
+
 ## Included
 
 - Core CLI + RCA engine

@@ -1,0 +1,12 @@
+Finding ID,Applicability,Requirement ID,Planned Task,Code or Config Change,Required Evidence,Decision Status
+E2-F-001,Applicable now,E2-REQ-01/E2-REQ-02,CI and reproducible environment,.github/workflows plus lock/hashed requirements artifact,Clean-checkout CI run and dependency integrity evidence,Open
+E2-F-002,Applicable now,E2-REQ-03/E2-REQ-04/E2-REQ-05,Human-gated atomic exports,web_app.py/frontend/export helpers,Preview/cancel/approve/overwrite/conflict/interruption tests,Open
+E2-F-003,Applicable now,E2-REQ-06,Golden regression set,tests/golden fixtures and canonicalizer,Why1/3/5 and negative expected-output CI evidence,Open
+E2-F-004,Applicable now,E2-REQ-07,Local observability,orchestrator.py/web_app.py logging helpers,Sanitized lifecycle and agent-step log samples/schema tests,Open
+E2-F-005,Applicable now,E2-REQ-08,Architecture and operations docs,README/README_OPS/architecture/version/changelog,Documentation review and owner acknowledgement,Open
+E2-F-006,Applicable now,E2-REQ-09/E2-REQ-10,Evidence and package parity,traceability/risk/decision records and packaging workflow,Test matrix/browser evidence/package manifest/hash/sign-off,Open
+E2-F-007,Applicable now,E2-REQ-03/E2-REQ-05,CLI and file policy parity,main.py/io_utils.py/export helpers,CLI overwrite/path/atomicity tests,Open
+E2-C-001,Conditional future,E2-FUT-01,LLM token budget,provider interface and usage accounting,Mocked budget exhaustion tests,Deferred pending architecture decision
+E2-C-002,Conditional future,E2-FUT-02,Inference guardrails,model boundary policy/filtering,Injection/PII/refusal tests,Deferred pending architecture decision
+E2-C-003,Conditional future,E2-FUT-03,LLM-isolated CI,provider mocks/network deny/adversarial suite,Zero-live-call and malformed-output evidence,Deferred pending architecture decision
+E2-C-004,Conditional future,E2-FUT-04,Shared deployment controls,auth/intent/retention/monitoring/WORM/residency,Security and deployment sign-off,Deferred pending target decision

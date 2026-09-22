@@ -487,6 +487,9 @@ def export_capa_csv(
     assignee: str,
     due_date: str,
 ) -> Path:
+    provider = provider.strip().lower()
+    if provider not in {"ado", "jira", "generic"}:
+        raise ValueError("provider must be one of: ado, jira, generic")
     session = load_json(session_path)
     if not isinstance(session, dict):
         raise ValueError("Session file is invalid.")
@@ -688,6 +691,9 @@ def export_ado_testcases_csv(
     state: str,
     variant_set: str,
 ) -> Path:
+    variant_set = variant_set.strip().lower()
+    if variant_set not in {"standard", "expanded"}:
+        raise ValueError("variant_set must be one of: standard, expanded")
     session = load_json(session_path)
     if not isinstance(session, dict):
         raise ValueError("Session file is invalid.")

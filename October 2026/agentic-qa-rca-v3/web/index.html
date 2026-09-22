@@ -1,0 +1,1432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic QA RCA Console</title>
+  <!-- CSP keeps this self-contained page compatible with its existing inline CSS/JS and same-origin preview iframe. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; connect-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'self'; form-action 'self'">
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: #fffaf3;
+      --ink: #1f2937;
+      --muted: #5f6b7a;
+      --brand: #0f766e;
+      --accent: #b45309;
+      --line: #d6cfc3;
+      --ok: #166534;
+      --warn: #92400e;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #f6d8b8 0, var(--bg) 40%);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 30px;
+      letter-spacing: 0.3px;
+    }
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 3px 10px rgba(31, 41, 55, 0.08);
+    }
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 17px;
+    }
+    .section-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: 17px;
+    }
+    label {
+      display: block;
+      margin: 8px 0 4px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    input:not([type="checkbox"]), select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-sizing: border-box;
+      background: #fff;
+      color: var(--ink);
+    }
+    textarea { min-height: 110px; resize: vertical; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #fff;
+      background: var(--brand);
+      font-weight: 600;
+    }
+    button.alt { background: var(--accent); }
+    button.ghost { background: #475569; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .muted { color: var(--muted); font-size: 12px; }
+    .mono {
+      font-family: Consolas, "Courier New", monospace;
+      white-space: pre-wrap;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      max-height: 270px;
+      overflow: auto;
+    }
+    .status {
+      margin: 10px 0 0;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      background: #ecfeff;
+      color: #0f172a;
+      border: 1px solid #a5f3fc;
+    }
+    .workflow-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 10px;
+    }
+    .step-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .step-pill.active {
+      background: rgba(15, 118, 110, 0.1);
+      color: var(--brand);
+      border-color: rgba(15, 118, 110, 0.35);
+    }
+    .step-pill.done {
+      background: rgba(22, 101, 52, 0.09);
+      color: var(--ok);
+      border-color: rgba(22, 101, 52, 0.25);
+    }
+    .session-banner {
+      margin: 0 0 12px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .session-banner.info { border-color: #bfdbfe; background: #eff6ff; }
+    .session-banner.success { border-color: #bbf7d0; background: #f0fdf4; }
+    .session-banner.warning { border-color: #fcd34d; background: #fffbeb; }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    details.advanced-panel {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 10px;
+    }
+    details.advanced-panel summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    details.advanced-panel summary::-webkit-details-marker { display: none; }
+    details.advanced-panel[open] summary { margin-bottom: 8px; }
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    :where(a, button, input, select, textarea, summary):focus-visible {
+      outline: 3px solid #f59e0b;
+      outline-offset: 2px;
+    }
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -48px;
+      z-index: 3000;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #111827;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .skip-link:focus-visible { top: 12px; }
+    .status.error {
+      background: #fee2e2;
+      border-color: #fecaca;
+      color: #7f1d1d;
+    }
+    .checks {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .option-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+    .option-item label {
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .option-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin: 1px 0 0;
+      flex: 0 0 auto;
+    }
+    .option-help {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .logic-hint {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #c7e5df;
+      border-radius: 8px;
+      background: #f0fdfa;
+      color: #0f172a;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .logic-hint strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #0f766e;
+    }
+    .why-history {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+    }
+    .why-history button { padding: 6px 10px; }
+    .why-history button:disabled { opacity: 0.45; }
+    .why-history-label {
+      min-width: 92px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .term-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+    .term-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(15, 118, 110, 0.06);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    h1 .term-pill {
+      font-size: 0.82em;
+      padding: 4px 10px;
+      vertical-align: middle;
+    }
+    .help-btn, .section-help-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 700;
+      font-size: 10px;
+      cursor: pointer;
+      padding: 0;
+      box-shadow: none;
+    }
+    .help-btn:hover, .help-btn:focus-visible, .section-help-btn:hover, .section-help-btn:focus-visible {
+      background: var(--accent);
+      outline: none;
+    }
+    .term-tooltip {
+      position: fixed;
+      z-index: 1000;
+      max-width: 240px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fffaf3;
+      box-shadow: 0 16px 32px rgba(31, 41, 55, 0.18);
+      color: var(--ink);
+      font-size: 11px;
+      line-height: 1.35;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+    .term-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .term-tooltip strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--brand);
+    }
+    .preview-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(15, 23, 42, 0.52);
+      z-index: 2000;
+    }
+    .preview-modal-backdrop.hidden {
+      display: none;
+    }
+    .preview-modal {
+      width: min(1100px, 92vw);
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 28px 68px rgba(15, 23, 42, 0.28);
+      overflow: hidden;
+    }
+    .preview-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fafc;
+    }
+    .preview-modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .preview-modal-close {
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    .preview-modal-body {
+      flex: 1;
+      min-height: 420px;
+      background: #f8fafc;
+    }
+    .preview-modal-body iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      border: 0;
+      background: #fff;
+    }
+    .preview-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="wrap">
+    <h1>Agentic QA <span class="term-pill">RCA <button class="help-btn" type="button" data-term="RCA" aria-label="RCA definition">?</button></span> / <span class="term-pill">CAPA <button class="help-btn" type="button" data-term="CAPA" aria-label="CAPA definition">?</button></span> Console</h1>
+    <p class="subtitle">Tool for structured root cause analysis using the 5-Why method, with corrective action tracking and test case generation for QA and engineering teams.</p>
+    <div class="workflow-steps" aria-label="Workflow steps">
+      <span class="step-pill active">1. Start</span>
+      <span class="step-pill">2. Diagnose</span>
+      <span class="step-pill">3. Export</span>
+    </div>
+    <div id="sessionStatusBanner" class="session-banner info" role="status" aria-live="polite" aria-atomic="true">No session loaded. Start a session to begin the RCA workflow.</div>
+    <div id="termTooltip" class="term-tooltip" role="tooltip" aria-live="polite"></div>
+
+    <main id="main" tabindex="-1">
+    <div class="grid">
+      <section class="card">
+        <h2 class="section-title">1) Start Session <button class="section-help-btn" type="button" data-section="startSession" aria-label="Start Session help">?</button></h2>
+        <p class="muted">Use the <strong>RCA</strong> and <strong>CAPA</strong> workflow to drive a disciplined root-cause and corrective-action process.</p>
+        <label for="context">Context file</label>
+        <select id="context"></select>
+        <p class="muted">Choose one context profile for this run. You do not need all context files at once.</p>
+
+        <label for="input">Input file</label>
+        <select id="input"></select>
+
+        <label for="defect">Defect ID</label>
+        <select id="defect"></select>
+        <p class="muted">Defect IDs are loaded from the selected input JSON (field: defect_id).</p>
+
+        <label for="manualDefect">Manual Defect ID (optional override)</label>
+        <input id="manualDefect" placeholder="Use only if not present in dropdown">
+
+        <div class="row">
+          <div>
+            <label for="role">Role</label>
+            <select id="role">
+              <option value="qa">qa</option>
+              <option value="dev">dev</option>
+              <option value="sre">sre</option>
+              <option value="release-manager">release-manager</option>
+            </select>
+            <p id="roleHint" class="muted">Role changes answer guidance templates; it is not only for records.</p>
+          </div>
+          <div>
+            <label for="session">Session path (optional)</label>
+            <input id="session" placeholder="evidence/rca_sessions/my-session.json">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="startBtn">Start RCA Session</button>
+          <button id="newSessionBtn" class="ghost">New Session</button>
+          <button id="statusBtn" class="ghost">Refresh Status</button>
+        </div>
+
+        <label for="latestSession">Latest session</label>
+        <select id="latestSession"></select>
+        <div class="actions">
+          <button id="loadSessionBtn" class="ghost">Load Selected Session</button>
+          <button id="refreshListsBtn" class="ghost">Refresh Session and Report Lists</button>
+        </div>
+
+        <label for="quickPlan">Quick plan</label>
+        <select id="quickPlan"></select>
+        <div class="actions">
+          <button id="runQuickPlanBtn" class="ghost">Run Quick Plan</button>
+        </div>
+
+        <label for="demoCase">Demo case</label>
+        <select id="demoCase">
+          <option value="why1">Why 1 - simple operational issue</option>
+          <option value="why3" selected>Why 3 - moderate complexity</option>
+          <option value="why5">Why 5 - complex defect escape</option>
+        </select>
+        <div class="actions">
+          <button id="demoRunBtn" class="alt">Run Demo Case</button>
+        </div>
+        <div id="startStatus" class="status" role="status" aria-live="polite" aria-atomic="true">Ready.</div>
+        <div id="errorOutput" class="status error" role="alert" aria-live="assertive" aria-atomic="true" hidden></div>
+      </section>
+
+      <div id="exportPreviewModal" class="preview-modal-backdrop hidden" aria-hidden="true">
+        <div class="preview-modal" role="dialog" aria-modal="true" aria-labelledby="exportPreviewTitle">
+          <div class="preview-modal-header">
+            <h3 id="exportPreviewTitle">Export Preview</h3>
+            <button id="closeExportPreviewBtn" type="button" class="preview-modal-close" aria-label="Close preview">×</button>
+          </div>
+          <div class="preview-modal-body">
+            <iframe id="exportPreviewFrame" title="Export preview content"></iframe>
+          </div>
+          <div class="preview-modal-actions">
+            <button id="exportPreviewOkBtn" type="button">OK</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="card">
+        <h2 class="section-title">2) Answer Current Why <button class="section-help-btn" type="button" data-section="answerCurrentWhy" aria-label="Answer Current Why help">?</button></h2>
+        <label for="question">Current question</label>
+        <div id="question" class="mono"></div>
+        <div class="why-history" aria-label="Why history navigation">
+          <button id="whyBackBtn" class="ghost" type="button" aria-label="Previous Why">&#8592;</button>
+          <span id="whyHistoryLabel" class="why-history-label" aria-live="polite">Current Why</span>
+          <button id="whyNextBtn" class="ghost" type="button" aria-label="Next Why">&#8594;</button>
+        </div>
+        <div id="whyAnswerHistory" class="muted"></div>
+
+        <label for="answer">Answer</label>
+        <textarea id="answer" placeholder="Because ..."></textarea>
+
+        <label for="evidence">Evidence refs (comma-separated)</label>
+        <input id="evidence" placeholder="artifact1.csv, artifact2.txt">
+        <p id="evidenceHints" class="muted"></p>
+
+        <div class="checks">
+          <div class="option-item">
+            <label><input type="checkbox" id="controllable" checked> controllable</label>
+            <p class="option-help">Use this when your team can directly act on this cause (engineering, QA, or release process).</p>
+          </div>
+          <div class="option-item">
+            <label><input type="checkbox" id="resolved"> resolved</label>
+            <p class="option-help">Use this when fixing this cause would solve the current defect, not only a side factor.</p>
+          </div>
+          <div class="option-item">
+            <label><input type="checkbox" id="prevents"> prevents recurrence</label>
+            <p class="option-help">Use this when the fix adds a durable control that prevents this defect class from happening again.</p>
+          </div>
+          <div class="option-item">
+            <label><input type="checkbox" id="revise"> revise current node</label>
+            <p class="option-help">Use this to replace the current Why answer instead of creating a new deeper Why step.</p>
+          </div>
+        </div>
+
+        <div class="logic-hint">
+          <strong>Stop logic</strong>
+          The flow can stop at Why 1 or at any later depth when all required checks pass and you mark
+          controllable + resolved + prevents recurrence as true. Five Whys is the normal target; deeper analysis remains available for edge cases.
+          If evidence or answer quality is weak, the flow will request more evidence for the same Why instead of stopping.
+        </div>
+
+        <div class="actions">
+          <button id="submitBtn">Submit Answer</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid" style="margin-top:12px;">
+      <section class="card">
+        <h2 class="section-title">3) Export Artifacts <button class="section-help-btn" type="button" data-section="exportArtifacts" aria-label="Export Artifacts help">?</button></h2>
+
+        <label for="reportOutput">Report output (optional)</label>
+        <input id="reportOutput" placeholder="evidence/rca_reports/session.md">
+
+        <div class="actions">
+          <button id="exportReportBtn" class="alt">Export Report</button>
+        </div>
+
+        <label for="capaOutput">CAPA CSV output</label>
+        <input id="capaOutput" value="evidence/capa_exports/session-ado.csv">
+        <div class="row">
+          <div>
+            <label for="provider">CAPA provider</label>
+            <select id="provider">
+              <option value="ado">ado</option>
+              <option value="jira">jira</option>
+              <option value="generic">generic</option>
+            </select>
+          </div>
+          <div>
+            <label for="assignee">Assignee</label>
+            <input id="assignee" placeholder="qa.lead@sampleclient.com">
+          </div>
+        </div>
+
+        <label for="dueDate">Due date</label>
+        <input id="dueDate" placeholder="YYYY-MM-DD">
+        <div class="actions">
+          <button id="exportCapaBtn" class="alt">Export CAPA CSV</button>
+        </div>
+
+        <label for="adoTcOutput">ADO TestCase CSV output</label>
+        <input id="adoTcOutput" value="evidence/capa_exports/session-ado-testcases.csv">
+
+        <details class="advanced-panel">
+          <summary>Advanced options</summary>
+          <div class="row">
+            <div>
+              <label for="areaPath">Area Path</label>
+              <input id="areaPath" placeholder="SampleProject\\QA">
+              <p class="muted">Optional. Set only if your ADO process requires an Area Path.</p>
+            </div>
+            <div>
+              <label for="iterationPath">Iteration Path</label>
+              <input id="iterationPath" placeholder="SampleProject\\Sprint-2">
+              <p class="muted">Optional. Use when test cases must be assigned to a specific iteration.</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="variantSet">Variant Set</label>
+              <select id="variantSet">
+                <option value="standard">standard</option>
+                <option value="expanded">expanded</option>
+              </select>
+              <p class="muted">Optional. Use expanded to include negative and boundary variants.</p>
+            </div>
+            <div>
+              <label for="state">State</label>
+              <input id="state" value="Design">
+              <p class="muted">Optional. Defaults to Design if left blank.</p>
+            </div>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button id="exportAdoTcBtn" class="alt">Export ADO TestCase CSV</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">Session Snapshot <button class="section-help-btn" type="button" data-section="sessionSnapshot" aria-label="Session Snapshot help">?</button></h2>
+        <div id="snapshot" class="mono"></div>
+
+        <h2 class="section-title" style="margin-top:14px;">Agent Trace Viewer <button class="section-help-btn" type="button" data-section="agentTraceViewer" aria-label="Agent Trace Viewer help">?</button></h2>
+        <label for="reportFile">Batch report file</label>
+        <select id="reportFile"></select>
+
+        <label for="reportDefect">Defect ID in report</label>
+        <select id="reportDefect"></select>
+
+        <div class="actions">
+          <button id="loadTraceBtn" class="ghost">Load Agent Trace</button>
+          <button id="refreshTraceListsBtn" class="ghost">Refresh Trace Inputs</button>
+        </div>
+
+        <div id="agentTrace" class="mono">No agent trace loaded.</div>
+      </section>
+    </div>
+    </main>
+  </div>
+
+  <script>
+    const termDefinitions = {
+      RCA: {
+        term: "RCA",
+        text: "Root Cause Analysis — a structured method to identify the underlying reason a defect or failure happened."
+      },
+      CAPA: {
+        term: "CAPA",
+        text: "Corrective and Preventive Actions — actions taken to fix the current issue and prevent recurrence."
+      },
+      DMAIC: {
+        term: "DMAIC",
+        text: "Define, Measure, Analyze, Improve, Control — a Six Sigma improvement cycle used to reduce defects and stabilize processes."
+      },
+      D4: {
+        term: "D4",
+        text: "Dimension 4 — Agentic workflow evidence. This is the area that shows an AI workflow runs with some autonomy and orchestration."
+      },
+      D5: {
+        term: "D5",
+        text: "Dimension 5 — Multiplier and adoption. This is the evidence that reusable assets are being shared and used by teammates."
+      }
+    };
+
+    const sectionHelp = {
+      startSession: {
+        title: "Start Session",
+        text: "Select the context, input file, and defect to begin a guided RCA workflow. Use this section to launch a new session and set the analysis scope."
+      },
+      answerCurrentWhy: {
+        title: "Answer Current Why",
+        text: "Record the current root-cause answer with evidence and required flags. Complete the Why step, add evidence references, and submit the response to advance the analysis."
+      },
+      exportArtifacts: {
+        title: "Export Artifacts",
+        text: "Export the RCA report, CAPA actions, and ADO test cases after the analysis is complete. Use the output fields to select file locations and required metadata."
+      },
+      sessionSnapshot: {
+        title: "Session Snapshot",
+        text: "Review the current session state and values captured by the RCA workflow. This panel helps confirm the active issue, current question, and evidence that has been recorded."
+      },
+      agentTraceViewer: {
+        title: "Agent Trace Viewer",
+        text: "Inspect the generated agent trace for the selected report and defect. Use this view to validate the reasoning path and confirm what the workflow produced."
+      }
+    };
+
+    const state = {
+      sessionPath: "",
+      session: null,
+      evidenceSuggestions: [],
+      reportTrace: [],
+      whyHistoryIndex: -1,
+      draftWhyIndex: -1,
+      answerDraft: "",
+      evidenceDraft: "",
+      lastRequestId: "",
+      modalReturnFocus: null
+    };
+
+    const byId = (id) => document.getElementById(id);
+
+    const roleHints = {
+      qa: "QA role focuses on test and gate coverage; guidance emphasizes defect escape and validation gaps.",
+      dev: "Dev role focuses on implementation mechanics; guidance emphasizes control and code path failures.",
+      sre: "SRE role focuses on operability and safeguards; guidance emphasizes monitoring and alerting gaps.",
+      "release-manager": "Release-manager role focuses on governance criteria; guidance emphasizes approval and risk controls."
+    };
+
+    function updateRoleHint() {
+      const role = byId("role").value;
+      byId("roleHint").textContent = roleHints[role] || "Role changes answer guidance templates; it is not only for records.";
+    }
+
+    function setOptions(selectEl, values, preferredValue = "") {
+      const safeValues = Array.isArray(values) ? values : [];
+      selectEl.innerHTML = safeValues.map(v => `<option value="${v}">${v}</option>`).join("");
+      if (!safeValues.length) return;
+      if (preferredValue && safeValues.includes(preferredValue)) {
+        selectEl.value = preferredValue;
+      }
+    }
+
+    function isClosedSession() {
+      return ["closed", "completed"].includes(String(state.session?.status || "").toLowerCase());
+    }
+
+    function canContinueBeyondTarget() {
+      return state.session?.allow_advanced_continuation === true
+        || state.session?.continue_beyond_target === true
+        || state.session?.advanced_continuation === true;
+    }
+
+    function isValidBatchReport(pathValue, reports) {
+      return typeof pathValue === "string"
+        && pathValue.toLowerCase().endsWith(".json")
+        && reports.includes(pathValue);
+    }
+
+    function newestValidBatchReport(reports) {
+      return reports
+        .filter((pathValue) => typeof pathValue === "string" && pathValue.toLowerCase().endsWith(".json"))
+        .sort((left, right) => right.localeCompare(left))[0] || "";
+    }
+
+    async function refreshSessionAndReportLists(preferredReport = "") {
+      const data = await api("/api/bootstrap");
+      const sessionSel = byId("latestSession");
+      const reportSel = byId("reportFile");
+      const prevSession = sessionSel.value;
+      const reports = Array.isArray(data.output_reports) ? data.output_reports : [];
+      const preferred = isValidBatchReport(preferredReport, reports)
+        ? preferredReport
+        : (isValidBatchReport(reportSel.value, reports) ? reportSel.value : newestValidBatchReport(reports));
+
+      setOptions(sessionSel, data.sessions || [], prevSession);
+      setOptions(reportSel, reports, preferred);
+      if (preferredReport && !reports.includes(preferredReport) && preferredReport.toLowerCase().endsWith(".json")) {
+        reportSel.add(new Option(preferredReport, preferredReport));
+        reportSel.value = preferredReport;
+      }
+      await loadAgentTrace();
+    }
+
+    function bindTermTooltips() {
+      const tooltip = byId("termTooltip");
+      const buttons = document.querySelectorAll(".help-btn, .section-help-btn");
+
+      buttons.forEach((button) => {
+        const term = button.dataset.term;
+        const section = button.dataset.section;
+        const entry = termDefinitions[term] || (section ? sectionHelp[section] : null);
+        if (!entry) return;
+
+        const show = (event) => {
+          const rect = button.getBoundingClientRect();
+          const label = entry.term || entry.title;
+          tooltip.innerHTML = `<strong>${label}</strong>${entry.text}`;
+          tooltip.classList.add("visible");
+          tooltip.style.left = `${Math.min(window.innerWidth - 320, rect.left + 18)}px`;
+          tooltip.style.top = `${Math.max(12, rect.top + 22)}px`;
+        };
+
+        const hide = () => tooltip.classList.remove("visible");
+
+        button.addEventListener("mouseenter", show);
+        button.addEventListener("focus", show);
+        button.addEventListener("mouseleave", hide);
+        button.addEventListener("blur", hide);
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          tooltip.classList.toggle("visible");
+          if (tooltip.classList.contains("visible")) {
+            show(event);
+          }
+        });
+      });
+    }
+
+    class ApiError extends Error {
+      constructor(code, message, requestId = "", status = 0) {
+        super(message);
+        this.name = "ApiError";
+        this.code = code || "REQUEST_FAILED";
+        this.requestId = requestId || "";
+        this.status = status;
+      }
+    }
+
+    async function api(path, method = "GET", body = null) {
+      const options = { method, headers: { "Content-Type": "application/json" } };
+      if (body) options.body = JSON.stringify(body);
+      const res = await fetch(path, options);
+      let data = {};
+      try {
+        data = await res.json();
+      } catch (err) {
+        data = {};
+      }
+      const requestId = data.request_id || res.headers.get("x-request-id") || "";
+      state.lastRequestId = requestId;
+      if (!res.ok) {
+        throw new ApiError(
+          data.error_code || data.code || "REQUEST_FAILED",
+          data.message || data.error || "Request failed",
+          requestId,
+          res.status
+        );
+      }
+      if (data && typeof data === "object" && requestId && !data.request_id) {
+        data.request_id = requestId;
+      }
+      return data;
+    }
+
+    function requestSuffix(requestId = "") {
+      const id = requestId || state.lastRequestId;
+      return id ? ` (Request ID: ${id})` : "";
+    }
+
+    function setStatus(msg, isError = false, requestId = "") {
+      const el = byId("startStatus");
+      const errorEl = byId("errorOutput");
+      if (isError) {
+        setErrorOutput(msg, requestId);
+        return;
+      }
+      el.textContent = `${msg}${requestSuffix(requestId)}`;
+      el.style.background = isError ? "#fee2e2" : "#ecfeff";
+      el.style.borderColor = isError ? "#fecaca" : "#a5f3fc";
+      el.style.color = isError ? "#7f1d1d" : "#0f172a";
+      if (errorEl) {
+        errorEl.hidden = true;
+        errorEl.textContent = "";
+      }
+    }
+
+    function setErrorOutput(message, requestId = "") {
+      const el = byId("errorOutput");
+      if (!el) return;
+      const text = `${message}${requestSuffix(requestId)}`;
+      if (!el.hidden && el.textContent === text) return;
+      el.textContent = text;
+      el.hidden = false;
+    }
+
+    function handleError(operation, err) {
+      const code = err?.code || "CLIENT_ERROR";
+      const message = err?.message || "Unexpected error.";
+      setErrorOutput(`${operation} failed [${code}]: ${message}`, err?.requestId || "");
+    }
+
+    function bindAction(buttonId, action) {
+      const button = byId(buttonId);
+      if (!button) return;
+      button.addEventListener("click", () => {
+        if (button.disabled || button.dataset.busy === "true") return;
+        const originalLabel = button.textContent;
+        button.dataset.busy = "true";
+        button.disabled = true;
+        button.setAttribute("aria-busy", "true");
+        button.textContent = "Loading...";
+        setStatus(`Loading ${originalLabel.toLowerCase()}...`);
+        Promise.resolve()
+          .then(action)
+          .finally(() => {
+            button.textContent = originalLabel;
+            button.disabled = false;
+            button.removeAttribute("aria-busy");
+            delete button.dataset.busy;
+            updateActionState();
+            renderSnapshot();
+          });
+      });
+    }
+
+    function closeExportPreview() {
+      const modal = byId("exportPreviewModal");
+      const frame = byId("exportPreviewFrame");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.setAttribute("aria-hidden", "true");
+      }
+      if (frame) {
+        frame.src = "about:blank";
+      }
+      if (state.modalReturnFocus && typeof state.modalReturnFocus.focus === "function") {
+        state.modalReturnFocus.focus();
+      }
+      state.modalReturnFocus = null;
+    }
+
+    function openExportPreview(pathValue, label) {
+      const previewPath = (pathValue || "").trim();
+      if (!previewPath) {
+        return;
+      }
+
+      const modal = byId("exportPreviewModal");
+      const frame = byId("exportPreviewFrame");
+      const title = byId("exportPreviewTitle");
+      if (!modal || !frame || !title) {
+        setStatus(`Preview UI unavailable for ${label}.`, true);
+        return;
+      }
+
+      state.modalReturnFocus = document.activeElement;
+      title.textContent = `${label} Preview`;
+      frame.src = `/api/file-preview?path=${encodeURIComponent(previewPath)}`;
+      modal.classList.remove("hidden");
+      modal.setAttribute("aria-hidden", "false");
+      setStatus(`${label} preview opened: ${previewPath}`);
+      byId("closeExportPreviewBtn").focus();
+    }
+
+    function updateSessionBanner(message, tone = "info") {
+      const el = byId("sessionStatusBanner");
+      el.textContent = message;
+      el.className = `session-banner ${tone}`;
+    }
+
+    function updateActionState() {
+      const hasSession = Boolean(state.sessionPath || byId("session").value.trim());
+      const exportButtons = [
+        byId("exportReportBtn"),
+        byId("exportCapaBtn"),
+        byId("exportAdoTcBtn")
+      ];
+      exportButtons.forEach((button) => {
+        if (button) button.disabled = !hasSession;
+      });
+    }
+
+    function renderSnapshot() {
+      byId("snapshot").textContent = state.session ? JSON.stringify(state.session, null, 2) : "No session loaded.";
+      const history = Array.isArray(state.session?.why_chain) ? state.session.why_chain : [];
+      const historyIndex = history.length && state.whyHistoryIndex >= 0
+        ? Math.min(state.whyHistoryIndex, history.length - 1)
+        : -1;
+      state.whyHistoryIndex = historyIndex;
+      const selected = historyIndex >= 0 ? history[historyIndex] : null;
+      const evidenceRefs = Array.isArray(selected?.evidence_refs) ? selected.evidence_refs : [];
+      const selectedWhyIndex = Number(selected?.why_index || 0);
+      const isHistorical = Boolean(selected);
+      const revise = byId("revise").checked;
+      const canSubmitStatus = ["awaiting_answer", "needs_more_evidence"].includes(state.session?.status);
+      const canSubmit = Boolean(state.sessionPath)
+        && canSubmitStatus
+        && !isClosedSession()
+        && (!isHistorical || revise);
+      const isFinalWhy = selectedWhyIndex >= 5 && !canContinueBeyondTarget();
+
+      byId("question").textContent = selected?.question || state.session?.current_question || "No active question.";
+      byId("whyAnswerHistory").textContent = selected
+        ? `${revise ? "Revise mode - " : "Historical - "}Answer: ${selected.answer || ""}`
+        : (revise ? "Revise mode - live current answer." : "Live current answer.");
+      byId("whyHistoryLabel").textContent = selected
+        ? `${revise ? "Revise " : "Historical "}Why ${selected.why_index} of ${history.length}${isFinalWhy ? " (final)" : ""}`
+        : (revise ? "Revise current Why" : "Current Why");
+      byId("whyBackBtn").disabled = !history.length || historyIndex === 0;
+      byId("whyNextBtn").disabled = historyIndex < 0
+        || (historyIndex >= history.length - 1 && isFinalWhy);
+      byId("submitBtn").disabled = !canSubmit;
+      if (selected) {
+        const hasDraft = state.draftWhyIndex === selectedWhyIndex;
+        byId("answer").value = hasDraft ? state.answerDraft : (selected.answer || "");
+        byId("evidence").value = hasDraft ? state.evidenceDraft : evidenceRefs.join(", ");
+        if (!hasDraft) {
+          state.draftWhyIndex = selectedWhyIndex;
+          state.answerDraft = byId("answer").value;
+          state.evidenceDraft = byId("evidence").value;
+        }
+        byId("controllable").checked = Boolean(selected.controllable_cause);
+        byId("resolved").checked = Boolean(selected.resolved_by_this_cause);
+        byId("prevents").checked = Boolean(selected.prevents_recurrence);
+      }
+      byId("evidenceHints").textContent = state.evidenceSuggestions.length
+        ? "Suggestions: " + state.evidenceSuggestions.join(", ")
+        : "No evidence suggestions yet.";
+    }
+
+    function currentSessionPath() {
+      const override = byId("session").value.trim();
+      return override || state.sessionPath;
+    }
+
+    function clearAnswerDraft() {
+      state.draftWhyIndex = -1;
+      state.answerDraft = "";
+      state.evidenceDraft = "";
+    }
+
+    function captureAnswerDraft() {
+      if (state.whyHistoryIndex < 0) return;
+      state.draftWhyIndex = Number(state.session?.why_chain?.[state.whyHistoryIndex]?.why_index || -1);
+      state.answerDraft = byId("answer").value;
+      state.evidenceDraft = byId("evidence").value;
+    }
+
+    async function loadBootstrap() {
+      const data = await api("/api/bootstrap");
+      const contextSel = byId("context");
+      const inputSel = byId("input");
+      const quickPlanSel = byId("quickPlan");
+      const sessionSel = byId("latestSession");
+      const reportSel = byId("reportFile");
+
+      setOptions(contextSel, data.contexts || []);
+      setOptions(inputSel, data.inputs || []);
+      setOptions(quickPlanSel, data.quick_plans || []);
+      setOptions(sessionSel, data.sessions || []);
+      const reports = Array.isArray(data.output_reports) ? data.output_reports : [];
+      setOptions(reportSel, reports, newestValidBatchReport(reports));
+
+      await loadDefects();
+      await loadAgentTrace();
+      updateRoleHint();
+    }
+
+    function clearAgentTrace(message = "No agent trace loaded.") {
+      state.reportTrace = [];
+      byId("agentTrace").textContent = message;
+    }
+
+    async function loadAgentTrace() {
+      try {
+        setStatus("Loading agent trace...");
+        const report = byId("reportFile").value;
+        if (!report) {
+          clearAgentTrace("No batch report available yet.");
+          byId("reportDefect").innerHTML = "";
+          return;
+        }
+
+        const selectedDefect = byId("reportDefect").value;
+        const suffix = selectedDefect ? `&defect_id=${encodeURIComponent(selectedDefect)}` : "";
+        const data = await api(`/api/report-agent-trace?report=${encodeURIComponent(report)}${suffix}`);
+
+        const defectSel = byId("reportDefect");
+        const defectIds = Array.isArray(data.defect_ids) ? data.defect_ids : [];
+        const nextDefect = defectIds.includes(selectedDefect)
+          ? selectedDefect
+          : (defectIds.includes(data.selected_defect_id) ? data.selected_defect_id : defectIds[0] || "");
+        setOptions(defectSel, defectIds, nextDefect);
+        state.reportTrace = Array.isArray(data.agent_trace) ? data.agent_trace : [];
+        byId("agentTrace").textContent = state.reportTrace.length
+          ? JSON.stringify(state.reportTrace, null, 2)
+          : "No agent_trace found for selected defect/report.";
+      } catch (err) {
+        clearAgentTrace("Unable to load the selected agent trace.");
+        handleError("Loading agent trace", err);
+      }
+    }
+
+    async function loadDefects() {
+      try {
+        const input = byId("input").value;
+        if (!input) return;
+        setStatus("Loading defect IDs...");
+        const data = await api(`/api/defects?input=${encodeURIComponent(input)}`);
+        const defectSel = byId("defect");
+        defectSel.innerHTML = data.defect_ids.map(v => `<option value="${v}">${v}</option>`).join("");
+        if (!data.defect_ids.length) {
+          setStatus("No defect IDs found in selected input. Use Manual Defect ID override.", true);
+        }
+      } catch (err) {
+        handleError("Loading defect IDs", err);
+      }
+    }
+
+    async function loadSelectedSession() {
+      const selected = byId("latestSession").value;
+      if (!selected) {
+        setStatus("No session selected.", true);
+        return;
+      }
+      byId("session").value = selected;
+      await refreshStatus();
+    }
+
+    async function startSession() {
+      try {
+        const payload = {
+          context: byId("context").value,
+          input: byId("input").value,
+          defect_id: byId("manualDefect").value.trim() || byId("defect").value,
+          role: byId("role").value,
+          session: byId("session").value.trim()
+        };
+        const data = await api("/api/start", "POST", payload);
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
+        byId("session").value = data.session_path;
+        byId("reportOutput").value = data.default_report_path || "";
+        await refreshSessionAndReportLists();
+        updateSessionBanner(`Active session: ${data.session_path}`, "success");
+        setStatus(`Session started: ${data.session_path}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        handleError("Starting session", err);
+      }
+    }
+
+    async function runQuickPlan() {
+      try {
+        const payload = {
+          context: byId("context").value,
+          input: byId("input").value,
+          defect_id: byId("manualDefect").value.trim() || byId("defect").value,
+          role: byId("role").value,
+          session: byId("session").value.trim(),
+          quick_plan: byId("quickPlan").value,
+          output_report: byId("reportOutput").value.trim()
+        };
+        const data = await api("/api/run-quick-plan", "POST", payload);
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
+        byId("session").value = data.session_path;
+        byId("reportOutput").value = data.report_path || byId("reportOutput").value;
+        await refreshSessionAndReportLists();
+        updateSessionBanner(`Active session: ${data.session_path}`, "success");
+        setStatus(`Quick plan completed. Status: ${data.session.status}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        handleError("Running quick plan", err);
+      }
+    }
+
+    async function runDemo() {
+      try {
+        const demoCase = byId("demoCase").value;
+        const demoDefectId = `DEMO-${demoCase.toUpperCase()}`;
+        const inputPath = "data/input/demo_cases.json";
+        const planPath = `data/input/demo_quick_plan_${demoCase}.json`;
+        byId("input").value = inputPath;
+        await loadDefects();
+        byId("defect").value = demoDefectId;
+        byId("manualDefect").value = "";
+        byId("quickPlan").value = planPath;
+        byId("session").value = "";
+        byId("reportOutput").value = "";
+        const data = await api("/api/run-demo", "POST", {
+          context: byId("context").value,
+          input: inputPath,
+          case: demoCase,
+          role: byId("role").value
+        });
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
+        byId("session").value = data.session_path;
+        byId("reportOutput").value = data.report_path || "";
+        await refreshSessionAndReportLists(data.batch_report_path || "");
+        if (data.batch_report_path) {
+          byId("reportFile").value = data.batch_report_path;
+          await loadAgentTrace();
+          byId("reportDefect").value = demoDefectId;
+          await loadAgentTrace();
+        }
+        updateSessionBanner(`Active demo session: ${data.session_path}`, "success");
+        setStatus(`Demo completed. RCA: ${data.report_path} | CAPA: ${data.capa_path} | Test cases: ${data.testcases_path} | Trace report: ${data.batch_report_path || "n/a"}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        handleError("Running demo", err);
+      }
+    }
+
+    async function startNewSession() {
+      state.sessionPath = "";
+      state.session = null;
+      state.evidenceSuggestions = [];
+      state.whyHistoryIndex = -1;
+      clearAnswerDraft();
+      byId("session").value = "";
+      byId("reportOutput").value = "";
+      byId("answer").value = "";
+      byId("evidence").value = "";
+      byId("resolved").checked = false;
+      byId("prevents").checked = false;
+      byId("revise").checked = false;
+      updateSessionBanner("No session loaded. Start a new RCA session.", "info");
+      setStatus("Ready for a new session.");
+      updateActionState();
+      renderSnapshot();
+      try {
+        await refreshSessionAndReportLists();
+      } catch (err) {
+        handleError("Refreshing session", err);
+      }
+    }
+
+    async function refreshStatus() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const data = await api("/api/status", "POST", { session });
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
+        updateSessionBanner(`Active session: ${data.session_path} | Status: ${data.session.status}`, "info");
+        setStatus(`Session loaded: ${data.session.status}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        handleError("Loading session status", err);
+      }
+    }
+
+    async function submitAnswer() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        if (isClosedSession()) throw new Error("Closed sessions cannot accept answers.");
+        captureAnswerDraft();
+        const history = Array.isArray(state.session?.why_chain) ? state.session.why_chain : [];
+        const selected = state.whyHistoryIndex >= 0 ? history[state.whyHistoryIndex] : null;
+        const revise = byId("revise").checked;
+        if (selected && !revise) throw new Error("Select revise current node before editing a historical Why.");
+        const evidenceRefs = byId("evidence").value
+          .split(",")
+          .map(v => v.trim())
+          .filter(Boolean);
+
+        const targetWhyIndex = selected?.why_index
+          || (revise && history.length ? history[history.length - 1]?.why_index : null);
+        const payload = {
+          session,
+          answer: byId("answer").value,
+          evidence_refs: evidenceRefs,
+          controllable: byId("controllable").checked,
+          resolved: byId("resolved").checked,
+          prevents_recurrence: byId("prevents").checked,
+          revise,
+          ...(targetWhyIndex ? { target_why_index: targetWhyIndex } : {})
+        };
+
+        const data = await api("/api/answer", "POST", payload);
+        state.sessionPath = data.session_path;
+        state.session = data.session;
+        state.evidenceSuggestions = data.evidence_suggestions || [];
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
+        if (data.session.status !== "needs_more_evidence") {
+          byId("answer").value = "";
+          byId("evidence").value = "";
+          byId("controllable").checked = true;
+          byId("resolved").checked = false;
+          byId("prevents").checked = false;
+        }
+        byId("revise").checked = false;
+        updateSessionBanner(`Active session: ${data.session_path} | Status: ${data.session.status}`, "success");
+        setStatus(`Answer submitted. Status: ${data.session.status}`);
+        updateActionState();
+        renderSnapshot();
+      } catch (err) {
+        handleError("Submitting answer", err);
+      }
+    }
+
+    async function exportReport() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const output = byId("reportOutput").value.trim();
+        const preview = await api("/api/export-preview", "POST", {
+          kind: "report",
+          session,
+          output
+        });
+        const committed = await api("/api/export-commit", "POST", {
+          preview_id: preview.preview_id,
+          approved: true,
+          content_sha256: preview.content_sha256,
+          overwrite: false
+        });
+        openExportPreview(committed.committed_path, "Report");
+        await refreshSessionAndReportLists();
+      } catch (err) {
+        handleError("Exporting report", err);
+      }
+    }
+
+    async function exportCapa() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const payload = {
+          session,
+          output: byId("capaOutput").value.trim(),
+          provider: byId("provider").value,
+          assignee: byId("assignee").value.trim(),
+          due_date: byId("dueDate").value.trim()
+        };
+        const data = await api("/api/export-capa", "POST", payload);
+        await refreshSessionAndReportLists();
+        openExportPreview(data.csv_path, "CAPA CSV");
+      } catch (err) {
+        handleError("Exporting CAPA CSV", err);
+      }
+    }
+
+    async function exportAdoTc() {
+      try {
+        const session = currentSessionPath();
+        if (!session) throw new Error("Session path is required.");
+        const payload = {
+          session,
+          output: byId("adoTcOutput").value.trim(),
+          assigned_to: byId("assignee").value.trim(),
+          area_path: byId("areaPath").value.trim(),
+          iteration_path: byId("iterationPath").value.trim(),
+          state: byId("state").value.trim() || "Design",
+          variant_set: byId("variantSet").value
+        };
+        const data = await api("/api/export-ado-testcases", "POST", payload);
+        await refreshSessionAndReportLists();
+        openExportPreview(data.csv_path, "ADO TestCase CSV");
+      } catch (err) {
+        handleError("Exporting ADO test cases", err);
+      }
+    }
+
+    function moveWhyHistory(delta) {
+      const history = Array.isArray(state.session?.why_chain) ? state.session.why_chain : [];
+      if (!history.length) return;
+      if (delta < 0 && state.whyHistoryIndex < 0) {
+        clearAnswerDraft();
+        state.whyHistoryIndex = history.length - 1;
+      } else if (delta > 0 && state.whyHistoryIndex >= history.length - 1) {
+        const lastWhyIndex = Number(history[history.length - 1]?.why_index || 0);
+        if (lastWhyIndex >= 5 && !canContinueBeyondTarget()) return;
+        clearAnswerDraft();
+        state.whyHistoryIndex = -1;
+      } else {
+        clearAnswerDraft();
+        state.whyHistoryIndex = Math.min(Math.max(state.whyHistoryIndex + delta, 0), history.length - 1);
+      }
+      renderSnapshot();
+    }
+
+    byId("input").addEventListener("change", loadDefects);
+    byId("role").addEventListener("change", updateRoleHint);
+    bindAction("startBtn", startSession);
+    bindAction("newSessionBtn", startNewSession);
+    bindAction("statusBtn", refreshStatus);
+    bindAction("loadSessionBtn", loadSelectedSession);
+    bindAction("refreshListsBtn", refreshSessionAndReportLists);
+    bindAction("runQuickPlanBtn", runQuickPlan);
+    bindAction("demoRunBtn", runDemo);
+    bindAction("submitBtn", submitAnswer);
+    byId("whyBackBtn").addEventListener("click", () => moveWhyHistory(-1));
+    byId("whyNextBtn").addEventListener("click", () => moveWhyHistory(1));
+    byId("answer").addEventListener("input", captureAnswerDraft);
+    byId("evidence").addEventListener("input", captureAnswerDraft);
+    byId("revise").addEventListener("change", () => {
+      captureAnswerDraft();
+      renderSnapshot();
+    });
+    bindAction("exportReportBtn", exportReport);
+    bindAction("exportCapaBtn", exportCapa);
+    bindAction("exportAdoTcBtn", exportAdoTc);
+    byId("closeExportPreviewBtn").addEventListener("click", closeExportPreview);
+    byId("exportPreviewOkBtn").addEventListener("click", closeExportPreview);
+    byId("exportPreviewModal").addEventListener("click", (event) => {
+      if (event.target === byId("exportPreviewModal")) {
+        closeExportPreview();
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !byId("exportPreviewModal").classList.contains("hidden")) {
+        closeExportPreview();
+      }
+    });
+    byId("reportFile").addEventListener("change", () => loadAgentTrace());
+    byId("reportDefect").addEventListener("change", () => loadAgentTrace());
+    bindAction("loadTraceBtn", () => loadAgentTrace(false));
+    bindAction("refreshTraceListsBtn", refreshSessionAndReportLists);
+
+    bindTermTooltips();
+
+    updateSessionBanner("No session loaded. Start a session to begin the RCA workflow.", "info");
+    updateActionState();
+
+    loadBootstrap().then(() => {
+      setStatus("Bootstrap loaded.");
+      renderSnapshot();
+    }).catch(err => handleError("Loading bootstrap data", err));
+  </script>
+</body>
+</html>

@@ -688,6 +688,9 @@ def export_ado_testcases_csv(
     state: str,
     variant_set: str,
 ) -> Path:
+    variant_set = variant_set.strip().lower()
+    if variant_set not in {"standard", "expanded"}:
+        raise ValueError("variant_set must be one of: standard, expanded")
     session = load_json(session_path)
     if not isinstance(session, dict):
         raise ValueError("Session file is invalid.")
@@ -761,7 +764,7 @@ def run_guided_rca(
         print("Execution mode: interactive")
 
     quick_step_index = 0
-    while str(session.get("status", "")) not in {"root_cause_confirmed", "max_depth_reached"}:
+    while str(session.get("status", "")) not in {"root_cause_confirmed", "max_depth_reached", "target_depth_reached"}:
         why_index = session.get("current_why_index", "?")
         print("\n" + "=" * 80)
         print(f"Why {why_index}")

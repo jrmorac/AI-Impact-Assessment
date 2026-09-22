@@ -1,0 +1,6 @@
+PyYAML==6.0.2
+
+# Recreate or audit the resolved artifact hashes with:
+# python -m pip download --only-binary=:all: --no-deps --dest .pip-artifacts -r requirements-lock.txt
+# python -m pip hash .pip-artifacts/PyYAML-6.0.2-*.whl
+# Remove .pip-artifacts after auditing; it is intentionally not a repository artifact.

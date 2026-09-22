@@ -1,0 +1,30 @@
+{
+  "default_evidence_refs": [
+    "PRJ-DEF-201_sql-output-dup-count-2026-08-07.csv",
+    "PRJ-DEF-201_pipeline-run-log-merge-window-2026-08-07.txt"
+  ],
+  "default_flags": {
+    "controllable": true,
+    "resolved": false,
+    "prevents_recurrence": false
+  },
+  "answers": [
+    {
+      "answer": "Because the merge process replayed records without an idempotency guard, duplicate keys were inserted into the target table."
+    },
+    {
+      "answer": "Because the ingestion pipeline lacks a persisted deduplication state and deterministic replay key check between nightly runs, previously merged records are re-accepted on rerun."
+    },
+    {
+      "answer": "Because the pipeline design and release criteria did not require idempotency controls as a hard acceptance condition, replay-state safeguards were omitted."
+    },
+    {
+      "answer": "Because QA and release workflow did not include a mandatory deterministic rerun/idempotency test gate, this defect was not detected before deployment."
+    },
+    {
+      "answer": "Because ownership and governance for idempotency-by-design were not explicitly assigned, replay-risk controls were not translated into mandatory engineering and QA gates. Establishing explicit ownership plus required replay control checklists and CI rerun gate will prevent recurrence.",
+      "resolved": true,
+      "prevents_recurrence": true
+    }
+  ]
+}

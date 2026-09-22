@@ -700,6 +700,9 @@
       evidenceSuggestions: [],
       reportTrace: [],
       whyHistoryIndex: -1,
+      draftWhyIndex: -1,
+      answerDraft: "",
+      evidenceDraft: "",
       lastRequestId: "",
       modalReturnFocus: null
     };
@@ -727,20 +730,45 @@
       }
     }
 
-    async function refreshSessionAndReportLists() {
+    function isClosedSession() {
+      return ["closed", "completed"].includes(String(state.session?.status || "").toLowerCase());
+    }
+
+    function canContinueBeyondTarget() {
+      return state.session?.allow_advanced_continuation === true
+        || state.session?.continue_beyond_target === true
+        || state.session?.advanced_continuation === true;
+    }
+
+    function isValidBatchReport(pathValue, reports) {
+      return typeof pathValue === "string"
+        && pathValue.toLowerCase().endsWith(".json")
+        && reports.includes(pathValue);
+    }
+
+    function newestValidBatchReport(reports) {
+      return reports
+        .filter((pathValue) => typeof pathValue === "string" && pathValue.toLowerCase().endsWith(".json"))
+        .sort((left, right) => right.localeCompare(left))[0] || "";
+    }
+
+    async function refreshSessionAndReportLists(preferredReport = "") {
       const data = await api("/api/bootstrap");
       const sessionSel = byId("latestSession");
       const reportSel = byId("reportFile");
       const prevSession = sessionSel.value;
-      const prevReport = reportSel.value;
+      const reports = Array.isArray(data.output_reports) ? data.output_reports : [];
+      const preferred = isValidBatchReport(preferredReport, reports)
+        ? preferredReport
+        : (isValidBatchReport(reportSel.value, reports) ? reportSel.value : newestValidBatchReport(reports));
 
       setOptions(sessionSel, data.sessions || [], prevSession);
-      setOptions(reportSel, data.output_reports || [], prevReport);
-
-      if (!reportSel.value && (data.output_reports || []).length) {
-        reportSel.value = data.output_reports[0];
+      setOptions(reportSel, reports, preferred);
+      if (preferredReport && !reports.includes(preferredReport) && preferredReport.toLowerCase().endsWith(".json")) {
+        reportSel.add(new Option(preferredReport, preferredReport));
+        reportSel.value = preferredReport;
       }
-      await loadAgentTrace(true);
+      await loadAgentTrace();
     }
 
     function bindTermTooltips() {
@@ -941,19 +969,40 @@
       state.whyHistoryIndex = historyIndex;
       const selected = historyIndex >= 0 ? history[historyIndex] : null;
       const evidenceRefs = Array.isArray(selected?.evidence_refs) ? selected.evidence_refs : [];
+      const selectedWhyIndex = Number(selected?.why_index || 0);
+      const isHistorical = Boolean(selected);
+      const revise = byId("revise").checked;
+      const canSubmitStatus = ["awaiting_answer", "needs_more_evidence"].includes(state.session?.status);
+      const canSubmit = Boolean(state.sessionPath)
+        && canSubmitStatus
+        && !isClosedSession()
+        && (!isHistorical || revise);
+      const isFinalWhy = selectedWhyIndex >= 5 && !canContinueBeyondTarget();
 
       byId("question").textContent = selected?.question || state.session?.current_question || "No active question.";
-      byId("whyAnswerHistory").textContent = selected ? `Answer: ${selected.answer || ""}` : "No historical Why selected.";
-      byId("whyHistoryLabel").textContent = selected ? `Why ${selected.why_index} of ${history.length}` : "Current Why";
+      byId("whyAnswerHistory").textContent = selected
+        ? `${revise ? "Revise mode - " : "Historical - "}Answer: ${selected.answer || ""}`
+        : (revise ? "Revise mode - live current answer." : "Live current answer.");
+      byId("whyHistoryLabel").textContent = selected
+        ? `${revise ? "Revise " : "Historical "}Why ${selected.why_index} of ${history.length}${isFinalWhy ? " (final)" : ""}`
+        : (revise ? "Revise current Why" : "Current Why");
       byId("whyBackBtn").disabled = !history.length || historyIndex === 0;
-      byId("whyNextBtn").disabled = historyIndex < 0;
-      byId("submitBtn").disabled = !state.sessionPath || historyIndex >= 0 || state.session?.status !== "awaiting_answer";
-      byId("answer").value = selected?.answer || "";
-      byId("evidence").value = evidenceRefs.join(", ");
-      byId("controllable").checked = selected ? Boolean(selected.controllable_cause) : true;
-      byId("resolved").checked = selected ? Boolean(selected.resolved_by_this_cause) : false;
-      byId("prevents").checked = selected ? Boolean(selected.prevents_recurrence) : false;
-      byId("revise").checked = false;
+      byId("whyNextBtn").disabled = historyIndex < 0
+        || (historyIndex >= history.length - 1 && isFinalWhy);
+      byId("submitBtn").disabled = !canSubmit;
+      if (selected) {
+        const hasDraft = state.draftWhyIndex === selectedWhyIndex;
+        byId("answer").value = hasDraft ? state.answerDraft : (selected.answer || "");
+        byId("evidence").value = hasDraft ? state.evidenceDraft : evidenceRefs.join(", ");
+        if (!hasDraft) {
+          state.draftWhyIndex = selectedWhyIndex;
+          state.answerDraft = byId("answer").value;
+          state.evidenceDraft = byId("evidence").value;
+        }
+        byId("controllable").checked = Boolean(selected.controllable_cause);
+        byId("resolved").checked = Boolean(selected.resolved_by_this_cause);
+        byId("prevents").checked = Boolean(selected.prevents_recurrence);
+      }
       byId("evidenceHints").textContent = state.evidenceSuggestions.length
         ? "Suggestions: " + state.evidenceSuggestions.join(", ")
         : "No evidence suggestions yet.";
@@ -962,6 +1011,19 @@
     function currentSessionPath() {
       const override = byId("session").value.trim();
       return override || state.sessionPath;
+    }
+
+    function clearAnswerDraft() {
+      state.draftWhyIndex = -1;
+      state.answerDraft = "";
+      state.evidenceDraft = "";
+    }
+
+    function captureAnswerDraft() {
+      if (state.whyHistoryIndex < 0) return;
+      state.draftWhyIndex = Number(state.session?.why_chain?.[state.whyHistoryIndex]?.why_index || -1);
+      state.answerDraft = byId("answer").value;
+      state.evidenceDraft = byId("evidence").value;
     }
 
     async function loadBootstrap() {
@@ -976,19 +1038,25 @@
       setOptions(inputSel, data.inputs || []);
       setOptions(quickPlanSel, data.quick_plans || []);
       setOptions(sessionSel, data.sessions || []);
-      setOptions(reportSel, data.output_reports || []);
+      const reports = Array.isArray(data.output_reports) ? data.output_reports : [];
+      setOptions(reportSel, reports, newestValidBatchReport(reports));
 
       await loadDefects();
-      await loadAgentTrace(true);
+      await loadAgentTrace();
       updateRoleHint();
     }
 
-    async function loadAgentTrace(refreshDefectsOnly = false) {
+    function clearAgentTrace(message = "No agent trace loaded.") {
+      state.reportTrace = [];
+      byId("agentTrace").textContent = message;
+    }
+
+    async function loadAgentTrace() {
       try {
-        if (!refreshDefectsOnly) setStatus("Loading agent trace...");
+        setStatus("Loading agent trace...");
         const report = byId("reportFile").value;
         if (!report) {
-          byId("agentTrace").textContent = "No batch report available yet.";
+          clearAgentTrace("No batch report available yet.");
           byId("reportDefect").innerHTML = "";
           return;
         }
@@ -998,18 +1066,17 @@
         const data = await api(`/api/report-agent-trace?report=${encodeURIComponent(report)}${suffix}`);
 
         const defectSel = byId("reportDefect");
-        defectSel.innerHTML = (data.defect_ids || []).map(v => `<option value="${v}">${v}</option>`).join("");
-        if (data.selected_defect_id) {
-          defectSel.value = data.selected_defect_id;
-        }
-
-        if (!refreshDefectsOnly) {
-          state.reportTrace = data.agent_trace || [];
-          byId("agentTrace").textContent = state.reportTrace.length
-            ? JSON.stringify(state.reportTrace, null, 2)
-            : "No agent_trace found for selected defect/report.";
-        }
+        const defectIds = Array.isArray(data.defect_ids) ? data.defect_ids : [];
+        const nextDefect = defectIds.includes(selectedDefect)
+          ? selectedDefect
+          : (defectIds.includes(data.selected_defect_id) ? data.selected_defect_id : defectIds[0] || "");
+        setOptions(defectSel, defectIds, nextDefect);
+        state.reportTrace = Array.isArray(data.agent_trace) ? data.agent_trace : [];
+        byId("agentTrace").textContent = state.reportTrace.length
+          ? JSON.stringify(state.reportTrace, null, 2)
+          : "No agent_trace found for selected defect/report.";
       } catch (err) {
+        clearAgentTrace("Unable to load the selected agent trace.");
         handleError("Loading agent trace", err);
       }
     }
@@ -1053,7 +1120,8 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
-        state.whyHistoryIndex = data.session?.why_chain?.length ? data.session.why_chain.length - 1 : -1;
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.default_report_path || "";
         await refreshSessionAndReportLists();
@@ -1081,7 +1149,8 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
-        state.whyHistoryIndex = data.session?.why_chain?.length ? data.session.why_chain.length - 1 : -1;
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.report_path || byId("reportOutput").value;
         await refreshSessionAndReportLists();
@@ -1116,15 +1185,16 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
-        state.whyHistoryIndex = data.session?.why_chain?.length ? data.session.why_chain.length - 1 : -1;
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.report_path || "";
-        await refreshSessionAndReportLists();
+        await refreshSessionAndReportLists(data.batch_report_path || "");
         if (data.batch_report_path) {
           byId("reportFile").value = data.batch_report_path;
-          await loadAgentTrace(true);
+          await loadAgentTrace();
           byId("reportDefect").value = demoDefectId;
-          await loadAgentTrace(false);
+          await loadAgentTrace();
         }
         updateSessionBanner(`Active demo session: ${data.session_path}`, "success");
         setStatus(`Demo completed. RCA: ${data.report_path} | CAPA: ${data.capa_path} | Test cases: ${data.testcases_path} | Trace report: ${data.batch_report_path || "n/a"}`);
@@ -1140,6 +1210,7 @@
       state.session = null;
       state.evidenceSuggestions = [];
       state.whyHistoryIndex = -1;
+      clearAnswerDraft();
       byId("session").value = "";
       byId("reportOutput").value = "";
       byId("answer").value = "";
@@ -1166,7 +1237,8 @@
         state.sessionPath = data.session_path;
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
-        state.whyHistoryIndex = data.session?.why_chain?.length ? data.session.why_chain.length - 1 : -1;
+        state.whyHistoryIndex = -1;
+        clearAnswerDraft();
         updateSessionBanner(`Active session: ${data.session_path} | Status: ${data.session.status}`, "info");
         setStatus(`Session loaded: ${data.session.status}`);
         updateActionState();
@@ -1180,11 +1252,19 @@
       try {
         const session = currentSessionPath();
         if (!session) throw new Error("Session path is required.");
+        if (isClosedSession()) throw new Error("Closed sessions cannot accept answers.");
+        captureAnswerDraft();
+        const history = Array.isArray(state.session?.why_chain) ? state.session.why_chain : [];
+        const selected = state.whyHistoryIndex >= 0 ? history[state.whyHistoryIndex] : null;
+        const revise = byId("revise").checked;
+        if (selected && !revise) throw new Error("Select revise current node before editing a historical Why.");
         const evidenceRefs = byId("evidence").value
           .split(",")
           .map(v => v.trim())
           .filter(Boolean);
 
+        const targetWhyIndex = selected?.why_index
+          || (revise && history.length ? history[history.length - 1]?.why_index : null);
         const payload = {
           session,
           answer: byId("answer").value,
@@ -1192,7 +1272,8 @@
           controllable: byId("controllable").checked,
           resolved: byId("resolved").checked,
           prevents_recurrence: byId("prevents").checked,
-          revise: byId("revise").checked
+          revise,
+          ...(targetWhyIndex ? { target_why_index: targetWhyIndex } : {})
         };
 
         const data = await api("/api/answer", "POST", payload);
@@ -1200,7 +1281,15 @@
         state.session = data.session;
         state.evidenceSuggestions = data.evidence_suggestions || [];
         state.whyHistoryIndex = -1;
-        byId("answer").value = "";
+        clearAnswerDraft();
+        if (data.session.status !== "needs_more_evidence") {
+          byId("answer").value = "";
+          byId("evidence").value = "";
+          byId("controllable").checked = true;
+          byId("resolved").checked = false;
+          byId("prevents").checked = false;
+        }
+        byId("revise").checked = false;
         updateSessionBanner(`Active session: ${data.session_path} | Status: ${data.session.status}`, "success");
         setStatus(`Answer submitted. Status: ${data.session.status}`);
         updateActionState();
@@ -1267,10 +1356,15 @@
       const history = Array.isArray(state.session?.why_chain) ? state.session.why_chain : [];
       if (!history.length) return;
       if (delta < 0 && state.whyHistoryIndex < 0) {
+        clearAnswerDraft();
         state.whyHistoryIndex = history.length - 1;
       } else if (delta > 0 && state.whyHistoryIndex >= history.length - 1) {
+        const lastWhyIndex = Number(history[history.length - 1]?.why_index || 0);
+        if (lastWhyIndex >= 5 && !canContinueBeyondTarget()) return;
+        clearAnswerDraft();
         state.whyHistoryIndex = -1;
       } else {
+        clearAnswerDraft();
         state.whyHistoryIndex = Math.min(Math.max(state.whyHistoryIndex + delta, 0), history.length - 1);
       }
       renderSnapshot();
@@ -1288,6 +1382,12 @@
     bindAction("submitBtn", submitAnswer);
     byId("whyBackBtn").addEventListener("click", () => moveWhyHistory(-1));
     byId("whyNextBtn").addEventListener("click", () => moveWhyHistory(1));
+    byId("answer").addEventListener("input", captureAnswerDraft);
+    byId("evidence").addEventListener("input", captureAnswerDraft);
+    byId("revise").addEventListener("change", () => {
+      captureAnswerDraft();
+      renderSnapshot();
+    });
     bindAction("exportReportBtn", exportReport);
     bindAction("exportCapaBtn", exportCapa);
     bindAction("exportAdoTcBtn", exportAdoTc);
@@ -1303,7 +1403,8 @@
         closeExportPreview();
       }
     });
-    byId("reportFile").addEventListener("change", () => loadAgentTrace(true));
+    byId("reportFile").addEventListener("change", () => loadAgentTrace());
+    byId("reportDefect").addEventListener("change", () => loadAgentTrace());
     bindAction("loadTraceBtn", () => loadAgentTrace(false));
     bindAction("refreshTraceListsBtn", refreshSessionAndReportLists);
 

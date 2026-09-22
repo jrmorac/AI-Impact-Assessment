@@ -96,9 +96,11 @@ def _evaluate_checkpoint(
     prevents_recurrence: bool,
     why_index: int,
     session_cfg: Dict[str, Any],
+    advanced_continuation: bool = False,
 ) -> Dict[str, Any]:
     min_depth = int(session_cfg.get("min_depth", 1))
     max_depth = int(session_cfg.get("max_depth", 8))
+    target_depth = int(session_cfg.get("target_depth", 5))
     min_answer_length = int(session_cfg.get("min_answer_length", 25))
     min_evidence_items = int(session_cfg.get("min_evidence_items", 1))
 
@@ -111,6 +113,7 @@ def _evaluate_checkpoint(
         "resolved_by_this_cause": resolved,
         "minimum_depth_met": why_index >= min_depth,
         "max_depth_reached": why_index >= max_depth,
+        "target_depth_reached": why_index >= target_depth,
     }
 
     if not checks["answer_specific_enough"] or not checks["evidence_items_sufficient"] or not checks["causal_link_stated"]:
@@ -119,6 +122,8 @@ def _evaluate_checkpoint(
         decision = "stop_root_cause_confirmed"
     elif checks["max_depth_reached"]:
         decision = "stop_max_depth_reached"
+    elif checks["target_depth_reached"] and not advanced_continuation:
+        decision = "stop_target_depth_reached"
     else:
         decision = "continue"
 
@@ -135,6 +140,7 @@ def _session_defaults(rca_cfg: Dict[str, Any]) -> Dict[str, Any]:
         "min_depth": int(interactive_cfg.get("min_depth", 1)),
         "target_depth": int(interactive_cfg.get("target_depth", 5)),
         "max_depth": int(interactive_cfg.get("max_depth", 8)),
+        "advanced_continuation": bool(interactive_cfg.get("advanced_continuation", False)),
         "min_answer_length": int(interactive_cfg.get("min_answer_length", 25)),
         "min_evidence_items": int(interactive_cfg.get("min_evidence_items", 1)),
     }
@@ -182,6 +188,12 @@ def _apply_decision_to_session(session: Dict[str, Any], *, why_index: int, answe
         session["root_cause_summary"] = answer
         session["stop_reason"] = "Maximum Why depth reached without confirmed stop condition. Escalate to facilitated review."
         session["next_action"] = "Escalate the case for facilitated RCA review and challenge remaining assumptions."
+    elif decision == "stop_target_depth_reached":
+        session["status"] = "target_depth_reached"
+        session["current_why_index"] = why_index
+        session["root_cause_summary"] = answer
+        session["stop_reason"] = "Normal target Why depth reached without a confirmed stop condition. Enable advanced continuation for deeper analysis."
+        session["next_action"] = "Review the RCA outcome or explicitly enable advanced continuation."
     else:
         session["status"] = "awaiting_answer"
         session["current_why_index"] = why_index + 1
@@ -317,13 +329,17 @@ def answer_session(
     resolved: bool,
     controllable: bool,
     prevents_recurrence: bool,
+    advanced_continuation: bool = False,
 ) -> Dict[str, Any]:
     session = load_json(session_path)
     if not isinstance(session, dict):
         raise ValueError("Session file is invalid.")
 
-    if str(session.get("status", "")) in {"root_cause_confirmed", "max_depth_reached"}:
+    status = str(session.get("status", ""))
+    if status in {"root_cause_confirmed", "max_depth_reached", "target_depth_reached", "closed"}:
         raise ValueError(f"Session is already closed with status: {session.get('status')}")
+    if status != "awaiting_answer":
+        raise ValueError(f"Session does not accept an ordinary answer with status: {status}")
 
     why_index = int(session.get("current_why_index", 1))
     current_question = str(session.get("current_question", "")).strip()
@@ -336,6 +352,7 @@ def answer_session(
         prevents_recurrence=prevents_recurrence,
         why_index=why_index,
         session_cfg=session_cfg,
+        advanced_continuation=advanced_continuation or bool(session_cfg.get("advanced_continuation", False)),
     )
 
     node = _build_session_node(
@@ -370,19 +387,22 @@ def revise_current_answer(
     resolved: bool,
     controllable: bool,
     prevents_recurrence: bool,
+    target_why_index: int | None = None,
 ) -> Dict[str, Any]:
     session = load_json(session_path)
     if not isinstance(session, dict):
         raise ValueError("Session file is invalid.")
 
-    why_index = int(session.get("current_why_index", 1))
-    current_question = str(session.get("current_question", "")).strip()
+    status = str(session.get("status", ""))
+    if status in {"root_cause_confirmed", "max_depth_reached", "target_depth_reached", "closed"}:
+        raise ValueError(f"Session is already closed with status: {status}")
     why_chain = session.get("why_chain", [])
     if not isinstance(why_chain, list):
         raise ValueError("Session why_chain is invalid.")
 
     replace_index = -1
-    for idx in range(len(why_chain) - 1, -1, -1):
+    why_index = int(session.get("current_why_index", 1)) if target_why_index is None else int(target_why_index)
+    for idx in range(len(why_chain)):
         node = why_chain[idx]
         if int(node.get("why_index", -1)) == why_index:
             replace_index = idx
@@ -390,6 +410,8 @@ def revise_current_answer(
 
     if replace_index == -1:
         raise ValueError("No current Why answer exists to revise. Use answer-rca first.")
+
+    current_question = str(why_chain[replace_index].get("question", "")).strip()
 
     session_cfg = session.get("session_config", {})
     checkpoint = _evaluate_checkpoint(
@@ -400,6 +422,7 @@ def revise_current_answer(
         prevents_recurrence=prevents_recurrence,
         why_index=why_index,
         session_cfg=session_cfg,
+        advanced_continuation=bool(session_cfg.get("advanced_continuation", False)),
     )
 
     why_chain[replace_index] = _build_session_node(
