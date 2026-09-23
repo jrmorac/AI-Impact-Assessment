@@ -811,7 +811,11 @@ def run_guided_rca(
         print("Execution mode: interactive")
 
     quick_step_index = 0
-    while str(session.get("status", "")) not in {"root_cause_confirmed", "max_depth_reached"}:
+    while str(session.get("status", "")) not in {
+        "root_cause_confirmed",
+        "target_depth_reached",
+        "max_depth_reached",
+    }:
         why_index = session.get("current_why_index", "?")
         print("\n" + "=" * 80)
         print(f"Why {why_index}")

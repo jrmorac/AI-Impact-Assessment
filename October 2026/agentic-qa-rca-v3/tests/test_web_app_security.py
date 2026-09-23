@@ -31,6 +31,77 @@ class FakeHandler:
 
 
 class WebAppSecurityTests(unittest.TestCase):
+    def test_batch_trace_report_uses_session_report_and_evidence_paths(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "data" / "output").mkdir(parents=True)
+            (root / "evidence").mkdir()
+            context_path = root / "context.yaml"
+            input_path = root / "input.json"
+            session_path = root / "session-under-test.json"
+            with patch.object(web_app, "PROJECT_ROOT", root), patch.object(
+                web_app, "WRITE_ALLOWLIST", (root / "data" / "output", root / "evidence")
+            ), patch.object(web_app, "run") as batch_run:
+                report_path = web_app._create_batch_trace_report(context_path, input_path, session_path)
+
+            expected_report = root / "data" / "output" / "report_session-under-test.json"
+            expected_evidence = root / "evidence" / "evidence_log.csv"
+            self.assertEqual(report_path, expected_report.resolve())
+            batch_run.assert_called_once_with(
+                context_path=context_path,
+                input_path=input_path,
+                output_path=expected_report.resolve(),
+                evidence_log_path=expected_evidence.resolve(),
+            )
+
+    def test_default_evidence_log_is_write_permitted(self):
+        path = web_app._resolve_path("", default=Path("evidence/evidence_log.csv"), access="write")
+        self.assertEqual(path, (web_app.PROJECT_ROOT / "evidence" / "evidence_log.csv").resolve())
+
+    def test_start_and_quick_plan_include_batch_report_path(self):
+        handler = object.__new__(web_app.RcaWebHandler)
+        handler.request_id = "test-request"
+        handler.wfile = io.BytesIO()
+        handler.sent_headers = {}
+        handler.response_status = 200
+        handler.send_response = lambda status: setattr(handler, "response_status", status)
+        handler.send_header = lambda name, value: handler.sent_headers.__setitem__(name, value)
+        handler.end_headers = lambda: None
+
+        session = {"status": "awaiting_answer"}
+        report_path = Path("data/output/report_synthetic.json")
+        with patch.object(web_app, "_resolve_path", return_value=Path("synthetic.json")), patch.object(
+            web_app, "_load_context_bundle", return_value=({}, {})
+        ), patch.object(web_app, "start_session", return_value=session), patch.object(
+            web_app, "_discover_evidence_refs", return_value=[]
+        ), patch.object(web_app, "_create_batch_trace_report", return_value=report_path):
+            handler._handle_start(
+                {"context": "context.yaml", "input": "input.json", "defect_id": "DEF-SYN", "session": "session.json"}
+            )
+        start_response = json.loads(handler.wfile.getvalue())
+        self.assertEqual(start_response["batch_report_path"], web_app._rel(report_path))
+
+        handler.wfile = io.BytesIO()
+        with patch.object(web_app, "_resolve_path", return_value=Path("synthetic.json")), patch.object(
+            web_app, "_load_quick_plan", return_value={"answers": []}
+        ), patch.object(web_app, "run_guided_rca", return_value={}), patch.object(
+            web_app, "load_session_status", return_value=session
+        ), patch.object(web_app, "_discover_evidence_refs", return_value=[]), patch.object(
+            web_app, "_create_batch_trace_report", return_value=report_path
+        ):
+            handler._handle_run_quick_plan(
+                {
+                    "context": "context.yaml",
+                    "input": "input.json",
+                    "defect_id": "DEF-SYN",
+                    "session": "session.json",
+                    "quick_plan": "quick-plan.json",
+                    "output_report": "report.md",
+                }
+            )
+        quick_response = json.loads(handler.wfile.getvalue())
+        self.assertEqual(quick_response["batch_report_path"], web_app._rel(report_path))
+
     def test_read_and_write_allowlists_reject_traversal(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)

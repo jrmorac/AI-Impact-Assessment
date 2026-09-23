@@ -28,6 +28,7 @@ from main import (
     _load_context_bundle,
     render_ado_testcases_csv,
     render_capa_csv,
+    run,
     run_guided_rca,
     run_demo,
 )
@@ -46,6 +47,7 @@ WRITE_ALLOWLIST = (
     PROJECT_ROOT / "evidence" / "rca_sessions",
     PROJECT_ROOT / "evidence" / "rca_reports",
     PROJECT_ROOT / "evidence" / "capa_exports",
+    PROJECT_ROOT / "evidence" / "evidence_log.csv",
 )
 CAPA_PROVIDERS = {"ado", "jira", "generic"}
 ADO_VARIANT_SETS = {"standard", "expanded"}
@@ -108,6 +110,26 @@ def _resolve_path(raw: str, *, default: Path | None = None, access: str = "read"
     if not _is_within(resolved, resolved_roots):
         raise PathPolicyError("Path is outside the permitted project area")
     return resolved
+
+
+def _create_batch_trace_report(context_path: Path, input_path: Path, session_path: Path) -> Path:
+    output_path = _resolve_path(
+        "",
+        default=Path("data/output") / f"report_{session_path.stem}.json",
+        access="write",
+    )
+    evidence_log_path = _resolve_path(
+        "",
+        default=Path("evidence/evidence_log.csv"),
+        access="write",
+    )
+    run(
+        context_path=context_path,
+        input_path=input_path,
+        output_path=output_path,
+        evidence_log_path=evidence_log_path,
+    )
+    return output_path
 
 
 def _log_event(event: str, request_id: str, **fields: Any) -> None:
@@ -674,6 +696,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
         )
 
         suggestions = _discover_evidence_refs(PROJECT_ROOT, session)
+        batch_report_path = _create_batch_trace_report(context_path, input_path, session_path)
         _json_response(
             self,
             HTTPStatus.OK,
@@ -682,6 +705,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
                 "session": session,
                 "evidence_suggestions": suggestions,
                 "default_report_path": _rel(_resolve_path("", default=_default_report_path(session_path), access="write")),
+                "batch_report_path": _rel(batch_report_path),
             },
         )
 
@@ -838,6 +862,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
         )
         session = load_session_status(session_path)
         suggestions = _discover_evidence_refs(PROJECT_ROOT, session)
+        batch_report_path = _create_batch_trace_report(context_path, input_path, session_path)
         _json_response(
             self,
             HTTPStatus.OK,
@@ -847,6 +872,7 @@ class RcaWebHandler(BaseHTTPRequestHandler):
                 "session": session,
                 "evidence_suggestions": suggestions,
                 "report_path": _rel(output_report_path),
+                "batch_report_path": _rel(batch_report_path),
             },
         )
 

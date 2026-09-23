@@ -31,6 +31,8 @@ python -m unittest discover -s tests -v
 
 GitHub Actions runs the same suite on Python 3.10 and 3.11, plus golden regression checks and import/compile validation.
 
+Quick Plans are retained for CLI, GitHub Actions, golden regression, and QA automation. They are not exposed in the Web UI; use `Run Demo Case` for bundled repeatable examples.
+
 ## Export governance
 
 Exports use separate preview and commit operations. Preview must not mutate files. Commit requires explicit approval bound to the generated content hash, session/options, and target path. Existing files require explicit overwrite confirmation. Writes are atomic.

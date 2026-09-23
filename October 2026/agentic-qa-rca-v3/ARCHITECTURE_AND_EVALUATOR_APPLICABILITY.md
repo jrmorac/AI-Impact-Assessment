@@ -25,6 +25,8 @@ flowchart LR
 
 There is no external model provider, model endpoint, token billing, inference API, network call for analysis, or model-generated output in the current implementation. The planner, analyzer, and validator are deterministic Python functions. Interactive RCA is bounded by configured Why depth.
 
+Quick Plans are deterministic execution fixtures for CLI, GitHub Actions, golden regression, and QA automation. They are intentionally not exposed as a Web UI action because the Web UI already provides the equivalent user-facing Demo Case workflow.
+
 ## Controls that are not applicable to this release
 
 The following evaluator controls require an LLM or external inference path and therefore are not current omissions:

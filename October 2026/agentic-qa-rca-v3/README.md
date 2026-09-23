@@ -378,7 +378,7 @@ What the UI supports:
 - Defect ID dropdown is auto-loaded from the selected input JSON list (field `defect_id`)
 - Manual Defect ID override when you need to type an ID not present in dropdown
 - Load latest saved session from a selector
-- One-click quick plan execution (non-interactive)
+- Quick Plans remain available through the CLI and GitHub Actions for automation and QA; they are intentionally not exposed in the Web UI.
 - Answer or revise Why nodes with evidence refs and checkpoint flags
 - Vertical option cards for `controllable`, `resolved`, `prevents recurrence`, and `revise current node` with inline explanations
 - Built-in stop-logic hint explaining early closure before Why 5 when checkpoint criteria are satisfied

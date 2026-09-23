@@ -467,12 +467,6 @@
           <button id="refreshListsBtn" class="ghost">Refresh Session and Report Lists</button>
         </div>
 
-        <label for="quickPlan">Quick plan</label>
-        <select id="quickPlan"></select>
-        <div class="actions">
-          <button id="runQuickPlanBtn" class="ghost">Run Quick Plan</button>
-        </div>
-
         <label for="demoCase">Demo case</label>
         <select id="demoCase">
           <option value="why1">Why 1 - simple operational issue</option>
@@ -731,7 +725,13 @@
     }
 
     function isClosedSession() {
-      return ["closed", "completed"].includes(String(state.session?.status || "").toLowerCase());
+      return [
+        "closed",
+        "completed",
+        "root_cause_confirmed",
+        "target_depth_reached",
+        "max_depth_reached"
+      ].includes(String(state.session?.status || "").toLowerCase());
     }
 
     function canContinueBeyondTarget() {
@@ -752,7 +752,7 @@
         .sort((left, right) => right.localeCompare(left))[0] || "";
     }
 
-    async function refreshSessionAndReportLists(preferredReport = "") {
+    async function refreshSessionAndReportLists(preferredReport = "", loadTrace = true) {
       const data = await api("/api/bootstrap");
       const sessionSel = byId("latestSession");
       const reportSel = byId("reportFile");
@@ -768,7 +768,7 @@
         reportSel.add(new Option(preferredReport, preferredReport));
         reportSel.value = preferredReport;
       }
-      await loadAgentTrace();
+      if (loadTrace) await loadAgentTrace();
     }
 
     function bindTermTooltips() {
@@ -963,8 +963,12 @@
     function renderSnapshot() {
       byId("snapshot").textContent = state.session ? JSON.stringify(state.session, null, 2) : "No session loaded.";
       const history = Array.isArray(state.session?.why_chain) ? state.session.why_chain : [];
-      const historyIndex = history.length && state.whyHistoryIndex >= 0
-        ? Math.min(state.whyHistoryIndex, history.length - 1)
+      const terminalWithHistory = isClosedSession() && history.length > 0;
+      const normalizedHistoryIndex = terminalWithHistory && state.whyHistoryIndex < 0
+        ? history.length - 1
+        : state.whyHistoryIndex;
+      const historyIndex = history.length && normalizedHistoryIndex >= 0
+        ? Math.min(normalizedHistoryIndex, history.length - 1)
         : -1;
       state.whyHistoryIndex = historyIndex;
       const selected = historyIndex >= 0 ? history[historyIndex] : null;
@@ -988,6 +992,7 @@
         : (revise ? "Revise current Why" : "Current Why");
       byId("whyBackBtn").disabled = !history.length || historyIndex === 0;
       byId("whyNextBtn").disabled = historyIndex < 0
+        || (terminalWithHistory && historyIndex >= history.length - 1)
         || (historyIndex >= history.length - 1 && isFinalWhy);
       byId("submitBtn").disabled = !canSubmit;
       if (selected) {
@@ -1030,13 +1035,11 @@
       const data = await api("/api/bootstrap");
       const contextSel = byId("context");
       const inputSel = byId("input");
-      const quickPlanSel = byId("quickPlan");
       const sessionSel = byId("latestSession");
       const reportSel = byId("reportFile");
 
       setOptions(contextSel, data.contexts || []);
       setOptions(inputSel, data.inputs || []);
-      setOptions(quickPlanSel, data.quick_plans || []);
       setOptions(sessionSel, data.sessions || []);
       const reports = Array.isArray(data.output_reports) ? data.output_reports : [];
       setOptions(reportSel, reports, newestValidBatchReport(reports));
@@ -1124,7 +1127,11 @@
         clearAnswerDraft();
         byId("session").value = data.session_path;
         byId("reportOutput").value = data.default_report_path || "";
-        await refreshSessionAndReportLists();
+        await refreshSessionAndReportLists(data.batch_report_path || "", !data.batch_report_path);
+        if (data.batch_report_path) {
+          byId("reportFile").value = data.batch_report_path;
+          await loadAgentTrace();
+        }
         updateSessionBanner(`Active session: ${data.session_path}`, "success");
         setStatus(`Session started: ${data.session_path}`);
         updateActionState();
@@ -1134,46 +1141,15 @@
       }
     }
 
-    async function runQuickPlan() {
-      try {
-        const payload = {
-          context: byId("context").value,
-          input: byId("input").value,
-          defect_id: byId("manualDefect").value.trim() || byId("defect").value,
-          role: byId("role").value,
-          session: byId("session").value.trim(),
-          quick_plan: byId("quickPlan").value,
-          output_report: byId("reportOutput").value.trim()
-        };
-        const data = await api("/api/run-quick-plan", "POST", payload);
-        state.sessionPath = data.session_path;
-        state.session = data.session;
-        state.evidenceSuggestions = data.evidence_suggestions || [];
-        state.whyHistoryIndex = -1;
-        clearAnswerDraft();
-        byId("session").value = data.session_path;
-        byId("reportOutput").value = data.report_path || byId("reportOutput").value;
-        await refreshSessionAndReportLists();
-        updateSessionBanner(`Active session: ${data.session_path}`, "success");
-        setStatus(`Quick plan completed. Status: ${data.session.status}`);
-        updateActionState();
-        renderSnapshot();
-      } catch (err) {
-        handleError("Running quick plan", err);
-      }
-    }
-
     async function runDemo() {
       try {
         const demoCase = byId("demoCase").value;
         const demoDefectId = `DEMO-${demoCase.toUpperCase()}`;
         const inputPath = "data/input/demo_cases.json";
-        const planPath = `data/input/demo_quick_plan_${demoCase}.json`;
         byId("input").value = inputPath;
         await loadDefects();
         byId("defect").value = demoDefectId;
         byId("manualDefect").value = "";
-        byId("quickPlan").value = planPath;
         byId("session").value = "";
         byId("reportOutput").value = "";
         const data = await api("/api/run-demo", "POST", {
@@ -1370,7 +1346,8 @@
         state.whyHistoryIndex = history.length - 1;
       } else if (delta > 0 && state.whyHistoryIndex >= history.length - 1) {
         const lastWhyIndex = Number(history[history.length - 1]?.why_index || 0);
-        if (lastWhyIndex >= 5 && !canContinueBeyondTarget()) return;
+        const terminal = isClosedSession();
+        if (terminal || (lastWhyIndex >= 5 && !canContinueBeyondTarget())) return;
         clearAnswerDraft();
         state.whyHistoryIndex = -1;
       } else {
@@ -1387,7 +1364,6 @@
     bindAction("statusBtn", refreshStatus);
     bindAction("loadSessionBtn", loadSelectedSession);
     bindAction("refreshListsBtn", refreshSessionAndReportLists);
-    bindAction("runQuickPlanBtn", runQuickPlan);
     bindAction("demoRunBtn", runDemo);
     bindAction("submitBtn", submitAnswer);
     byId("whyBackBtn").addEventListener("click", () => moveWhyHistory(-1));

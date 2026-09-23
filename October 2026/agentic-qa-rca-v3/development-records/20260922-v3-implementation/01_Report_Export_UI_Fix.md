@@ -23,4 +23,6 @@ The working and shareable v3 packages were updated identically.
 - Working v3: 23 tests discovered; 22 passed, 1 symlink test skipped because Windows symlink creation privilege was unavailable.
 - Shareable v3: 26 tests discovered; 25 passed, 1 symlink test skipped for the same environment limitation.
 - No test failures or errors.
-- Browser confirmation of the first-click modal behavior remains a manual UI evidence item.
+- Browser validation completed: the Report export button opens the preview modal correctly on the first click.
+- CAPA and ADO Test Case export previews continue to work.
+- Corrected shareable artifact verified at `October 2026/dist/agentic-qa-rca-shareable-v3-20260922-172504.zip`.
