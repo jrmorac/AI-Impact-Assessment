@@ -142,7 +142,7 @@
 
 | # | Artifact | Tool | Issue Found | Issue Type | Resolved |
 |---|---|---|---|---|---|
-| 001 | CustomerActivityLogs SQL | Copilot | Non-deterministic timestamp generation | Logic error | ✅ |
+| 001 | CustomerActivityLogs SQL | Copilot | `DATEADD()` rejected minutes parameter in timestamp generation | Logic error | ✅ |
 | 002 | CustomerExceptionLogs SQL | Copilot | Uniform severity distribution | Missing requirement | ✅ |
 | 003 | Proposal vs Requirements Report | Copilot/Word | Inferred finding not in source | Hallucination | ✅ |
 | 004 | Management Review Document | Copilot Word | Overstated contractual implication | Tone/accuracy | ✅ |
