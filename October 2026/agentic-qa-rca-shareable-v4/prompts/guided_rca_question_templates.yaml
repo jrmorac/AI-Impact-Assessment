@@ -1,0 +1,9 @@
+version: 1
+# Loaded by src/interactive_rca.py (_build_first_question, _build_next_question).
+# Placeholders are filled in by code at runtime; deterministic string formatting only,
+# no LLM calls.
+description: >
+  Question templates used by the interactive guided RCA flow to build the first Why
+  question and subsequent follow-up Why questions.
+first_question: "Why did {problem} occur in {component}, and what evidence supports that first causal explanation? Start with the most direct {category} cause you can defend."
+next_question: "What deeper cause made this possible: {cause_clause}? What evidence shows that this deeper cause is real rather than assumed?"

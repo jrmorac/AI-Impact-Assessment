@@ -1,0 +1,23 @@
+evaluator_criterion,dimension,before_status,after_status_expected,notes
+14.2,Dim 14 Portability & Reuse Readiness,PARTIAL,PASS (expected),Personal maintainer name replaced with QA Engineering Team in distributed docs
+7.5,Dim 7 Documentation & Maintainability,PARTIAL,PARTIAL (unchanged),Git tag creation is a pending human action outside this session's tool access
+7.8,Dim 7 Documentation & Maintainability,PARTIAL,PASS (expected),Intended Audience section added to README.md
+7.1,Dim 7 Documentation & Maintainability,PARTIAL,PASS (expected),Production Deployment / Local-Only Scope section added to README.md
+8.10,Dim 8 Frontend & UI/UX Standards,FAIL,PASS (expected),CSP policy documented in README_OPS.md
+12.3,Dim 12 Documentation Standards,PARTIAL,PASS (expected),Out-of-Scope and Prohibited Uses section added to README.md
+12.4,Dim 12 Documentation Standards,PARTIAL,PASS (expected),Limitations and Failure Modes section added to README.md
+6.7,Dim 6 Observability & Monitoring,PARTIAL (scout-flagged critical:true),PASS (expected pending test execution),Dedicated error lifecycle event added alongside agent_step outcome=error
+1.12,Dim 1 AI & Agent Architecture,PARTIAL,PASS (expected pending test execution),Question templates extracted to prompts/*.yaml
+1.13,Dim 1 AI & Agent Architecture,FAIL,PASS (expected pending test execution),Templates now carry a version field enabling traceable rollback via config change
+8.4,Dim 8 Frontend & UI/UX Standards,PARTIAL,PASS (expected pending browser smoke test),Escape now closes all overlays not only the export modal
+8.6,Dim 8 Frontend & UI/UX Standards,PARTIAL,PASS (expected pending browser smoke test),Error messages now include actionable remediation text
+8.8,Dim 8 Frontend & UI/UX Standards,PARTIAL,PASS (expected pending browser smoke test),aria-describedby/aria-invalid added; existing aria-live region reused
+2.5,Dim 2 Software Architecture & Infrastructure,PARTIAL,PARTIAL (unchanged - deferred),Tier 3 - containerization intentionally out of scope for a local single-user tool
+2.10,Dim 2 Software Architecture & Infrastructure,PARTIAL,PARTIAL (unchanged - deferred),Tier 3 - cloud infrastructure documentation intentionally out of scope
+3.7,Dim 3 Security Privacy & Governance,FAIL,FAIL (unchanged - deferred),Tier 3 - WORM-backed audit trail requires cloud object storage not applicable locally
+3.1,Dim 3 Security Privacy & Governance,PARTIAL,PARTIAL (unchanged - deferred),Tier 3 - persistent invocation logging to object storage intentionally out of scope
+3.6,Dim 3 Security Privacy & Governance,PARTIAL,PARTIAL (unchanged - deferred),Tier 3 - no LLM exists; data-residency/model-card work is premature
+3.12,Dim 3 Security Privacy & Governance,PARTIAL,PARTIAL (unchanged - deferred),Tier 3 - intent capsules are an enterprise multi-tenant feature not applicable locally
+6.10,Dim 6 Observability & Monitoring,FAIL,FAIL (unchanged - deferred),Tier 3 - no hosting target exists for a real-time monitoring platform
+6.5,Dim 6 Observability & Monitoring,FAIL,FAIL (unchanged - deferred),Tier 3 - no external tool_call sites exist to instrument yet
+1.10,Dim 1 AI & Agent Architecture,PARTIAL,PARTIAL (unchanged - deferred),Tier 3 - cross-session knowledge extraction is a larger feature deferred to a future phase

@@ -1,0 +1,140 @@
+{
+  "session_id": "prj-def-201",
+  "created_at_utc": "2026-08-07T19:13:49.280020+00:00",
+  "updated_at_utc": "2026-08-07T19:14:18.527017+00:00",
+  "status": "root_cause_confirmed",
+  "project": {
+    "client_name": "SampleClient",
+    "project_name": "SampleProject",
+    "domain": "sample-domain",
+    "tech_stack": [
+      "azure",
+      "databricks",
+      "sql-server"
+    ],
+    "qa_frameworks": [
+      "risk-based-testing",
+      "rca"
+    ],
+    "standards": [
+      "HIPAA",
+      "deterministic-sql"
+    ]
+  },
+  "input_file": "data\\input\\synthetic_defects_with_evidence.json",
+  "defect": {
+    "defect_id": "PRJ-DEF-201",
+    "created_date": "2026-08-07",
+    "severity": "high",
+    "component": "CustomerActivityIngestion",
+    "summary": "Recurring duplicate records after nightly merge window",
+    "reproduction_steps": "Execute synthetic batch B twice under same merge key and compare target uniqueness counts",
+    "observed_behavior": "Duplicate keys increased from 0 to 37 in repeated run",
+    "expected_behavior": "Duplicate key count remains 0 under idempotent merge",
+    "evidence_artifacts": [
+      "PRJ-DEF-201_sql-output-dup-count-2026-08-07.csv",
+      "PRJ-DEF-201_pipeline-run-log-merge-window-2026-08-07.txt"
+    ]
+  },
+  "category": "data-quality",
+  "current_why_index": 2,
+  "current_question": "Why did the merge process replayed records without an idempotency guard, duplicate keys were inserted into the target table happen, and what evidence shows that this deeper cause is real rather than assumed?",
+  "session_config": {
+    "min_depth": 2,
+    "target_depth": 5,
+    "max_depth": 8,
+    "min_answer_length": 25,
+    "min_evidence_items": 1
+  },
+  "why_chain": [
+    {
+      "why_index": 1,
+      "question": "Why did Recurring duplicate records after nightly merge window (Duplicate keys increased from 0 to 37 in repeated run) occur in CustomerActivityIngestion, and what evidence supports that first causal explanation? Start with the most direct data-quality cause you can defend.",
+      "answer": "Duplicates happened.",
+      "evidence_refs": [],
+      "resolved_by_this_cause": false,
+      "controllable_cause": false,
+      "prevents_recurrence": false,
+      "checkpoint": {
+        "decision": "needs_more_evidence",
+        "checks": {
+          "answer_specific_enough": false,
+          "evidence_items_sufficient": false,
+          "causal_link_stated": false,
+          "controllable_cause": false,
+          "prevents_recurrence": false,
+          "resolved_by_this_cause": false,
+          "minimum_depth_met": false,
+          "max_depth_reached": false
+        },
+        "recommended_data_requests": [
+          "Refine the answer so it names a specific mechanism or control failure, not a broad symptom.",
+          "Attach at least one evidence item that supports this answer before moving to the next Why.",
+          "Rewrite the answer so it clearly explains why this cause led to the previous problem statement.",
+          "Clarify whether this cause is within the team's ability to change or control.",
+          "Explain whether removing this cause would actually stop recurrence, and why."
+        ]
+      },
+      "recorded_at_utc": "2026-08-07T19:14:00.410795+00:00"
+    },
+    {
+      "why_index": 1,
+      "question": "Why did Recurring duplicate records after nightly merge window (Duplicate keys increased from 0 to 37 in repeated run) occur in CustomerActivityIngestion, and what evidence supports that first causal explanation? Start with the most direct data-quality cause you can defend.",
+      "answer": "Because the merge process replayed records without an idempotency guard, duplicate keys were inserted into the target table.",
+      "evidence_refs": [
+        "PRJ-DEF-201_sql-output-dup-count-2026-08-07.csv",
+        "PRJ-DEF-201_pipeline-run-log-merge-window-2026-08-07.txt"
+      ],
+      "resolved_by_this_cause": false,
+      "controllable_cause": true,
+      "prevents_recurrence": false,
+      "checkpoint": {
+        "decision": "continue",
+        "checks": {
+          "answer_specific_enough": true,
+          "evidence_items_sufficient": true,
+          "causal_link_stated": true,
+          "controllable_cause": true,
+          "prevents_recurrence": false,
+          "resolved_by_this_cause": false,
+          "minimum_depth_met": false,
+          "max_depth_reached": false
+        },
+        "recommended_data_requests": [
+          "Explain whether removing this cause would actually stop recurrence, and why."
+        ]
+      },
+      "recorded_at_utc": "2026-08-07T19:14:15.115730+00:00"
+    },
+    {
+      "why_index": 2,
+      "question": "Why did the merge process replayed records without an idempotency guard, duplicate keys were inserted into the target table happen, and what evidence shows that this deeper cause is real rather than assumed?",
+      "answer": "Because the ingestion design omitted a mandatory uniqueness control at merge time, the replay path could never prevent duplicates unless the control was added.",
+      "evidence_refs": [
+        "PRJ-DEF-201_sql-output-dup-count-2026-08-07.csv",
+        "PRJ-DEF-201_pipeline-run-log-merge-window-2026-08-07.txt"
+      ],
+      "resolved_by_this_cause": true,
+      "controllable_cause": true,
+      "prevents_recurrence": true,
+      "checkpoint": {
+        "decision": "stop_root_cause_confirmed",
+        "checks": {
+          "answer_specific_enough": true,
+          "evidence_items_sufficient": true,
+          "causal_link_stated": true,
+          "controllable_cause": true,
+          "prevents_recurrence": true,
+          "resolved_by_this_cause": true,
+          "minimum_depth_met": true,
+          "max_depth_reached": false
+        },
+        "recommended_data_requests": []
+      },
+      "recorded_at_utc": "2026-08-07T19:14:18.526991+00:00"
+    }
+  ],
+  "root_cause_summary": "Because the ingestion design omitted a mandatory uniqueness control at merge time, the replay path could never prevent duplicates unless the control was added.",
+  "stop_reason": "Checkpoint confirmed a controllable cause that should prevent recurrence.",
+  "next_action": "Document CAPA and validation plan against this confirmed root cause."
+}

@@ -1,0 +1,11 @@
+version: 1
+# Loaded by src/interactive_rca.py (_build_data_requests). Deterministic text only.
+description: >
+  Recommended data-request guidance messages shown to a user when a Five Whys
+  checkpoint check fails.
+guidance_by_check:
+  answer_specific_enough: "Refine the answer so it names a specific mechanism or control failure, not a broad symptom."
+  evidence_items_sufficient: "Attach at least one evidence item that supports this answer before moving to the next Why."
+  causal_link_stated: "Rewrite the answer so it clearly explains why this cause led to the previous problem statement."
+  controllable_cause: "Clarify whether this cause is within the team's ability to change or control."
+  prevents_recurrence: "Explain whether removing this cause would actually stop recurrence, and why."

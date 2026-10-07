@@ -1,0 +1,12 @@
+Finding ID,Requirement ID,Task ID,Code or Config Change,Test Evidence,Decision Status
+F-PR-001,PR-SEC-01,T-001,src/web_app.py path resolver and endpoint guards,Traversal absolute-path symlink and read-write boundary tests,Open
+F-PR-002,PR-QA-01,T-002,tests/ synthetic fixtures and regression harness,Full deterministic pytest/API/security suite,Open
+F-PR-002,PR-QA-02,T-004,.github/workflows and dependency artifact,Clean-checkout CI run with failing-gate proof,Open
+F-PR-003,PR-OBS-01,T-003,web_app.py/orchestrator.py structured event helpers,Event schema tests and sanitized JSON log samples,Open
+F-PR-005,PR-OBS-02,T-003,HTTP response envelope and UI api helper,4xx/5xx contract tests with request_id,Open
+F-PR-006,PR-SEC-02,T-005,HTTP CSP header and web asset policy,Browser console/network CSP validation,Open
+F-PR-007,PR-UI-01,T-006,web/index.html async state and error rendering,Browser loading duplicate-submit and failure tests,Open
+F-PR-007,PR-A11Y-01,T-007,web/index.html focus and live-region changes,Keyboard-only and live announcement checks,Open
+F-PR-004,PR-OPS-01,T-008,README/docs architecture and operations artifacts,Documentation review and clean-start evidence,Open
+F-PR-008,PR-OPS-01,T-008,retention/integrity documentation and atomic write decision,Retention and recovery review,Open
+F-PR-009,PR-GOV-01,T-009,development record and browser evidence,CR-003/CR-005 browser logs or screenshots plus signed decision,Open

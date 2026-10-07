@@ -1,0 +1,432 @@
+{
+  "generated_at_utc": "2026-09-14T04:26:54.218285+00:00",
+  "project": {
+    "client_name": "SampleClient",
+    "project_name": "SampleProject",
+    "domain": "sample-domain",
+    "tech_stack": [
+      "azure",
+      "databricks",
+      "sql-server"
+    ],
+    "qa_frameworks": [
+      "risk-based-testing",
+      "rca"
+    ],
+    "standards": [
+      "HIPAA",
+      "deterministic-sql"
+    ]
+  },
+  "input_file": "data\\input\\synthetic_defects_with_evidence.json",
+  "summary": {
+    "defects_total": 2,
+    "accepted_count": 2,
+    "flagged_count": 0,
+    "acceptance_rate": 1.0,
+    "priority_breakdown": {
+      "high": 0,
+      "medium": 2,
+      "low": 0
+    },
+    "action_mode_breakdown": {
+      "confirmed_capa": 2,
+      "investigate_first": 0
+    },
+    "artifact_traceability_pass_count": 2,
+    "capa_validation_experiment_count": 2,
+    "capa_effectiveness_breakdown": {
+      "effective": 0,
+      "partial": 0,
+      "ineffective": 0,
+      "not_available": 2,
+      "invalid_data": 0
+    }
+  },
+  "analysis": [
+    {
+      "defect_id": "PRJ-DEF-202",
+      "category": "performance",
+      "root_cause_hypothesis": "Provisional performance hypothesis inferred from defect narrative and symptom keywords.",
+      "hypothesis_support_score": 0.95,
+      "assumptions": [],
+      "rca_5whys": [
+        {
+          "why_index": 1,
+          "question": "Why did the system exceed the expected response-time threshold?",
+          "answer": "Because the symptom in ExceptionAPI matches a performance failure pattern from the defect narrative.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        },
+        {
+          "why_index": 2,
+          "question": "Why was the immediate technical condition possible?",
+          "answer": "Because one or more technical controls (data checks, timeouts, contracts, or test fixtures) likely did not enforce constraints at execution time.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        },
+        {
+          "why_index": 3,
+          "question": "Why did prevention controls not stop this earlier?",
+          "answer": "Because prevention controls were either absent, weakly configured, or not applied consistently for this path.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        },
+        {
+          "why_index": 4,
+          "question": "Why did detection controls not catch this before impact?",
+          "answer": "Because detection controls prioritized generic pass/fail output instead of early risk indicators for this defect type.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        },
+        {
+          "why_index": 5,
+          "question": "Why does the process allow this pattern to recur?",
+          "answer": "Because the process lacks a closed-loop control that converts this failure into a mandatory regression prevention check.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        }
+      ],
+      "action_mode": "confirmed_capa",
+      "capa_actions": [
+        "Add focused performance regression test for affected component.",
+        "Review query/index or service call path tied to symptom.",
+        "Set alert threshold for repeated latency condition."
+      ],
+      "investigation_actions": [],
+      "artifact_quality_score": 0.9,
+      "artifact_quality_breakdown": {
+        "artifact_presence": 0.35,
+        "artifact_count": 0.1,
+        "artifact_signal_diversity": 0.15,
+        "artifact_traceability": 0.2,
+        "artifact_date_context": 0.1,
+        "final": 0.9
+      },
+      "artifact_traceability_pass": true,
+      "capa_validation_experiment": {
+        "experiment_id": "EXP-PRJ-DEF-202",
+        "hypothesis_to_test": "Applying selected CAPA reduces recurrence for performance issues in ExceptionAPI.",
+        "baseline_metric": "Current defect recurrence rate for ExceptionAPI / performance",
+        "intervention": "Add focused performance regression test for affected component.",
+        "measurement_window": "next_2_sprints",
+        "sample_size_or_runs": "minimum_5_relevant_runs_or_all_occurrences",
+        "acceptance_criteria": {
+          "target_reduction_percent": 20,
+          "no_regression_in_adjacent_quality_metrics": true
+        },
+        "rollback_condition": "If recurrence worsens or critical risk increases after intervention, rollback and re-open RCA.",
+        "owner_role": "QA_Lead",
+        "priority": "high",
+        "severity_context": "critical"
+      },
+      "capa_effectiveness": {
+        "status": "not_available",
+        "score": 0.0,
+        "reason": "No experiment outcome provided yet."
+      },
+      "confidence": 0.95,
+      "confidence_breakdown": {
+        "base": 0.85,
+        "penalty_missing_fields": 0.0,
+        "penalty_short_text": 0.0,
+        "bonus_reproduction_steps": 0.05,
+        "bonus_expected_behavior": 0.05,
+        "final": 0.95,
+        "hypothesis_support_score": 0.95,
+        "support_reproduction_steps": 0.2,
+        "support_observed_behavior": 0.2,
+        "support_expected_behavior": 0.1,
+        "support_component_context": 0.1,
+        "support_summary_quality": 0.1,
+        "support_created_date": 0.05,
+        "support_evidence_artifacts": 0.2,
+        "support_repeat_signal": 0.0,
+        "artifact_quality_score": 0.9,
+        "artifact_traceability_pass": 1.0
+      },
+      "risk_score": 100,
+      "priority_score": 71,
+      "priority_tier": "medium",
+      "repeat_signal": false,
+      "validation": {
+        "accepted": true,
+        "checks": {
+          "missing_required_fields": true,
+          "confidence_above_threshold": true,
+          "has_complete_5whys": true,
+          "hypothesis_support_above_threshold": true,
+          "artifact_quality_above_threshold": true,
+          "artifact_traceability_ok": true,
+          "has_capa_validation_experiment": true,
+          "action_policy_compliant": true
+        },
+        "missing_fields": []
+      },
+      "agent_trace": [
+        {
+          "timestamp_utc": "2026-09-14T04:26:54.218135+00:00",
+          "agent": "planner_agent",
+          "input": {
+            "defect_id": "PRJ-DEF-202",
+            "required_fields_count": 8
+          },
+          "output": {
+            "missing_fields_count": 0,
+            "missing_fields": []
+          }
+        },
+        {
+          "timestamp_utc": "2026-09-14T04:26:54.218246+00:00",
+          "agent": "analyzer_agent",
+          "input": {
+            "defect_id": "PRJ-DEF-202",
+            "missing_fields_count": 0
+          },
+          "output": {
+            "category": "performance",
+            "confidence": 0.95,
+            "action_mode": "confirmed_capa",
+            "priority_tier": "medium"
+          }
+        },
+        {
+          "timestamp_utc": "2026-09-14T04:26:54.218256+00:00",
+          "agent": "validator_agent",
+          "input": {
+            "defect_id": "PRJ-DEF-202",
+            "confidence": 0.95,
+            "action_mode": "confirmed_capa"
+          },
+          "output": {
+            "accepted": true,
+            "checks_passed": 8,
+            "checks_total": 8
+          }
+        }
+      ]
+    },
+    {
+      "defect_id": "PRJ-DEF-201",
+      "category": "data-quality",
+      "root_cause_hypothesis": "Provisional data-quality hypothesis inferred from defect narrative and symptom keywords.",
+      "hypothesis_support_score": 1.0,
+      "assumptions": [],
+      "rca_5whys": [
+        {
+          "why_index": 1,
+          "question": "Why did data integrity break (null/duplicate/inconsistent values)?",
+          "answer": "Because the symptom in CustomerActivityIngestion matches a data-quality failure pattern from the defect narrative.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        },
+        {
+          "why_index": 2,
+          "question": "Why was the immediate technical condition possible?",
+          "answer": "Because one or more technical controls (data checks, timeouts, contracts, or test fixtures) likely did not enforce constraints at execution time.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        },
+        {
+          "why_index": 3,
+          "question": "Why did prevention controls not stop this earlier?",
+          "answer": "Because prevention controls were either absent, weakly configured, or not applied consistently for this path.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        },
+        {
+          "why_index": 4,
+          "question": "Why did detection controls not catch this before impact?",
+          "answer": "Because detection controls prioritized generic pass/fail output instead of early risk indicators for this defect type.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        },
+        {
+          "why_index": 5,
+          "question": "Why does the process allow this pattern to recur?",
+          "answer": "Because the process lacks a closed-loop control that converts this failure into a mandatory regression prevention check.",
+          "evidence_refs": [
+            "summary",
+            "observed_behavior",
+            "reproduction_steps",
+            "expected_behavior",
+            "evidence_artifacts"
+          ],
+          "assumption_count": 0
+        }
+      ],
+      "action_mode": "confirmed_capa",
+      "capa_actions": [
+        "Add data validation test for null/duplicate edge cases.",
+        "Add deterministic synthetic dataset for reproduction.",
+        "Add control check in pipeline to block malformed records."
+      ],
+      "investigation_actions": [],
+      "artifact_quality_score": 0.9,
+      "artifact_quality_breakdown": {
+        "artifact_presence": 0.35,
+        "artifact_count": 0.1,
+        "artifact_signal_diversity": 0.15,
+        "artifact_traceability": 0.2,
+        "artifact_date_context": 0.1,
+        "final": 0.9
+      },
+      "artifact_traceability_pass": true,
+      "capa_validation_experiment": {
+        "experiment_id": "EXP-PRJ-DEF-201",
+        "hypothesis_to_test": "Applying selected CAPA reduces recurrence for data-quality issues in CustomerActivityIngestion.",
+        "baseline_metric": "Current defect recurrence rate for CustomerActivityIngestion / data-quality",
+        "intervention": "Add data validation test for null/duplicate edge cases.",
+        "measurement_window": "next_2_sprints",
+        "sample_size_or_runs": "minimum_5_relevant_runs_or_all_occurrences",
+        "acceptance_criteria": {
+          "target_reduction_percent": 20,
+          "no_regression_in_adjacent_quality_metrics": true
+        },
+        "rollback_condition": "If recurrence worsens or critical risk increases after intervention, rollback and re-open RCA.",
+        "owner_role": "QA_Lead",
+        "priority": "high",
+        "severity_context": "high"
+      },
+      "capa_effectiveness": {
+        "status": "not_available",
+        "score": 0.0,
+        "reason": "No experiment outcome provided yet."
+      },
+      "confidence": 0.95,
+      "confidence_breakdown": {
+        "base": 0.85,
+        "penalty_missing_fields": 0.0,
+        "penalty_short_text": 0.0,
+        "bonus_reproduction_steps": 0.05,
+        "bonus_expected_behavior": 0.05,
+        "final": 0.95,
+        "hypothesis_support_score": 1.0,
+        "support_reproduction_steps": 0.2,
+        "support_observed_behavior": 0.2,
+        "support_expected_behavior": 0.1,
+        "support_component_context": 0.1,
+        "support_summary_quality": 0.1,
+        "support_created_date": 0.05,
+        "support_evidence_artifacts": 0.2,
+        "support_repeat_signal": 0.05,
+        "artifact_quality_score": 0.9,
+        "artifact_traceability_pass": 1.0
+      },
+      "risk_score": 80,
+      "priority_score": 67,
+      "priority_tier": "medium",
+      "repeat_signal": true,
+      "validation": {
+        "accepted": true,
+        "checks": {
+          "missing_required_fields": true,
+          "confidence_above_threshold": true,
+          "has_complete_5whys": true,
+          "hypothesis_support_above_threshold": true,
+          "artifact_quality_above_threshold": true,
+          "artifact_traceability_ok": true,
+          "has_capa_validation_experiment": true,
+          "action_policy_compliant": true
+        },
+        "missing_fields": []
+      },
+      "agent_trace": [
+        {
+          "timestamp_utc": "2026-09-14T04:26:54.217929+00:00",
+          "agent": "planner_agent",
+          "input": {
+            "defect_id": "PRJ-DEF-201",
+            "required_fields_count": 8
+          },
+          "output": {
+            "missing_fields_count": 0,
+            "missing_fields": []
+          }
+        },
+        {
+          "timestamp_utc": "2026-09-14T04:26:54.218100+00:00",
+          "agent": "analyzer_agent",
+          "input": {
+            "defect_id": "PRJ-DEF-201",
+            "missing_fields_count": 0
+          },
+          "output": {
+            "category": "data-quality",
+            "confidence": 0.95,
+            "action_mode": "confirmed_capa",
+            "priority_tier": "medium"
+          }
+        },
+        {
+          "timestamp_utc": "2026-09-14T04:26:54.218117+00:00",
+          "agent": "validator_agent",
+          "input": {
+            "defect_id": "PRJ-DEF-201",
+            "confidence": 0.95,
+            "action_mode": "confirmed_capa"
+          },
+          "output": {
+            "accepted": true,
+            "checks_passed": 8,
+            "checks_total": 8
+          }
+        }
+      ]
+    }
+  ]
+}

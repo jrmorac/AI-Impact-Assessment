@@ -1,0 +1,13 @@
+{
+  "case": "why1",
+  "defect_id": "DEMO-WHY1",
+  "category": "data-quality",
+  "session_status": "root_cause_confirmed",
+  "why_depth": 1,
+  "batch_action_mode": "investigate_first",
+  "batch_trace_agents": ["planner_agent", "analyzer_agent", "validator_agent"],
+  "capa_task_count": 4,
+  "ado_test_case_count": 3,
+  "required_session_keys": ["session_id", "status", "defect", "category", "why_chain", "root_cause_summary"],
+  "required_analysis_keys": ["defect_id", "category", "action_mode", "validation", "agent_trace"]
+}

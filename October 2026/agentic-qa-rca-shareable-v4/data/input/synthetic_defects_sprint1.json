@@ -1,0 +1,33 @@
+﻿[
+  {
+    "defect_id": "PRJ-DEF-001",
+    "created_date": "2026-08-01",
+    "severity": "high",
+    "component": "CustomerActivityIngestion",
+    "summary": "Duplicate records detected for same activity key",
+    "reproduction_steps": "Run ingestion job with synthetic batch A and compare row counts",
+    "observed_behavior": "Duplicate activity IDs appear in target table",
+    "expected_behavior": "Each activity key should be unique in target"
+  },
+  {
+    "defect_id": "PRJ-DEF-002",
+    "created_date": "2026-08-02",
+    "severity": "critical",
+    "component": "ExceptionAPI",
+    "summary": "API timeout during peak payload",
+    "reproduction_steps": "Send 5000 synthetic exception messages in one batch",
+    "observed_behavior": "Response timeout after 30 seconds",
+    "expected_behavior": "API should respond within SLA threshold"
+  },
+  {
+    "defect_id": "PRJ-DEF-003",
+    "created_date": "2026-08-03",
+    "severity": "medium",
+    "component": "RuleEngine",
+    "summary": "Business rule mismatch for severity mapping",
+    "reproduction_steps": "Submit synthetic exception with boundary values",
+    "observed_behavior": "Rule maps severity incorrectly at threshold",
+    "expected_behavior": "Boundary values map to documented severity band"
+  }
+]
+

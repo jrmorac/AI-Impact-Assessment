@@ -1,0 +1,41 @@
+name: v3 CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-lock.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements-lock.txt
+
+      - name: Run unittest discovery
+        run: python -m unittest discover -s tests -v
+
+      - name: Run golden regression tests
+        run: python -m unittest tests.test_v3_golden_regression -v
+
+      - name: Compile Python sources and tests
+        run: python -m compileall -q src tests
+
+      - name: Import application modules
+        env:
+          PYTHONPATH: src
+        run: python -c "import agents, interactive_rca, io_utils, main, orchestrator, web_app, workflow_agents"

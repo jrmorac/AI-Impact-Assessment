@@ -1,0 +1,11 @@
+{
+  "default_evidence_refs": ["DEMO-WHY1_storage-utilization.txt", "DEMO-WHY1_transfer-alert.txt"],
+  "answers": [
+    {
+      "answer": "Because the synthetic landing area reached its configured storage capacity, the transfer could not create the outbound file.",
+      "resolved": true,
+      "controllable": true,
+      "prevents_recurrence": true
+    }
+  ]
+}

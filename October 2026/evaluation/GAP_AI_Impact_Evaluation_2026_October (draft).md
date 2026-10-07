@@ -106,6 +106,8 @@ In September, I designed and ran a scoped multi-agent engineering workflow — f
 
 I also built and maintain a project-specific tool — a root-cause-analysis and CAPA generation application — around a bounded, orchestrated three-step pipeline (planner → analyzer → validator) with hard iteration ceilings, structured per-step execution traces for transparency, and a versioned golden-case regression suite that runs automatically in CI on every change to guard against regression. This tool was independently reviewed by the GAP AI Toolkit's automated production-readiness evaluator and returned **"Approved with Recommendations"** with zero critical failures across all 13 audited dimensions, confirming its security controls, CI/test coverage, and operational documentation. To be precise about scope: the application's runtime is deterministic and does not call an LLM, so prompt tuning, RAG, and fine-tuned models apply to the engineering process that designed and validated it, not to the application's own execution logic.
 
+This agent-building pattern is not new to September: earlier this cycle, during GAP's Autonomous Engineer Intensive Training, I independently authored 3 custom Copilot agents and 2 custom skills on top of the standard Playwright MCP server, generating API test suites and defect-analysis reports against a public training target. I'm including it here as secondary evidence that agentic development is a sustained capability, not a one-time exercise.
+
 ### Supporting Artifacts
 
 - `October 2026/agentic-qa-rca-v3/development-records/20260913-agent-review-cycle-01/04_Agent_Activity_Log.md`
@@ -113,10 +115,11 @@ I also built and maintain a project-specific tool — a root-cause-analysis and 
 - `October 2026/agentic-qa-rca-v3/src/orchestrator.py`
 - `October 2026/agentic-qa-rca-v3/tests/test_v3_golden_regression.py`
 - `October 2026/AI Agent Evaluator feedback report v3.md`
+- GitHub (secondary/training evidence): `https://github.com/jrmorac/AI-Training-Hackaton-project`
 
 ### Artifact Description
 
-The activity log and integration decision record show the designed, reusable multi-agent engineering workflow. The orchestrator and golden-regression tests show the deployed, monitored pipeline. The v3 evaluator report is third-party confirmation of the application's production-readiness quality.
+The activity log and integration decision record show the designed, reusable multi-agent engineering workflow. The orchestrator and golden-regression tests show the deployed, monitored pipeline. The v3 evaluator report is third-party confirmation of the application's production-readiness quality. The GitHub repository is secondary evidence showing agent-authoring capability predates this cycle's in-project work — a public, single-author repository with custom Copilot agents and skills (built on top of the standard Playwright MCP server) driving API test-generation and defect-analysis reports during the Autonomous Engineer Intensive Training.
 
 ---
 
@@ -130,7 +133,7 @@ Describe any actions you've taken to extend AI value beyond your own work. This 
 
 I built and published two reusable assets this cycle: a six-template QA prompt library for recurring documentation, SQL test-data, and test-case tasks, and a fully packaged, team-shareable version of the RCA/CAPA application — including a quick-start README, one-command environment check and launch scripts, and compliance-safe onboarding guidance — so any teammate can run it locally without CLI experience. I also authored a leadership-facing presentation script framing the tool as a reusable pattern for regulated-environment QA work, ready for delivery to engineering and delivery leadership.
 
-Beyond this project, my July deliverables already demonstrate AI value extending past my own task list: the QA strategy I produced is the team's standing testing baseline, the performance testing plan was adopted by client-side stakeholders as the official testing approach, and the 27 test cases I generated are in active use by the broader test execution effort. I completed GAP's Autonomous Engineer Intensive Training (now "Intro to Agentic Development") and Anthropic's Claude 101 course this cycle, building the orchestration and prompt-design foundation behind the September multi-agent workflow. My near-term next step is delivering the prepared leadership presentation and collecting direct teammate usage of the shareable package.
+Beyond this project, my July deliverables already demonstrate AI value extending past my own task list: the QA strategy I produced is the team's standing testing baseline, the performance testing plan was adopted by client-side stakeholders as the official testing approach, and the 27 test cases I generated are in active use by the broader test execution effort. I completed GAP's Autonomous Engineer Intensive Training (now "Intro to Agentic Development") and Anthropic's Claude 101 course this cycle, building the orchestration and prompt-design foundation behind the September multi-agent workflow. That training translated into a tangible build, not just course completion: I authored custom Copilot agents and skills on top of a standard MCP server during the training, retained publicly as secondary evidence of applied capability. My near-term next step is delivering the prepared leadership presentation and collecting direct teammate usage of the shareable package.
 
 ### Supporting Artifacts
 
@@ -141,7 +144,8 @@ Beyond this project, my July deliverables already demonstrate AI value extending
 - `July 2026/certificates/certificate-u6d3dqgyn2hx-1778113791-claude-101.pdf`
 - Artifact C: `dom_performance_testing_strategy.html`
 - Artifact D: `DOM_QA_Strategy_New_Requested_TestCases creation and json for ADO.md`
+- GitHub (secondary/training evidence): `https://github.com/jrmorac/AI-Training-Hackaton-project`
 
 ### Artifact Description
 
-The prompt library and shareable package are the reusable assets created for team use. The presentation script shows leadership-level initiative in progress. The training certificates document the capability-building behind this cycle's agentic work. Artifacts C and D show prior deliverables already adopted by the team and client.
+The prompt library and shareable package are the reusable assets created for team use. The presentation script shows leadership-level initiative in progress. The training certificates document the capability-building behind this cycle's agentic work. Artifacts C and D show prior deliverables already adopted by the team and client. The GitHub repository is secondary evidence that the training certificate corresponds to real applied building (custom agents and skills authored on top of the standard Playwright MCP server), not just attendance.

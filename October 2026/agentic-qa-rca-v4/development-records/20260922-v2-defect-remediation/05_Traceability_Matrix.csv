@@ -1,0 +1,12 @@
+Finding ID,Requirement ID,Task ID,Code or Config Change,Test Evidence,Decision Status
+V2-F-001,V2-EXP-01,V2-T-001,src/web_app.py write allowlist and export defaults,Working v2 10 tests: export default-path coverage passed; shareable v2 13 tests passed,Implemented - runtime validated
+V2-F-001,V2-EXP-02,V2-T-002,src/web_app.py export validation,Working and shareable invalid path/provider/variant coverage passed,Implemented - runtime validated
+V2-F-002,V2-ROUTE-01,V2-T-001,src/web_app.py POST dispatcher,Working and shareable run-demo route test passed,Implemented - runtime validated
+V2-F-002,V2-TRACE-01,V2-T-005,web/index.html trace refresh flow,Browser smoke evidence pending; source parity and route tests passed,Implemented - browser evidence pending
+V2-F-003,V2-SUBMIT-01,V2-T-004,interactive_rca.py and web/index.html submit state,Working and shareable answer transition tests passed,Implemented - runtime validated
+V2-F-003,V2-SUBMIT-02,V2-T-004,revision state transition and explicit node index,Needs-more-evidence replacement tests passed in both packages,Implemented - runtime validated
+V2-F-003,V2-SUBMIT-03,V2-T-004,closed-state and historical revision guard,Closed/historical revision tests passed in both packages,Implemented - runtime validated
+V2-F-004,V2-WHY-01,V2-T-003,target-depth checkpoint and carousel boundary,Target-depth and advanced-continuation tests passed; browser evidence pending,Implemented - browser evidence pending
+V2-F-004,V2-STATE-01,V2-T-003,live versus historical navigation state,Source parity checked; browser evidence pending,Implemented - browser evidence pending
+V2-F-005,V2-TRACE-01,V2-T-005,report/defect selector refresh and trace rendering,Trace route and source parity validated; browser evidence pending,Implemented - browser evidence pending
+V2-F-006,V2-EXP-02,V2-T-002,provider/variant validation,Invalid option tests passed in both packages,Implemented - runtime validated

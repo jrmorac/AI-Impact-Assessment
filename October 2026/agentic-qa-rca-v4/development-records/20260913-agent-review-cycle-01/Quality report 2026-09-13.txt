@@ -1,0 +1,11 @@
+Quality report 2026-09-13
+
+1. Context file dropdown, what is the purpose, what is the difference between chosing the different items.  I think all context files are needed, isn't it?
+
+2. Role dropdown. what is the difference between chosing the different roles.  Is this just for the records?
+
+3. I run the why 3 demo. Then I chose the new session to clean everything. If i click on the latest session dropdown, it is empty.  I expected to see data from the why 3 demo. Is that the expected behavior or not?
+
+4.  Advanced options items.  what is the purpose of these items?, I am not clear about them and if they are needed or not
+
+5.  Agent trace viewer.  I tested the demo examples.  I never saw these items populated so I wonder if they are working.  Also, what is their purpose, I am not clear about them

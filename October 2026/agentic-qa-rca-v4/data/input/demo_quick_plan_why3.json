@@ -1,0 +1,18 @@
+{
+  "default_evidence_refs": ["DEMO-WHY3_invoice-diff.csv", "DEMO-WHY3_tax-table-snapshot.json"],
+  "answers": [
+    {
+      "answer": "Because the billing job applied an outdated tax-rate reference snapshot to the synthetic invoices."
+    },
+    {
+      "answer": "Because the tax-rate reference table was not refreshed with the current synthetic rates before the billing job ran."
+    },
+    {
+      "answer": "Because the scheduled tax-rate refresh job failed for the required refresh window, leaving the reference snapshot outdated.",
+      "evidence_refs": ["DEMO-WHY3_refresh-job-history.txt"],
+      "resolved": true,
+      "controllable": true,
+      "prevents_recurrence": true
+    }
+  ]
+}

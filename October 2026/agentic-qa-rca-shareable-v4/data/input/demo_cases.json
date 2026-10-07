@@ -1,0 +1,48 @@
+[
+  {
+    "defect_id": "DEMO-WHY1",
+    "created_date": "2026-08-14",
+    "severity": "medium",
+    "component": "SyntheticFileTransfer",
+    "summary": "Nightly file transfer failed",
+    "reproduction_steps": "Fill the synthetic landing area to its configured capacity and run the scheduled transfer.",
+    "observed_behavior": "The transfer stops before creating the outbound file.",
+    "expected_behavior": "The transfer creates the outbound file or reports a clear capacity action.",
+    "evidence_artifacts": [
+      "DEMO-WHY1_storage-utilization.txt",
+      "DEMO-WHY1_transfer-alert.txt"
+    ]
+  },
+  {
+    "defect_id": "DEMO-WHY3",
+    "created_date": "2026-08-14",
+    "severity": "high",
+    "component": "SyntheticBillingService",
+    "summary": "Synthetic invoices contain incorrect tax values",
+    "reproduction_steps": "Run the billing job against the supplied synthetic customer and tax-rate snapshot.",
+    "observed_behavior": "Invoices use tax rates from an outdated reference snapshot.",
+    "expected_behavior": "Invoices use the current tax-rate reference data.",
+    "evidence_artifacts": [
+      "DEMO-WHY3_invoice-diff.csv",
+      "DEMO-WHY3_tax-table-snapshot.json",
+      "DEMO-WHY3_refresh-job-history.txt"
+    ]
+  },
+  {
+    "defect_id": "DEMO-WHY5",
+    "created_date": "2026-08-14",
+    "severity": "critical",
+    "component": "SyntheticRecordsAPI",
+    "summary": "Invalid synthetic records reached the accepted state",
+    "reproduction_steps": "Submit the supplied invalid synthetic payload to the API validation path.",
+    "observed_behavior": "The API accepts records that fail the documented validity rules.",
+    "expected_behavior": "The API rejects invalid records and records the validation reason.",
+    "evidence_artifacts": [
+      "DEMO-WHY5_api-request-log.json",
+      "DEMO-WHY5_invalid-records.csv",
+      "DEMO-WHY5_story-requirement.md",
+      "DEMO-WHY5_refinement-notes.md",
+      "DEMO-WHY5_process-checklist.md"
+    ]
+  }
+]

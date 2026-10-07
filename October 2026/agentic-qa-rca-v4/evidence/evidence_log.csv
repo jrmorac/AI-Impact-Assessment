@@ -1,0 +1,16 @@
+"timestamp_utc","project_name","input_file","output_file","defects_total","accepted_count","flagged_count"
+"2026-08-07T17:55:52.512513+00:00","SampleProject","data\input\synthetic_defects_sprint1.json","data\output\report_sprint1.json","3","0","3"
+"2026-08-07T17:54:42.992948+00:00","SampleProject","data\input\synthetic_defects_with_experiment_outcomes.json","data\output\report_with_experiment_outcomes.json","2","2","0"
+"2026-08-07T17:54:41.818954+00:00","SampleProject","data\input\synthetic_defects_with_evidence.json","data\output\report_with_evidence.json","2","2","0"
+"2026-08-07T17:54:40.533932+00:00","SampleProject","data\input\synthetic_defects_sprint1_mixed.json","data\output\report_sprint1_mixed.json","3","0","3"
+"2026-08-07T17:30:39.586162+00:00","SampleProject","data\input\synthetic_defects_sprint1_mixed.json","data\output\report_sprint1_mixed.json","3","2","1"
+"2026-08-07T17:30:34.736666+00:00","SampleProject","data\input\synthetic_defects_sprint1.json","data\output\report_sprint1.json","3","2","1"
+"2026-08-06T21:43:23.572290+00:00","SampleProject","data\input\synthetic_defects_sprint1.json","data\output\report_sprint1.json","3","3","0"
+2026-08-11T18:23:08.634698+00:00,SampleProject,data\input\synthetic_defects_sprint1.json,data\output\report_sprint1_orchestrated.json,3,0,3
+2026-08-12T15:59:57.932116+00:00,SampleProject,data\input\synthetic_defects_sprint1.json,data\output\report_sprint1.json,3,0,3
+2026-08-13T04:49:41.953905+00:00,SampleProject,data\input\synthetic_defects_sprint1.json,data\output\report_sprint1.json,3,0,3
+2026-09-14T04:26:36.697124+00:00,SampleProject,data\input\synthetic_defects_with_evidence.json,data\output\report_20260913_222636486.json,2,2,0
+2026-09-14T04:26:54.220662+00:00,SampleProject,data\input\synthetic_defects_with_evidence.json,data\output\report_20260913_222654035.json,2,2,0
+2026-09-14T04:32:20.099921+00:00,SampleProject,C:\Users\JoseRafaelMoraCasal\AI Impact Assessment\October 2026\agentic-qa-rca\data\input\demo_cases.json,C:\Users\JoseRafaelMoraCasal\AI Impact Assessment\October 2026\agentic-qa-rca\data\output\report_demo-why3-20260914T043220Z.json,3,1,2
+2026-09-16T18:41:10.503791+00:00,SampleProject,C:\Users\JoseRafaelMoraCasal\AI Impact Assessment\October 2026\agentic-qa-rca\data\input\demo_cases.json,C:\Users\JoseRafaelMoraCasal\AI Impact Assessment\October 2026\agentic-qa-rca\data\output\report_demo-why5-20260916T184110Z.json,3,1,2
+2026-09-16T18:55:38.178764+00:00,SampleProject,C:\Users\JoseRafaelMoraCasal\AI Impact Assessment\October 2026\agentic-qa-rca\data\input\demo_cases.json,C:\Users\JoseRafaelMoraCasal\AI Impact Assessment\October 2026\agentic-qa-rca\data\output\report_demo-why3-20260916T185538Z.json,3,1,2

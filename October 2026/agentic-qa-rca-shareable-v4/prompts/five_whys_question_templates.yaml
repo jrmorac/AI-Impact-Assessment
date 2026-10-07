@@ -1,0 +1,19 @@
+version: 1
+# Loaded by src/agents.py (_five_why_templates). Deterministic text only - no LLM calls.
+# Used to build the automated 5-why chain (rca_5whys) attached to analyzer_agent output.
+description: >
+  Five Whys question templates used by the deterministic analyzer to build the
+  automated five-why chain for a defect.
+default_first_why: "Why did the observed defect happen in the current process?"
+category_first_why:
+  performance: "Why did the system exceed the expected response-time threshold?"
+  data-quality: "Why did data integrity break (null/duplicate/inconsistent values)?"
+  business-rule: "Why did rule evaluation produce an incorrect decision?"
+  integration: "Why did the interface or contract fail between systems?"
+  security: "Why did the control fail to prevent unauthorized behavior?"
+  test-automation: "Why did the test process produce unstable or inconsistent results?"
+remaining_whys:
+  - "Why was the immediate technical condition possible?"
+  - "Why did prevention controls not stop this earlier?"
+  - "Why did detection controls not catch this before impact?"
+  - "Why does the process allow this pattern to recur?"

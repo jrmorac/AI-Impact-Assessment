@@ -49,6 +49,35 @@ Record each instance where a colleague used a template from the library (even in
 
 ---
 
+## RCA/CAPA Shareable Package — Sharing Log
+
+**Asset Shared:** Agentic QA RCA/CAPA tool, shareable v3 package (`October 2026/dist/agentic-qa-rca-shareable-v3-20260922-184218.zip`)
+
+| # | Date | Shared With | Role | Channel | Notes |
+|---|------|-------------|------|---------|-------|
+| 1 | 2026-10-06 | Maria Fernanda Avila | Staff QA Engineer (different account/client) | Email (pilot invite sent) | Email couldn't carry the zip attachment (blocked by mail policy); package hand-off planned for 2026-10-07 via [channel TBD] |
+
+### RCA Adoption Entry Template
+
+```
+**Date:** 
+**Colleague:** 
+**Package Version:** 
+**Task Applied To:** 
+**Outcome / Feedback:** 
+**Evidence:** [e.g., Teams message, reply email, screenshot of run]
+```
+
+### RCA Adoption Entry 001
+**Date:**  
+**Colleague:**  
+**Package Version:**  
+**Task Applied To:**  
+**Outcome / Feedback:**  
+**Evidence:**  
+
+---
+
 ### Adoption Entry 002
 **Date:**  
 **Colleague:**  

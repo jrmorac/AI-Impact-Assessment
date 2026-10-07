@@ -1,0 +1,33 @@
+﻿[
+  {
+    "defect_id": "PRJ-DEF-101",
+    "created_date": "2026-08-04",
+    "severity": "critical",
+    "component": "ExceptionAPI",
+    "summary": "Recurring timeout again during peak payload",
+    "reproduction_steps": "Send 5000 synthetic exception messages in one batch",
+    "observed_behavior": "Timeout repeats after 30 seconds and ticket was reopened",
+    "expected_behavior": "API should respond within SLA threshold"
+  },
+  {
+    "defect_id": "PRJ-DEF-102",
+    "created_date": "2026-08-04",
+    "severity": "high",
+    "component": "RuleEngine",
+    "summary": "Severity mapping mismatch",
+    "reproduction_steps": "",
+    "observed_behavior": "",
+    "expected_behavior": "Boundary values map to documented severity band"
+  },
+  {
+    "defect_id": "PRJ-DEF-103",
+    "created_date": "2026-08-05",
+    "severity": "medium",
+    "component": "CustomerActivityIngestion",
+    "summary": "Flaky assertion fails intermittently",
+    "reproduction_steps": "Run deterministic synthetic dataset in 5 consecutive runs",
+    "observed_behavior": "Assertion failure appears on run 3 and run 5",
+    "expected_behavior": "Assertion remains stable across all runs"
+  }
+]
+
