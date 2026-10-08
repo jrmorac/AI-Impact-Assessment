@@ -16,7 +16,7 @@
 |------|--------|
 | July 2026 assessment | **Received July feedback — final evaluation Level 1** |
 | July target level | **Level 2 target, but result came back as Level 1** |
-| **Current focus** | **First real pilot outreach sent (Oct 6) — awaiting zip hand-off (Oct 7) and colleague feedback before claiming D5 adoption** |
+| **Current focus** | **v4 evaluator remediation cycle complete and Approved (Oct 7); v4 uploaded to the GAP AI Toolkit for fresh review. Still waiting on Maria Fernanda Avila's zip hand-off/feedback for D5 adoption evidence.** |
 | Track | **Engineering** |
 | Next re-evaluation window | October 2026 — window is open now |
 | GAP AI Coach skill | Installed at `.github/skills/gap-ai-coach/` |
@@ -31,7 +31,7 @@
 - Added one sentence + repo link to both **D4** and **D5** sections of `October 2026/evaluation/GAP_AI_Impact_Evaluation_2026_October (draft).md`; corrected the wording there from "custom-built MCP server" to "custom Copilot agents and skills built on top of the standard Playwright MCP server" to avoid an inaccurate claim.
 - No other changes made this session; this closes out the "lost session" concern raised at the next session start — the work had already completed and saved before the session ended.
 
-### October 7, 2026 (later) — v4 Evaluator Remediation Cycle (Conditionally Approved, pending human test run)
+### October 7, 2026 (later) — v4 Evaluator Remediation Cycle (Approved, validated same session)
 
 - Reviewer Juan Meza González commented on the v3 RCA tool submission: "approved with some recommendations, handle the relevant ones" (same report content as the "v3"/"v4" evaluator report files — no new review was actually re-run).
 - Ran a full multi-agent remediation cycle (Senior Agentic Engineer orchestrating Senior Backend Engineer + Senior Frontend Engineer) against the 20 non-critical v3 evaluator recommendations. Owner-confirmed scope: Tier 1 (6 doc/version findings) + Tier 2 (3 code findings) = F-001–F-009; Tier 3 (F-010, 9 cloud/multi-tenant infra items) explicitly deferred as disproportionate to a local single-user tool.
@@ -41,6 +41,7 @@
 - **Final decision: Approved** (upgraded from Conditionally Approved after same-session validation). Ran `python -m unittest discover -s tests -v` (46 tests OK, 1 skipped), the two new F-007/F-008 test files individually (14/14 pass), `compileall` (clean), and the golden regression suite (why1/why3/why5 — confirmed behavior-neutral after the F-008 prompt-extraction refactor). Frontend validation was API-level (Playwright was unavailable this session): started the v4 server, confirmed `/api/health`, confirmed the served page contains the F-009 markers, and triggered a real `PATH_NOT_ALLOWED` error through the API matching the frontend's remediation map exactly.
 - Committed locally (commit `54d5415`, 6 session-scoped files, not pushed) and tagged `v4.0.0` (local tag, not pushed — push needs your confirmation). Repackaged the shareable ZIP: `October 2026/dist/agentic-qa-rca-shareable-v4-20261007-174601.zip` (65 files, 0 development-records leaked, verified `prompts/` + `VERSION` present).
 - Remaining optional follow-up: a real interactive browser click-through (Escape key, visual confirmation) if Playwright access is restored later — not blocking.
+- **v4 uploaded to the GAP AI Toolkit space for review** (same day). Awaiting a fresh evaluator report — expect a new "AI Agent Evaluator feedback report v4.md" to replace the current placeholder copy (which was byte-identical to the v3 report). When it lands: compare dimension-by-dimension against `06_Metrics_Baseline_vs_After.csv` (expected PASS on 14.2, 7.8, 7.1, 8.10, 12.3, 12.4, 6.7, 1.12, 1.13, 8.4, 8.6, 8.8; PARTIAL/FAIL unchanged on the 9 deferred Tier 3 items) and update the October draft's D4 evidence if the result is a clean "Approved" with no new critical/high findings.
 
 ### October 6, 2026 — Coaching Session: Level Estimate + First Pilot Outreach
 
@@ -52,10 +53,15 @@
 
 ### Next Session Fast Start (Oct 7+)
 
-1. Confirm the Oct 7 zip hand-off channel to Maria Fernanda Avila and update the `[channel TBD]` placeholder in `Prompt_Library_Sharing_Record.md`.
-2. When Maria replies with feedback, fill in `RCA Adoption Entry 001` — this is the first real D5 adoption evidence for this cycle.
-3. If adoption evidence lands, update the October draft's D5 answer to cite it (currently still framed as "no confirmed adoption yet").
-4. D3 is still the other unresolved risk — consider starting real prospective sprint-metric capture (not just the instrumented-but-empty framework) if time allows before submitting.
+### Next Session Fast Start (Oct 8+)
+
+1. **Check for the real v4 evaluator report** in the GAP AI Toolkit space (uploaded Oct 7). Compare against `October 2026/agentic-qa-rca-v4/development-records/20261007-v4-evaluator-remediation/06_Metrics_Baseline_vs_After.csv` to confirm the 12 fixed criteria now PASS and the 9 deferred Tier 3 criteria are unchanged as expected. If clean, update the October draft's D4 evidence to cite the v4 result.
+2. Confirm the zip hand-off channel to Maria Fernanda Avila and update the `[channel TBD]` placeholder in `Prompt_Library_Sharing_Record.md`.
+3. When Maria replies with feedback, fill in `RCA Adoption Entry 001` — this is the first real D5 adoption evidence for this cycle.
+4. If adoption evidence lands, update the October draft's D5 answer to cite it (currently still framed as "no confirmed adoption yet").
+5. D3 is still the other unresolved risk — consider starting real prospective sprint-metric capture (not just the instrumented-but-empty framework) if time allows before submitting.
+6. Optional, non-blocking: if Playwright/browser tooling becomes available, do a real interactive click-through of the v4 Web UI (Escape key on each overlay, one error-remediation message) to close the one noted validation gap.
+7. Optional: push commits `54d5415`, `98e32c1`, `5077886` and tag `v4.0.0` to `origin/main` if you want them on the remote (not done automatically — needs your go-ahead).
 
 ### September 30, 2026 — Full Reanalysis and October Draft Submission
 
