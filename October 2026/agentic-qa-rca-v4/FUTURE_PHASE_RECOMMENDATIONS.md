@@ -120,6 +120,28 @@ Expected benefit:
 5. Consolidate and remove duplicated generation logic.
 6. Add automated unit/API/end-to-end test baseline, including assist-enabled paths.
 
+## v5 Evaluator Follow-ups (2026-10-08, non-critical, low priority)
+
+Source: real v5 GAP AI Toolkit re-review (Completed Oct 7 18:40), confirming all 9 targeted F-001–F-009 fixes landed. Two quick, low-effort follow-ups noted during review:
+
+### 1) Prompt template negative constraints and self-correction checklist (criteria 9.7, 9.11)
+
+Problem:
+- Extracting Five Whys/guided-RCA templates into `prompts/*.yaml` (F-008) activated Area 9 "Prompt Engineering Quality" evaluation, which previously did not apply.
+- Templates lack explicit negative constraints (e.g., "do not speculate beyond provided evidence") and a pre-submission self-correction checklist.
+
+Future-phase action:
+- Add a short negative-constraints block to `guided_rca_question_templates.yaml` and `five_whys_question_templates.yaml`.
+- Add a pre-submission checklist line to the guided RCA flow (specific mechanism named, causal link explained, evidence attached, within team's control, fixing it prevents recurrence).
+
+### 2) Concrete example input/output pairs in README (criterion 12.5)
+
+Problem:
+- v3 evaluator treated existing demo files as sufficient evidence (PASS); v5 evaluator wants inline documented examples in the README itself and marked this FAIL — likely scout inconsistency rather than a real regression (no files were removed), but worth settling definitively.
+
+Future-phase action:
+- Add 2 concrete example input/output pairs directly to `README.md`: one sample defect JSON input → RCA report excerpt, one sample Why answer with evidence refs → CAPA CSV row.
+
 ## Notes
 
 - No production data assumptions are required for these improvements.

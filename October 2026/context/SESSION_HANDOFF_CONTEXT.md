@@ -1,7 +1,7 @@
 # Session Handoff Context — GAP AI Impact Assessment
 **Engineer:** Jose Rafael Mora Casal  
 **Role:** QA Engineer — DOM project (MediQuant client)  
-**Last Updated:** October 7, 2026
+**Last Updated:** October 8, 2026
 **Purpose:** Resume coaching and work continuation in a new conversation
 
 **Project framing note:** This tool is a generic QA workflow for structured analysis, defect triage, and root-cause support using synthetic/demo inputs. Do not add unrelated regulatory framing to future evidence, project narratives, or evaluation documentation.
@@ -16,12 +16,22 @@
 |------|--------|
 | July 2026 assessment | **Received July feedback — final evaluation Level 1** |
 | July target level | **Level 2 target, but result came back as Level 1** |
-| **Current focus** | **v4 evaluator remediation cycle complete and Approved (Oct 7); v4 uploaded to the GAP AI Toolkit for fresh review. Still waiting on Maria Fernanda Avila's zip hand-off/feedback for D5 adoption evidence.** |
+| **Current focus** | **October draft Q1-Q4 refined and finalized question-by-question (Oct 8); Q5 (Scaling AI Impact) still pending — resume there next session. Real v5 evaluator re-review confirmed all 9 v4 fixes landed. Still waiting on Maria Fernanda Avila's zip hand-off/feedback for D5 adoption evidence.** |
 | Track | **Engineering** |
 | Next re-evaluation window | October 2026 — window is open now |
 | GAP AI Coach skill | Installed at `.github/skills/gap-ai-coach/` |
 | Current status | **RCA tool is functional, Web UI-first, shareable. Pilot invite emailed to Maria Fernanda Avila (Staff QA Engineer, different account) on Oct 6; zip attachment blocked by mail policy, in-person/Teams hand-off planned Oct 7. No colleague has run it yet.** |
 | **If-submitted-today estimate** | **Level 2 most likely, not guaranteed.** D4 is now strong (closes July's biggest gap). D3 and D5 still carry the same unresolved weaknesses the July evaluator flagged (D3 = reframed estimate, not new tracked data; D5 = assets published but no confirmed adoption yet). See Oct 6 coaching session notes below. |
+
+### October 8, 2026 — Coaching Session: Draft Refinement Q1-Q4 + Real v5 Evaluator Result
+
+- Worked through the October draft question-by-question with Jose providing context per question; refined and applied all 4 completed questions directly into `October 2026/evaluation/GAP_AI_Impact_Evaluation_2026_October (draft).md`:
+  - **Q1 (Daily workflow):** reframed single-prompt daily pattern as a deliberate, policy-driven choice (regulated DOM project restricts agentic execution on client systems), with the RCA tool positioned as where agentic capability is built/exercised instead.
+  - **Q2 (Validation):** clarified Jose writes no code on the DOM project (validation log covers docs/SQL/test-data there); code-level validation happens on the RCA tool via the spec-driven 4-agent process with human-in-the-loop sign-off, backed by the Oct 7-8 test execution evidence (46+14 tests, golden regression).
+  - **Q3 (Productivity):** kept the July adopted-deliverables framing, honestly labeled the 63.5h figure as an estimate (no new tracked metrics available), and added the Oct 7-8 v4 remediation cycle (9 findings, 60 tests, 1 session) as a new real dated data point. Created `October 2026/metrics-and-logs/AI_Time_Tracking_Log.md` — a lightweight template for Jose to start logging real time data starting today.
+  - **Q4 (Agents/automation):** **received and reviewed a real v5 evaluator re-review** (`October 2026/AI Agent Evaluator feedback report v5.md`, Completed Oct 7 18:40) — confirmed all 9 targeted F-001–F-009 fixes landed (PARTIAL/FAIL → PASS), zero critical findings before or after. New findings were mostly minor second-order effects of the fixes themselves (extracting prompts activated Area 9 "Prompt Engineering Quality" evaluation for the first time, surfacing 2 small new asks). One possible scout false-negative noted (skip-link claimed "not found" despite existing in code) and one scout inconsistency noted (12.5 example I/O pairs flipped PASS→FAIL with no actual removal) — both logged as discrepancies, not real regressions. Added 2 quick follow-up items to `October 2026/agentic-qa-rca-v4/FUTURE_PHASE_RECOMMENDATIONS.md` ("v5 Evaluator Follow-ups" section). Updated Q4's response and evidence list to cite the real before/after v3→v5 comparison instead of the v3-only placeholder.
+  - **Portal attachment limit handling:** Q4's artifact list was trimmed to 5 then restored to the full 8 per Jose's preference (kept for records; added an inline priority-order note for whichever subset gets attached). Discovered the submission portal rejects `.csv` and `.py` files — created upload-safe replacements: `October 2026/agentic-qa-rca-v4/development-records/20261007-v4-evaluator-remediation/06_Metrics_Baseline_vs_After_Confirmed.md` (markdown version of the CSV, updated with real v5-confirmed statuses instead of "expected") and pointed to the existing `ARCHITECTURE_AND_EVALUATOR_APPLICABILITY.md` as the `.py` replacement (already markdown, contains the pipeline's Mermaid diagram).
+- **Q5 (Scaling AI Impact) not started yet** — this is the next-session starting point.
 
 ### October 7, 2026 — Coaching Session: Hackathon Repo Added as Secondary Evidence (corrected)
 
