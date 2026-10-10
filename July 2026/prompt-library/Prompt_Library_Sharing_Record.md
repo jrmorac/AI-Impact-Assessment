@@ -51,11 +51,12 @@ Record each instance where a colleague used a template from the library (even in
 
 ## RCA/CAPA Shareable Package — Sharing Log
 
-**Asset Shared:** Agentic QA RCA/CAPA tool, shareable v3 package (`October 2026/dist/agentic-qa-rca-shareable-v3-20260922-184218.zip`)
+**Asset Shared:** Agentic QA RCA/CAPA tool, shareable v3/v4 packages; Maria Fernanda Avila's documented pilot was on v4.
 
 | # | Date | Shared With | Role | Channel | Notes |
 |---|------|-------------|------|---------|-------|
-| 1 | 2026-10-06 | Maria Fernanda Avila | Staff QA Engineer (different account/client) | Email (pilot invite sent) | Email couldn't carry the zip attachment (blocked by mail policy); package hand-off planned for 2026-10-07 via [channel TBD] |
+| 1 | 2026-10-06 | Maria Fernanda Avila | Staff QA Engineer (different account/client) | Email (pilot invite sent) | Email couldn't carry the zip attachment (blocked by mail policy). |
+| 2 | 2026-10-09 | Maria Fernanda Avila | Staff QA Engineer (different account/client) | v4 package hand-off channel unconfirmed; written feedback received by email | Completed browser demo, manual RCA session, and CAPA CSV export on v4. Reported both successful flows and actionable issues; see RCA Adoption Entry 001. |
 
 ### RCA Adoption Entry Template
 
@@ -69,12 +70,12 @@ Record each instance where a colleague used a template from the library (even in
 ```
 
 ### RCA Adoption Entry 001
-**Date:**  
-**Colleague:**  
-**Package Version:**  
-**Task Applied To:**  
-**Outcome / Feedback:**  
-**Evidence:**  
+**Date:** 2026-10-09 (feedback received)
+**Colleague:** Maria Fernanda Avila, Staff QA Engineer (different account/client)
+**Package Version:** v4 (`agentic-qa-rca-shareable-v4`)
+**Task Applied To:** Browser demo, manual RCA session, and CAPA CSV export using non-sensitive QA test inputs.
+**Outcome / Feedback:** Maria reported the demo and manual session worked without browser console errors. She also identified actionable issues: `start-local.sh` assumes `python` exists on PATH; the launcher does not open the browser; CAPA and ADO export UI actions appear to write before explicit approval; an export conflict leaves stale loading text; the latest-session list does not show the latest session; and evidence suggestions include generated files. The export-approval mismatch is an open governance issue and must be fixed and regression-tested before broader distribution.
+**Evidence:** Maria's email feedback, subject "Favor rápido — probar una herramienta de QA (10 minutos)" (received 2026-10-09); corresponding feedback copy in Jose's Downloads folder.
 
 ---
 
@@ -104,7 +105,7 @@ Record any internal AI initiatives, squad sessions, or knowledge-sharing events 
 
 | Date | Event / Initiative | Role | What Was Contributed | Attendees / Audience |
 |------|-------------------|------|----------------------|----------------------|
-| | | | | |
+| 2026-10-07 | Hackathon agent/skills knowledge-share | Shared project example and guidance | Shared the public May hackathon repository and pointed a colleague to the custom `.github/agents/` and `.vscode/skills/` files for Postman API testing; colleague replied that she would explore it. No usage/adoption outcome confirmed yet. | Sonia Sijia |
 | | | | | |
 
 ---

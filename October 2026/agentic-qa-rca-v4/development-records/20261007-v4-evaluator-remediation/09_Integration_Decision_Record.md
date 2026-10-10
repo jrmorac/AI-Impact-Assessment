@@ -35,3 +35,23 @@ Completed this session:
 4. ✅ Shareable ZIP repackaged: `October 2026/dist/agentic-qa-rca-shareable-v4-20261007-174601.zip` (65 files, 0 development-records leaked, prompts/ and VERSION confirmed present).
 
 This v4 package may now be cited as validated D4 evidence, with the frontend-validation caveat noted above.
+
+## Post-Approval Pilot Addendum — 2026-10-09
+
+Maria Fernanda Avila (Staff QA Engineer, different account/client) completed a browser pilot on v4, including a demo, manual RCA session, and CAPA CSV export. She reported that the demo/manual session worked without browser-console errors, and identified a governance mismatch in the export UX.
+
+### New open finding: export approval bypass in CAPA/ADO UI flows
+
+- The CAPA and ADO export UI handlers call `/api/export-capa` and `/api/export-ado-testcases` directly.
+- In `src/web_app.py`, those convenience endpoint handlers create an export preview and then invoke `_commit_export()` internally with `approved: True`; therefore the UI writes the file without an explicit user review/approval step, contrary to the documented export-governance contract.
+- The UI's report export already calls preview and commit separately; Maria's report/endpoint observation should be scoped to the direct convenience endpoint and not generalized to that UI flow without additional reproduction.
+- Provisional severity: **Medium** (governance contract and user-consent mismatch within a local single-user synthetic-data tool; no evidence of external exposure or sensitive data involved).
+- Disposition: **Open; do not distribute a refreshed v4 package as broadly ready until corrected and retested.** The v5 toolkit verdict remains factually "Approved with Recommendations" for its automated review scope, but it did not detect this later pilot finding.
+- Required verification before clearing: tests prove CAPA/ADO UI export preview does not write; explicit user approval is required before commit; cancellation leaves no output; existing overwrite-conflict behavior remains; end-to-end browser/API smoke test confirms the intended flow.
+- Owner: Jose Mora / QA Engineering Team. Target date: to be agreed.
+
+Other pilot feedback to triage: `start-local.sh` assumes `python` exists; launcher does not open a browser; stale loading text after HTTP 409; latest-session list behavior; generated artifacts included in evidence suggestions. Keep these distinct from the confirmed export-approval finding and validate each before assigning severity.
+
+### Updated internal distribution decision
+
+The Oct 7 evaluator-remediation integration decision remains historically **Approved** for the F-001–F-009 scope and the package exactly as tested then. Following the Oct 9 pilot discovery, internal distribution readiness for v4 is **Conditionally Approved / hold for broader circulation** pending resolution and verification of the export-approval finding. This does not change or misstate the external GAP AI Toolkit verdict; it records new user evidence received after that review.

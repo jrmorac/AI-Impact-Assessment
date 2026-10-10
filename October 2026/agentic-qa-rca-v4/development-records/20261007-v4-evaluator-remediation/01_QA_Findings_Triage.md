@@ -14,7 +14,12 @@ Source: v3 GAP AI Toolkit evaluator review, "Recommended — Address in Upcoming
 | F-008 | 1.12 (PARTIAL), 1.13 (FAIL) | Medium | Five Whys / guided-RCA question templates hardcoded in function bodies; no versioning scheme | 2 | Fixed |
 | F-009 | 8.4, 8.6, 8.8 | Medium | Escape only closes export modal; generic error messages; incomplete ARIA/screen-reader support | 2 | Fixed |
 | F-010 | 2.5, 2.10, 3.7, 3.1, 3.6, 3.12, 6.10, 6.5, 1.10 | Low | Cloud/multi-tenant infrastructure items (Docker, WORM audit storage, real-time monitoring, intent capsules, data residency/model cards, tool_call events, cross-session memory) | 3 | Deferred — out of scope, see risk register |
+| F-011 | Pilot finding (not evaluator criterion) | Medium (provisional) | Maria's v4 pilot found CAPA/ADO export UI actions write through convenience endpoints that internally set `approved: true`, bypassing the documented explicit user approval interaction | Post-release pilot | Open — hold broader distribution pending fix and regression tests |
 
 ## Owner decision (2026-10-07)
 
 Jose Mora confirmed: (a) defer and document rationale for Tier 3, (b) use "QA Engineering Team" as the maintainer placeholder, (c) scope is Tier 1 + Tier 2 only (F-001 through F-009).
+
+## Post-release pilot finding
+
+On 2026-10-09, Maria Fernanda Avila confirmed browser testing of shareable v4. Her feedback resulted in F-011; it is outside the original evaluator-remediation scope. See the post-approval addendum in `09_Integration_Decision_Record.md` and current risk in `10_Risk_and_Rollback_Register.md`.

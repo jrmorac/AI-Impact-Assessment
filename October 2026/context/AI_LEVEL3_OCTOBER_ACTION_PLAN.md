@@ -1,5 +1,7 @@
 # AI Level 3 Action Plan — October 2026
 
+> **Status as of 2026-10-09:** The October AI Impact Assessment has been submitted. This plan is now a historical record of the preparation cycle; its pre-submission action items are not current tasks. The official result is pending. Future assessment work and the planned RCA v5 project will be tracked in the workspace-root `Future Assessment/` directory. Do not revise submitted October assessment records unless Jose explicitly requests a correction.
+
 ## Goal
 Reach Level 3 in the Engineering track by October 2026 by demonstrating:
 - AI-first daily workflow
@@ -176,4 +178,13 @@ Release status remains conditionally approved. The next evidence priority is man
 - October submission draft finalized at `October 2026/evaluation/GAP_AI_Impact_Evaluation_2026_October (draft).md` — this supersedes `October 2026/AI Impact 2026 October.md` as the source of truth for the 5 question responses and evidence lists.
 - Fixed `July 2026/metrics-and-logs/AI_Output_Validation_Log.md` Entry 001 inconsistency (summary table now matches the detail row); Claude 101 certificate confirmed present and referenced as D5 evidence.
 - Confirmed as of this date: no colleague has used the v3 shareable package, and the adoption tracker is still empty — the draft does not claim adoption.
-- Remaining highest-value actions before submission: (1) get 1–2 colleagues to actually run the shareable package and log it, (2) capture one real measured sprint in `sprint_metrics.csv`. Both are optional strengtheners; the draft is submission-ready without them.
+- Remaining highest-value actions before submission at that time: get colleague pilot use logged and capture a measured sprint if possible. These pre-submission actions are now historical; see the Oct 9 closeout below.
+
+## Submission Closeout — October 9, 2026
+
+- Jose confirmed that the October Engineering-track AI Impact Assessment was submitted; the October draft and its supporting evidence are frozen as the submitted-cycle record.
+- Q1–Q5 were prepared with standalone evidence lists. Q3's 63.5-hour figure remains explicitly identified as a retrospective estimate; no prospective tracking data was available at submission.
+- Q5 includes Maria's single cross-account v4 pilot and feedback, plus the Oct 7 hackathon-agent knowledge-share with Sonia. Neither is described as broad/sustained adoption or measured ROI.
+- Maria's pilot surfaced open F-011: the CAPA/ADO export UI convenience endpoints commit with internal `approved: true`, bypassing the documented explicit approval interaction. The Toolkit v5 result remains "Approved with Recommendations" for its automated review scope, but this later pilot issue is separately recorded. No fix was made on submission day.
+- Future changes, including RCA v5 and any F-011 remediation, belong under the workspace-root `Future Assessment/` directory. That directory currently exists and is empty; RCA v5 has not started.
+- The official October assessment outcome has not yet been received.

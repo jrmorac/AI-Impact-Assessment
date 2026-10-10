@@ -1,7 +1,7 @@
 # Session Handoff Context — GAP AI Impact Assessment
 **Engineer:** Jose Rafael Mora Casal  
 **Role:** QA Engineer — DOM project (MediQuant client)  
-**Last Updated:** October 8, 2026
+**Last Updated:** October 9, 2026
 **Purpose:** Resume coaching and work continuation in a new conversation
 
 **Project framing note:** This tool is a generic QA workflow for structured analysis, defect triage, and root-cause support using synthetic/demo inputs. Do not add unrelated regulatory framing to future evidence, project narratives, or evaluation documentation.
@@ -16,19 +16,37 @@
 |------|--------|
 | July 2026 assessment | **Received July feedback — final evaluation Level 1** |
 | July target level | **Level 2 target, but result came back as Level 1** |
-| **Current focus** | **October draft Q1-Q4 refined and finalized question-by-question (Oct 8); Q5 (Scaling AI Impact) still pending — resume there next session. Real v5 evaluator re-review confirmed all 9 v4 fixes landed. Still waiting on Maria Fernanda Avila's zip hand-off/feedback for D5 adoption evidence.** |
+| **Current focus** | **October assessment submitted Oct 9; its draft and evidence records are frozen. Official result pending. All future updates and planned RCA v5 work go under the workspace-root `Future Assessment/` directory.** |
 | Track | **Engineering** |
 | Next re-evaluation window | October 2026 — window is open now |
 | GAP AI Coach skill | Installed at `.github/skills/gap-ai-coach/` |
-| Current status | **RCA tool is functional, Web UI-first, shareable. Pilot invite emailed to Maria Fernanda Avila (Staff QA Engineer, different account) on Oct 6; zip attachment blocked by mail policy, in-person/Teams hand-off planned Oct 7. No colleague has run it yet.** |
-| **If-submitted-today estimate** | **Level 2 most likely, not guaranteed.** D4 is now strong (closes July's biggest gap). D3 and D5 still carry the same unresolved weaknesses the July evaluator flagged (D3 = reframed estimate, not new tracked data; D5 = assets published but no confirmed adoption yet). See Oct 6 coaching session notes below. |
+| Current status | **RCA v4 remains evaluator-approved with recommendations; Maria's pilot later identified open F-011 (CAPA/ADO export approval bypass). Tool remediation is deferred; no broader v4 distribution until fixed and retested. Planned RCA v5 is not started.** |
+| Pre-submission estimate | **Before submission, Level 2 was considered most likely but not guaranteed. The official October assessment result is pending; do not report this estimate as the assigned result.** |
+
+### October 9, 2026 — Assessment Submitted; Records Frozen
+
+- Jose confirmed submission of the October AI Impact Assessment. Treat the October draft and supporting assessment records as the final submitted-cycle snapshot; do not revise them for future work unless Jose explicitly requests a correction to the submitted record.
+- Created the empty workspace-root directory `Future Assessment/`. Future assessment updates and the planned RCA v5 project will happen there. RCA v5 is planned but not started.
+- Maria's v4 pilot finding F-011 remains open in the submitted-cycle records. No application-code fix is planned today; any future remediation belongs in `Future Assessment/`.
+- Await the official October assessment outcome. Keep the pre-submission level estimate separate from the official result.
+
+### October 9, 2026 — Maria's v4 Pilot; Q5 Evidence Updated
+
+- Maria Fernanda Avila confirmed she tested shareable v4 in the browser: ran a demo, manual RCA session, and CAPA CSV export. Demo/manual session reportedly worked without console errors.
+- Her key finding: CAPA and ADO export UI actions appear to write immediately without explicit approval. Direct review of v4 `src/web_app.py` confirms these UI actions call convenience endpoints whose handlers internally set `approved: true` and commit. This conflicts with the documented preview/approval contract. Treat it as an open Medium-severity (provisional) governance issue; don't circulate v4 more broadly until fixed and regression-tested.
+- Other findings to reproduce/triage separately: `start-local.sh` assumes a `python` command exists, the launcher doesn't open the browser, stale loading text after HTTP 409, latest-session list issue, and generated files included in evidence suggestions.
+- Logged as RCA Adoption Entry 001 in `July 2026/prompt-library/Prompt_Library_Sharing_Record.md`. This is actual cross-account pilot use and D5 feedback evidence, but only one user and not sustained adoption or measured ROI.
+- On Oct 7, Jose also shared the May hackathon repo with Sonia Sijia after she asked for advice about building Postman API testing agents. He pointed her to the custom `.github/agents/` and `.vscode/skills/`; she replied that she would explore it. Logged in the AI Initiative Participation table. This demonstrates knowledge-sharing and interest, not verified use or adoption; attach the Teams screenshot and public GitHub repo if relevant.
+- Updated the October draft Q4 to disclose the export issue and Q5 to include both the pilot and hackathon knowledge-share. The v5 GAP AI Toolkit verdict remains "Approved with Recommendations" for its automated review scope; Maria's later pilot finding is additional evidence the evaluator did not catch. Attachment lists now include upload-safe files only; raw CSV/Python source files are identified as repository-only where relevant.
+- Q2 was also updated so the validation narrative does not overstate export approval: Maria's pilot is cited as human validation that caught a gap missed by automated tests/review. Added a 5-attachment priority list for Q2. Q1 remains unchanged; Q3's numbers remain unchanged and estimate-labeled; Q4/Q5 reflect the new feedback.
+- At the time, the next step was finishing Q5. The assessment has since been submitted; keep F-011 open for possible future work under `Future Assessment/`.
 
 ### October 8, 2026 — Coaching Session: Draft Refinement Q1-Q4 + Real v5 Evaluator Result
 
 - Worked through the October draft question-by-question with Jose providing context per question; refined and applied all 4 completed questions directly into `October 2026/evaluation/GAP_AI_Impact_Evaluation_2026_October (draft).md`:
   - **Q1 (Daily workflow):** reframed single-prompt daily pattern as a deliberate, policy-driven choice (regulated DOM project restricts agentic execution on client systems), with the RCA tool positioned as where agentic capability is built/exercised instead.
-  - **Q2 (Validation):** clarified Jose writes no code on the DOM project (validation log covers docs/SQL/test-data there); code-level validation happens on the RCA tool via the spec-driven 4-agent process with human-in-the-loop sign-off, backed by the Oct 7-8 test execution evidence (46+14 tests, golden regression).
-  - **Q3 (Productivity):** kept the July adopted-deliverables framing, honestly labeled the 63.5h figure as an estimate (no new tracked metrics available), and added the Oct 7-8 v4 remediation cycle (9 findings, 60 tests, 1 session) as a new real dated data point. Created `October 2026/metrics-and-logs/AI_Time_Tracking_Log.md` — a lightweight template for Jose to start logging real time data starting today.
+  - **Q2 (Validation):** clarified Jose writes no code on the DOM project (validation log covers docs/SQL/test-data there); code-level validation happens on the RCA tool via the spec-driven 4-agent process. The full discovered suite ran 46 tests (1 skipped), including 14 new targeted cases which were also rerun separately; golden regression passed.
+  - **Q3 (Productivity):** kept the July adopted-deliverables framing, honestly labeled the 63.5h figure as an estimate (no new tracked metrics available), and added the Oct 7–8 v4 remediation cycle (9 findings, 46 full-suite tests, 1 session) as a dated throughput data point; the 14 targeted tests are included in the 46 and were rerun separately. Created `October 2026/metrics-and-logs/AI_Time_Tracking_Log.md` — a lightweight template for prospective tracking.
   - **Q4 (Agents/automation):** **received and reviewed a real v5 evaluator re-review** (`October 2026/AI Agent Evaluator feedback report v5.md`, Completed Oct 7 18:40) — confirmed all 9 targeted F-001–F-009 fixes landed (PARTIAL/FAIL → PASS), zero critical findings before or after. New findings were mostly minor second-order effects of the fixes themselves (extracting prompts activated Area 9 "Prompt Engineering Quality" evaluation for the first time, surfacing 2 small new asks). One possible scout false-negative noted (skip-link claimed "not found" despite existing in code) and one scout inconsistency noted (12.5 example I/O pairs flipped PASS→FAIL with no actual removal) — both logged as discrepancies, not real regressions. Added 2 quick follow-up items to `October 2026/agentic-qa-rca-v4/FUTURE_PHASE_RECOMMENDATIONS.md` ("v5 Evaluator Follow-ups" section). Updated Q4's response and evidence list to cite the real before/after v3→v5 comparison instead of the v3-only placeholder.
   - **Portal attachment limit handling:** Q4's artifact list was trimmed to 5 then restored to the full 8 per Jose's preference (kept for records; added an inline priority-order note for whichever subset gets attached). Discovered the submission portal rejects `.csv` and `.py` files — created upload-safe replacements: `October 2026/agentic-qa-rca-v4/development-records/20261007-v4-evaluator-remediation/06_Metrics_Baseline_vs_After_Confirmed.md` (markdown version of the CSV, updated with real v5-confirmed statuses instead of "expected") and pointed to the existing `ARCHITECTURE_AND_EVALUATOR_APPLICABILITY.md` as the `.py` replacement (already markdown, contains the pipeline's Mermaid diagram).
 - **Q5 (Scaling AI Impact) not started yet** — this is the next-session starting point.
@@ -61,17 +79,13 @@
 - Zip attachment was blocked by mail policy (expected/normal); package hand-off planned for **Oct 7** via a channel still TBD (Teams file share / shared drive candidate).
 - Logged the outreach in a new **"RCA/CAPA Shareable Package — Sharing Log"** section added to `July 2026/prompt-library/Prompt_Library_Sharing_Record.md` (kept separate from the prompt-library log since it's a different asset). Includes an `RCA Adoption Entry 001` template ready to fill in once Maria actually runs it and replies.
 
-### Next Session Fast Start (Oct 7+)
+### Next Session Fast Start — Future Assessment
 
-### Next Session Fast Start (Oct 8+)
-
-1. **Check for the real v4 evaluator report** in the GAP AI Toolkit space (uploaded Oct 7). Compare against `October 2026/agentic-qa-rca-v4/development-records/20261007-v4-evaluator-remediation/06_Metrics_Baseline_vs_After.csv` to confirm the 12 fixed criteria now PASS and the 9 deferred Tier 3 criteria are unchanged as expected. If clean, update the October draft's D4 evidence to cite the v4 result.
-2. Confirm the zip hand-off channel to Maria Fernanda Avila and update the `[channel TBD]` placeholder in `Prompt_Library_Sharing_Record.md`.
-3. When Maria replies with feedback, fill in `RCA Adoption Entry 001` — this is the first real D5 adoption evidence for this cycle.
-4. If adoption evidence lands, update the October draft's D5 answer to cite it (currently still framed as "no confirmed adoption yet").
-5. D3 is still the other unresolved risk — consider starting real prospective sprint-metric capture (not just the instrumented-but-empty framework) if time allows before submitting.
-6. Optional, non-blocking: if Playwright/browser tooling becomes available, do a real interactive click-through of the v4 Web UI (Escape key on each overlay, one error-remediation message) to close the one noted validation gap.
-7. Optional: push commits `54d5415`, `98e32c1`, `5077886` and tag `v4.0.0` to `origin/main` if you want them on the remote (not done automatically — needs your go-ahead).
+1. Leave the submitted October assessment and its supporting records unchanged.
+2. Check for the official October assessment result; save any post-submission analysis and next-cycle planning under the workspace-root `Future Assessment/` directory.
+3. RCA v5 is planned for `Future Assessment/` but has not started.
+4. If F-011 or Maria's other pilot observations are addressed in the future, create a new spec, implementation/tests, and decision record under `Future Assessment/`; use synthetic inputs and ask Maria to retest any corrected package.
+5. Local commits/tag were not pushed; push only if Jose explicitly requests it.
 
 ### September 30, 2026 — Full Reanalysis and October Draft Submission
 
@@ -82,12 +96,9 @@
 - Confirmed status as of this date: no colleague has run the v3 shareable package, and the `Prompt_Library_Sharing_Record.md` adoption tracker is still empty. The October draft does not claim adoption — it leads with achievements (the September multi-agent engineering cycle, the deterministic orchestrated pipeline, the v3 toolkit "Approved with Recommendations" result, and July's team/client-adopted deliverables) and keeps only the minimal honesty caveats needed to survive adversarial review (the app is deterministic/LLM-free; no confirmed colleague adoption yet).
 - Prospective metrics (`October 2026/agentic-qa-rca-v3/metrics/sprint_metrics.csv` and `baseline_metrics.csv`) remain unmeasured (baseline marked as estimate, sprint rows at zero/planned) — framed in the draft as tracking infrastructure now in place for the next cycle, not as completed measurement.
 
-### Next Session Fast Start (Evaluation Submission)
+### Pre-Submission Fast Start (Historical; Superseded Oct 9)
 
-1. Open `October 2026/evaluation/GAP_AI_Impact_Evaluation_2026_October (draft).md` — this is the ready-to-copy draft.
-2. Highest-value remaining action: get 1–2 colleagues to actually run the shareable v3 package and log it in `July 2026/prompt-library/Prompt_Library_Sharing_Record.md` before submitting, to strengthen D5 with real (not just prepared) adoption evidence.
-3. If time allows, capture one real sprint of measured data in `October 2026/agentic-qa-rca-v3/metrics/sprint_metrics.csv` to strengthen D3 beyond the July retrospective estimate.
-4. Otherwise, the draft is submission-ready as-is based on verified September 30 evidence.
+The checklist below applied before the October submission and is no longer active. The assessment is submitted; preserve its documents and evidence as the final current-cycle record. Future work belongs in `Future Assessment/`.
 
 ### September 22, 2026 v3 Evaluation Milestone
 
