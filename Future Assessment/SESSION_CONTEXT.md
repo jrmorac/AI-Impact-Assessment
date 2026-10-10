@@ -18,7 +18,7 @@ Last updated: 2026-10-09
 
 ## Evidence pointers
 
-- Maria's pilot and Sonia Sijia's hackathon-agent knowledge-share are recorded in `July 2026/prompt-library/Prompt_Library_Sharing_Record.md`.
+- Maria Avila's pilot and Sonia Sibaja's hackathon-agent knowledge-share are recorded in `July 2026/prompt-library/Prompt_Library_Sharing_Record.md`.
 - v4 pilot finding and distribution decision are recorded in `October 2026/agentic-qa-rca-v4/development-records/20261007-v4-evaluator-remediation/09_Integration_Decision_Record.md` and `10_Risk_and_Rollback_Register.md`.
 - The independent v5 Toolkit review is `October 2026/AI Agent Evaluator feedback report v5.md`.
 
