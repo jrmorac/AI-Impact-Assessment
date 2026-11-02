@@ -1,7 +1,7 @@
 # QA Prompt Library — DOM Project
 **Maintainer:** Jose Rafael Mora Casal  
 **Project:** DOM (MediQuant client)  
-**Last Updated:** July 2026
+**Last Updated:** October 19, 2026
 
 ---
 
@@ -38,6 +38,7 @@ This library contains reusable, parameterized prompt templates for recurring QA 
 | 04 | [requirements-comparison.md](requirements-comparison.md) | Requirements vs. proposal/contract gap analysis | New requirements document, scope review, client alignment |
 | 05 | [meeting-minutes.md](meeting-minutes.md) | Structured meeting minutes from transcript or notes | Post any technical review or stakeholder meeting |
 | 06 | [performance-testing-plan.md](performance-testing-plan.md) | Performance testing plan for data pipelines | New pipeline, capacity planning, load test design |
+| 07 | [requirements-workflow-reordering.md](requirements-workflow-reordering.md) | Requirements analysis and workflow-ordered Excel checklist with preserved traceability | PO requests user-journey ordering, technical-step placement, and auditable story/phase/coverage preservation |
 
 ---
 
