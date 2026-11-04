@@ -1,6 +1,6 @@
 # Future Assessment Context
 
-Last updated: 2026-10-19
+Last updated: 2026-11-04
 
 ## Current state
 
@@ -53,3 +53,38 @@ Last updated: 2026-10-19
 - No before/after effort measurements, quantified savings, ROI, colleague reuse or team adoption have been recorded. Do not infer these from checklist counts, prompt creation, or successful automated checks.
 - Future assessment narrative can describe the documented requirements-analysis workflow, reusable prompt and validation/correction practices. Do not claim an assigned AI level or organizational impact from this activity alone.
 - Capture the PO's actual review outcome and corrections, measured effort for subsequent runs, and any observed colleague reuse when available. Security/retention interpretations require authorized human review; no sensitive data processing is approved by this record.
+
+## Session close: future-project exploration (2026-11-04)
+
+Discussion occurred on October 29, 2026; context updated at Jose's request on November 4, 2026.
+
+### RCA agent proposal
+
+- **Jose's reported feedback:** The existing local, web-based RCA assistant is deterministic and guides the 5-Why flow, but requires human answers and does not propose causes through an integrated LLM. This is user-reported feedback, not a new independent technical review.
+- **Idea:** Explore an RCA agent/skill inside Claude or GitHub Copilot that proposes candidate causes and validation steps using approved project context. Jose requested feasibility guidance and steps, not implementation.
+- **Saved deliverable:** [RCA LLM agent feasibility proposal](./RCA-LLM-Agent-Proposal.md). Marked as exploratory, not an approved implementation plan.
+- **Initial recommendation:** Start with a read-only, platform-native prototype using synthetic cases and approved non-sensitive context. Retain the deterministic tool as a baseline; consider web-app integration only after demonstrating value and obtaining required approvals.
+- **Quality boundaries:** Distinguish facts, assumptions, and hypotheses; cite supporting context; ask for missing information or abstain; require human approval of final conclusions. No autonomous CAPA/ADO creation, RCA closure, or other consequential actions in the initial prototype.
+- **Still undecided:** Target Claude/Copilot environment, standalone versus app-integrated experience, approved context and access mechanism, whether this becomes RCA v5, reviewers/ownership, pilot criteria, and measurement period.
+- **Evidence limits:** No prototype, model integration, pilot results, productivity gains, or new team adoption were demonstrated in this discussion. Existing v4 findings and distribution restrictions remain unchanged.
+
+### Other AI-for-QA ideas discussed
+
+Jose asked for projects beyond test-case generation and test automation. Options discussed:
+
+1. Change-impact and regression advisor: suggest impacted areas/tests from approved change summaries and test catalogs.
+2. Requirements and release-evidence auditor: identify ambiguity and gaps in requirement-to-story-to-test-to-result traceability.
+3. Test failure triage assistant: group failures and propose evidence-based explanations, distinguishing possible product, environment, and flaky-test issues.
+4. RCA investigation assistant: propose testable root-cause hypotheses.
+5. Synthetic test-data scenario designer: propose realistic edge scenarios and deterministic data subject to defined constraints.
+
+The coach recommended exploring a **QA change-impact and evidence auditor**, building on the requirements-analysis work. This was a recommendation only: Jose has not selected or approved a project. Suggested starting point was a read-only workflow with deterministic ID/link checks, AI semantic suggestions, human review, and a measured baseline.
+
+### Resume guidance
+
+- Resume by confirming which project Jose wants to explore; do not assume the RCA proposal or auditor has been selected.
+- Agree scope, platform, approved data/context, acceptance criteria, owners, and validation before implementation.
+- Use synthetic and non-sensitive artifacts only; any compliance-sensitive use requires authorized human review before proceeding.
+- Record false positives, unsupported claims, corrections, and actual outcome/adoption measurements. Do not equate a demo, asset creation, or interest with impact.
+- No new official assessment result or next-cycle deadline was supplied during this discussion; do not infer either from calendar dates or coaching estimates.
+- Session closed at Jose's request. No application code changes, release approval, or commit were requested as part of this closeout.
